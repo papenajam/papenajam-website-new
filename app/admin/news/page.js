@@ -104,9 +104,15 @@ export default function NewsAdmin() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [modal, setModal] = useState(null); // null | 'create' | 'edit'
+  const [modal, setModal] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const [form, setForm] = useState({ title: '', content: '', image: '', category: '', publishDate: '', isPublished: true });
+  const [form, setForm] = useState({
+    title: '', titleEn: '',
+    content: '', contentEn: '',
+    image: '', imageAlt: '', imageAltEn: '',
+    category: '', publishDate: '', isPublished: true
+  });
+  const [langTab, setLangTab] = useState('id');
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState({ msg: '', type: 'success' });
 
@@ -131,17 +137,35 @@ export default function NewsAdmin() {
   useEffect(() => { fetchItems(); }, [fetchItems]);
 
   function openCreate() {
-    setForm({ title: '', content: '', image: '', category: '', publishDate: new Date().toISOString().split('T')[0], isPublished: true });
+    setForm({
+      title: '', titleEn: '',
+      content: '', contentEn: '',
+      image: '', imageAlt: '', imageAltEn: '',
+      category: '', publishDate: new Date().toISOString().split('T')[0], isPublished: true
+    });
+    setLangTab('id');
     setModal('create');
   }
 
   function openEdit(item) {
-    setForm({ title: item.title, content: item.content, image: item.image || '', category: item.category || '', publishDate: item.publishDate || '', isPublished: item.isPublished ?? true });
+    setForm({
+      title: item.title || '',
+      titleEn: item.titleEn || '',
+      content: item.content || '',
+      contentEn: item.contentEn || '',
+      image: item.image || '',
+      imageAlt: item.imageAlt || '',
+      imageAltEn: item.imageAltEn || '',
+      category: item.category || '',
+      publishDate: item.publishDate || '',
+      isPublished: item.isPublished ?? true
+    });
+    setLangTab('id');
     setModal({ type: 'edit', id: item.id });
   }
 
   async function handleSave() {
-    if (!form.title || !form.content) { showToast('Judul dan konten wajib diisi', 'error'); return; }
+    if (!form.title || !form.content) { showToast('Judul dan konten (Bahasa Indonesia) wajib diisi', 'error'); return; }
     setSaving(true);
     try {
       const isEdit = modal?.type === 'edit';
@@ -288,33 +312,118 @@ export default function NewsAdmin() {
 
       {/* Modal */}
       <Dialog open={!!modal} onOpenChange={v => !v && setModal(null)}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" aria-labelledby="news-modal-title">
           <DialogHeader>
-            <DialogTitle>{modal?.type === 'edit' ? 'Edit Berita' : 'Tambah Berita'}</DialogTitle>
+            <DialogTitle id="news-modal-title">{modal?.type === 'edit' ? 'Edit Berita' : 'Tambah Berita'}</DialogTitle>
           </DialogHeader>
+
+          {/* Language Tabs */}
+          <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg mb-4" role="tablist" aria-label="Pilih bahasa konten">
+            <button
+              role="tab"
+              aria-selected={langTab === 'id'}
+              aria-controls="tab-id"
+              onClick={() => setLangTab('id')}
+              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'id' ? 'bg-white text-[#1e3a5f] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              🇮🇩 Bahasa Indonesia
+            </button>
+            <button
+              role="tab"
+              aria-selected={langTab === 'en'}
+              aria-controls="tab-en"
+              onClick={() => setLangTab('en')}
+              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'en' ? 'bg-white text-[#1e3a5f] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              🇬🇧 English
+            </button>
+          </div>
+
           <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium mb-1.5 block">Judul <span className="text-red-500">*</span></Label>
-              <Input placeholder="Judul berita" value={form.title} onChange={e => setForm(f => ({...f, title: e.target.value}))} />
+            {/* Indonesian Tab */}
+            <div id="tab-id" role="tabpanel" aria-labelledby="tab-id" hidden={langTab !== 'id'}>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="title-id" className="text-sm font-medium mb-1.5 block">
+                    Judul <span className="text-red-500" aria-label="wajib">*</span>
+                  </Label>
+                  <Input
+                    id="title-id"
+                    placeholder="Judul berita"
+                    value={form.title}
+                    onChange={e => setForm(f => ({...f, title: e.target.value}))}
+                    aria-required="true"
+                    aria-describedby="title-id-desc"
+                  />
+                  <p id="title-id-desc" className="sr-only">Judul berita dalam Bahasa Indonesia. Wajib diisi.</p>
+                </div>
+                <div>
+                  <Label htmlFor="content-id" className="text-sm font-medium mb-1.5 block">
+                    Konten <span className="text-red-500" aria-label="wajib">*</span>
+                  </Label>
+                  <textarea
+                    id="content-id"
+                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                    placeholder="Isi berita dalam Bahasa Indonesia..."
+                    value={form.content}
+                    onChange={e => setForm(f => ({...f, content: e.target.value}))}
+                    aria-required="true"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <Label className="text-sm font-medium mb-1.5 block">Konten <span className="text-red-500">*</span></Label>
-              <textarea
-                className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
-                placeholder="Isi berita..."
-                value={form.content}
-                onChange={e => setForm(f => ({...f, content: e.target.value}))}
-              />
+
+            {/* English Tab */}
+            <div id="tab-en" role="tabpanel" aria-labelledby="tab-en" hidden={langTab !== 'en'}>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="title-en" className="text-sm font-medium mb-1.5 block">
+                    Title (English)
+                    <span className="ml-2 text-xs text-gray-400 font-normal">(opsional)</span>
+                  </Label>
+                  <Input
+                    id="title-en"
+                    placeholder="News title in English"
+                    value={form.titleEn || ''}
+                    onChange={e => setForm(f => ({...f, titleEn: e.target.value}))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="content-en" className="text-sm font-medium mb-1.5 block">
+                    Content (English)
+                    <span className="ml-2 text-xs text-gray-400 font-normal">(opsional)</span>
+                  </Label>
+                  <textarea
+                    id="content-en"
+                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                    placeholder="News content in English..."
+                    value={form.contentEn || ''}
+                    onChange={e => setForm(f => ({...f, contentEn: e.target.value}))}
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* Shared fields (common for both languages) */}
             <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-sm font-medium mb-1.5 block">Kategori</Label>
-              <Input placeholder="Contoh: Kegiatan" value={form.category} onChange={e => setForm(f => ({...f, category: e.target.value}))} />
-            </div>
-            <div>
-              <Label className="text-sm font-medium mb-1.5 block">Tanggal Publikasi</Label>
-              <Input type="date" value={form.publishDate} onChange={e => setForm(f => ({...f, publishDate: e.target.value}))} />
-            </div>
+              <div>
+                <Label htmlFor="news-category" className="text-sm font-medium mb-1.5 block">Kategori</Label>
+                <Input
+                  id="news-category"
+                  placeholder="Contoh: Kegiatan"
+                  value={form.category}
+                  onChange={e => setForm(f => ({...f, category: e.target.value}))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="news-date" className="text-sm font-medium mb-1.5 block">Tanggal Publikasi</Label>
+                <Input
+                  id="news-date"
+                  type="date"
+                  value={form.publishDate}
+                  onChange={e => setForm(f => ({...f, publishDate: e.target.value}))}
+                />
+              </div>
             </div>
             <div>
               <ImageUploadInput
@@ -324,9 +433,56 @@ export default function NewsAdmin() {
                 label="Gambar Berita"
               />
             </div>
+            {/* Alt Text - WCAG 1.1.1 */}
+            {form.image && (
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-2">
+                <p className="text-xs font-bold text-blue-700 flex items-center gap-1">
+                  ♿ Aksesibilitas — Teks Alternatif Gambar (WCAG 1.1.1)
+                </p>
+                <div>
+                  <Label htmlFor="img-alt-id" className="text-xs font-medium mb-1 block">
+                    Alt Text (Indonesia)
+                    <span className="text-red-400 ml-1">*</span>
+                  </Label>
+                  <Input
+                    id="img-alt-id"
+                    placeholder="Deskripsi gambar untuk pembaca layar..."
+                    value={form.imageAlt || ''}
+                    onChange={e => setForm(f => ({...f, imageAlt: e.target.value}))}
+                    className="text-sm"
+                    aria-describedby="alt-text-help"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="img-alt-en" className="text-xs font-medium mb-1 block">
+                    Alt Text (English)
+                  </Label>
+                  <Input
+                    id="img-alt-en"
+                    placeholder="Image description for screen readers..."
+                    value={form.imageAltEn || ''}
+                    onChange={e => setForm(f => ({...f, imageAltEn: e.target.value}))}
+                    className="text-sm"
+                  />
+                </div>
+                <p id="alt-text-help" className="text-xs text-blue-600">
+                  Teks ini digunakan oleh pembaca layar untuk pengguna tunanetra. Deskripsikan isi gambar dengan jelas.
+                </p>
+              </div>
+            )}
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="isPublished" checked={form.isPublished} onChange={e => setForm(f => ({...f, isPublished: e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
-              <Label htmlFor="isPublished" className="text-sm cursor-pointer">Publikasikan langsung</Label>
+              <input
+                type="checkbox"
+                id="isPublished"
+                checked={form.isPublished}
+                onChange={e => setForm(f => ({...f, isPublished: e.target.checked}))}
+                className="w-4 h-4 accent-[#1e3a5f]"
+                aria-describedby="publish-help"
+              />
+              <div>
+                <Label htmlFor="isPublished" className="text-sm cursor-pointer">Publikasikan langsung</Label>
+                <p id="publish-help" className="sr-only">Centang untuk langsung mempublikasikan berita ini ke halaman publik</p>
+              </div>
             </div>
           </div>
           <DialogFooter>

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
@@ -9,133 +12,369 @@ body {
         "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-        monospace;
-}
-
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-
-
+/* ============================================================
+   SHADCN CSS VARIABLES
+   ============================================================ */
 @layer base {
   :root {
-        --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 222.2 84% 4.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 222.2 84% 4.9%;
-        --primary: 222.2 47.4% 11.2%;
-        --primary-foreground: 210 40% 98%;
-        --secondary: 210 40% 96.1%;
-        --secondary-foreground: 222.2 47.4% 11.2%;
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
-        --accent: 210 40% 96.1%;
-        --accent-foreground: 222.2 47.4% 11.2%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 222.2 84% 4.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-        --sidebar-background: 0 0% 98%;
-        --sidebar-foreground: 240 5.3% 26.1%;
-        --sidebar-primary: 240 5.9% 10%;
-        --sidebar-primary-foreground: 0 0% 98%;
-        --sidebar-accent: 240 4.8% 95.9%;
-        --sidebar-accent-foreground: 240 5.9% 10%;
-        --sidebar-border: 220 13% 91%;
-        --sidebar-ring: 217.2 91.2% 59.8%;
-    }
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
   .dark {
-        --background: 222.2 84% 4.9%;
-        --foreground: 210 40% 98%;
-        --card: 222.2 84% 4.9%;
-        --card-foreground: 210 40% 98%;
-        --popover: 222.2 84% 4.9%;
-        --popover-foreground: 210 40% 98%;
-        --primary: 210 40% 98%;
-        --primary-foreground: 222.2 47.4% 11.2%;
-        --secondary: 217.2 32.6% 17.5%;
-        --secondary-foreground: 210 40% 98%;
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
-        --accent: 217.2 32.6% 17.5%;
-        --accent-foreground: 210 40% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
-        --ring: 212.7 26.8% 83.9%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-        --sidebar-background: 240 5.9% 10%;
-        --sidebar-foreground: 240 4.8% 95.9%;
-        --sidebar-primary: 224.3 76.3% 48%;
-        --sidebar-primary-foreground: 0 0% 100%;
-        --sidebar-accent: 240 3.7% 15.9%;
-        --sidebar-accent-foreground: 240 4.8% 95.9%;
-        --sidebar-border: 240 3.7% 15.9%;
-        --sidebar-ring: 217.2 91.2% 59.8%;
-    }
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
-
-
 
 @layer base {
   * {
     @apply border-border;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY: FONT SIZE SCALING
+   WCAG 1.4.4 - Text can be resized up to 200% without loss
+   ============================================================ */
+html.a11y-font-large {
+  font-size: 118% !important;
+}
+html.a11y-font-large * {
+  line-height: 1.6 !important;
+}
+html.a11y-font-xlarge {
+  font-size: 137% !important;
+}
+html.a11y-font-xlarge * {
+  line-height: 1.7 !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGH CONTRAST MODE
+   WCAG 1.4.3 - Minimum contrast ratio 4.5:1 for normal text
+   ============================================================ */
+html.a11y-high-contrast,
+html.a11y-high-contrast body {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast * {
+  background-color: transparent !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  outline-color: #ff0 !important;
+}
+html.a11y-high-contrast a,
+html.a11y-high-contrast button,
+html.a11y-high-contrast [role="button"] {
+  color: #ff0 !important;
+  background-color: #000 !important;
+  border: 2px solid #ff0 !important;
+  text-decoration: underline !important;
+}
+html.a11y-high-contrast img {
+  filter: contrast(1.5) brightness(0.9) !important;
+}
+html.a11y-high-contrast input,
+html.a11y-high-contrast textarea,
+html.a11y-high-contrast select {
+  background-color: #111 !important;
+  color: #fff !important;
+  border: 2px solid #ff0 !important;
+}
+html.a11y-high-contrast .bg-\[\#1e3a5f\],
+html.a11y-high-contrast [class*="bg-[#1e3a5f]"],
+html.a11y-high-contrast nav,
+html.a11y-high-contrast header,
+html.a11y-high-contrast footer,
+html.a11y-high-contrast aside {
+  background-color: #111 !important;
+  border-bottom: 2px solid #ff0 !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY: DARK MODE
+   ============================================================ */
+html.a11y-dark,
+html.a11y-dark body {
+  background-color: #111827 !important;
+  color: #f3f4f6 !important;
+}
+html.a11y-dark .bg-white,
+html.a11y-dark [class*="bg-white"],
+html.a11y-dark .bg-gray-50,
+html.a11y-dark [class*="bg-gray-50"] {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
+}
+html.a11y-dark .text-gray-600,
+html.a11y-dark .text-gray-700,
+html.a11y-dark .text-gray-800,
+html.a11y-dark [class*="text-gray"] {
+  color: #d1d5db !important;
+}
+html.a11y-dark .border-gray-100,
+html.a11y-dark .border-gray-200,
+html.a11y-dark [class*="border-gray"] {
+  border-color: #374151 !important;
+}
+html.a11y-dark .shadow-sm,
+html.a11y-dark .shadow-md,
+html.a11y-dark [class*="shadow"] {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY: DYSLEXIA-FRIENDLY FONT
+   OpenDyslexic-style spacing improvements
+   ============================================================ */
+html.a11y-dyslexia,
+html.a11y-dyslexia body,
+html.a11y-dyslexia p,
+html.a11y-dyslexia h1, html.a11y-dyslexia h2, html.a11y-dyslexia h3,
+html.a11y-dyslexia h4, html.a11y-dyslexia h5, html.a11y-dyslexia h6,
+html.a11y-dyslexia li, html.a11y-dyslexia a, html.a11y-dyslexia span,
+html.a11y-dyslexia td, html.a11y-dyslexia th, html.a11y-dyslexia label,
+html.a11y-dyslexia button, html.a11y-dyslexia input, html.a11y-dyslexia textarea {
+  font-family: 'Arial', 'Verdana', 'Tahoma', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.15em !important;
+  line-height: 1.8 !important;
+}
+html.a11y-dyslexia p,
+html.a11y-dyslexia li {
+  max-width: 70ch !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGHLIGHT LINKS
+   WCAG 1.4.1 - Use of color not the only means of conveying info
+   ============================================================ */
+html.a11y-highlight-links a,
+html.a11y-highlight-links [role="link"],
+html.a11y-highlight-links [href] {
+  background-color: #fff9c4 !important;
+  color: #1e3a5f !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+  border-bottom: 2px solid #c9a84c !important;
+  padding: 0 2px !important;
+  border-radius: 2px !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY: SIMPLE MODE (Elderly-Friendly)
+   Larger targets, cleaner layout, fewer distractions
+   ============================================================ */
+html.a11y-simple-mode {
+  font-size: 120% !important;
+}
+html.a11y-simple-mode * {
+  line-height: 1.7 !important;
+}
+html.a11y-simple-mode button,
+html.a11y-simple-mode a,
+html.a11y-simple-mode [role="button"],
+html.a11y-simple-mode input,
+html.a11y-simple-mode select,
+html.a11y-simple-mode textarea {
+  min-height: 48px !important;
+  padding: 12px 20px !important;
+  font-size: 1.05rem !important;
+  border-radius: 8px !important;
+}
+html.a11y-simple-mode nav {
+  padding: 1rem 0 !important;
+}
+html.a11y-simple-mode p, html.a11y-simple-mode li {
+  font-size: 1.05rem !important;
+  max-width: 70ch !important;
+}
+/* Hide decorative / complex elements in simple mode */
+html.a11y-simple-mode .a11y-hide-simple {
+  display: none !important;
+}
+html.a11y-simple-mode .a11y-show-simple {
+  display: block !important;
+}
+
+/* ============================================================
+   FOCUS STYLES - WCAG 2.4.7 Focus Visible
+   ============================================================ */
+*:focus-visible {
+  outline: 3px solid #c9a84c !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #c9a84c !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================================
+   SKIP TO CONTENT - WCAG 2.4.1
+   ============================================================ */
+.skip-to-content {
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 0.2s;
+  background: #c9a84c;
+  color: #1e3a5f;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  border-radius: 0 0 8px 8px;
+  z-index: 10000;
+  left: 1rem;
+  top: 0;
+}
+.skip-to-content:focus {
+  transform: translateY(0);
+}
+
+/* ============================================================
+   PRINT STYLES - WCAG 1.4.8
+   ============================================================ */
+@media print {
+  nav, .a11y-toolbar, #a11y-toolbar, #reading-guide,
+  .fixed, button:not(.print-show) {
+    display: none !important;
+  }
+  body {
+    font-size: 12pt !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION - WCAG 2.3.3
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   SCREEN READER UTILITIES
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ============================================================
+   ACCESSIBLE INTERACTIVE ELEMENT MINIMUM SIZE
+   WCAG 2.5.5 - Target size minimum 44x44px
+   ============================================================ */
+button, a, [role="button"], [role="link"],
+input[type="checkbox"], input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+}
+nav a, nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

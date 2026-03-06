@@ -4,8 +4,10 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   Scale, LayoutDashboard, Newspaper, Bell, Briefcase, FileSearch,
   Users, Settings, LogOut, Menu, X, ChevronRight, ChevronDown,
-  CalendarDays, FileText, Layers, Search, Home
+  CalendarDays, FileText, Layers, Search, Home, Globe
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { LANGUAGES } from '@/lib/i18n';
 
 const sidebarGroups = [
   {
@@ -45,6 +47,7 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { lang, setLang } = useLanguage();
 
   useEffect(() => {
     if (pathname === '/admin/login' || pathname === '/admin') return;
@@ -181,6 +184,24 @@ export default function AdminLayout({ children }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Language Switcher in Admin */}
+            <div className="flex items-center gap-1 mr-1">
+              {Object.values(LANGUAGES).map(language => (
+                <button
+                  key={language.code}
+                  onClick={() => setLang(language.code)}
+                  aria-pressed={lang === language.code}
+                  title={language.name}
+                  className={`px-2 py-1 rounded text-xs font-bold transition-all min-h-[32px] ${
+                    lang === language.code
+                      ? 'bg-[#c9a84c] text-[#1e3a5f]'
+                      : 'text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100'
+                  }`}
+                >
+                  {language.label}
+                </button>
+              ))}
+            </div>
             {user && (
               <div className="hidden md:flex items-center gap-2">
                 <span className="text-sm text-gray-600">{user.name}</span>

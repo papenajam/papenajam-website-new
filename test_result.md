@@ -226,17 +226,56 @@ backend:
         comment: "Login tested and working."
 
 frontend:
-  - task: "Admin News with Image Upload"
+  - task: "Accessibility & Bilingual System"
     implemented: true
-    working: true
+    working: "NA"
+    file: "app/lib/i18n.js, app/lib/accessibility.js, app/contexts/LanguageContext.js, app/contexts/AccessibilityContext.js, app/components/AccessibilityToolbar.js, app/components/LanguageSwitcher.js, app/components/AppProviders.js, app/app/accessibility/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented i18n (ID/EN), accessibility toolbar (font size, high contrast, dark mode, dyslexia font, highlight links, reading guide, simple mode, TTS), accessibility statement page, language switcher in navbar and admin, bilingual content tabs in News admin with alt text support, full WCAG ARIA attributes throughout."
+
+  - task: "News Admin with Bilingual Tabs + Alt Text"
+    implemented: true
+    working: "NA"
     file: "app/admin/news/page.js"
     stuck_count: 0
     priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added language tab UI (ID/EN tabs), fields for titleEn, contentEn, imageAlt, imageAltEn. Alt text section with WCAG guidance only visible when image is set."
+
+  - task: "Admin Layout Language Switcher"
+    implemented: true
+    working: "NA"
+    file: "app/admin/layout.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added ID/EN language toggle buttons in admin header toolbar area using useLanguage context."
+
+  - task: "Accessibility Statement Page /accessibility"
+    implemented: true
+    working: true
+    file: "app/accessibility/page.js"
+    stuck_count: 0
+    priority: "medium"
     needs_retesting: false
     status_history:
-      - working: true
+      - working: "NA"
         agent: "main"
-        comment: "Added ImageUploadInput component - supports file upload (JPG/PNG/GIF/WebP up to 5MB) via /api/upload AND direct URL input. Preview shown after selection. Existing functionality preserved."
+        comment: "Created full accessibility statement page with WCAG compliance details, supported tech, contact info for a11y feedback. Bilingual (ID/EN) via useLanguage hook."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /accessibility ✅ (Status 200). Accessibility statement page loads correctly with comprehensive WCAG compliance information, assistive technology support, and contact details. Page displays in Indonesian with proper heading structure and accessibility features."
 
   - task: "Page Builder Image Upload in Blocks"
     implemented: true
@@ -381,6 +420,8 @@ agent_communication:
     message: "BACKEND API v2.0 TESTING COMPLETE ✅ Tested all 15 specified endpoints with 100% success rate (20/20 tests passed). Key findings: 1) All authentication working (admin/staff/editor roles), 2) Enhanced stats API returns required chart data (monthlyData, caseTypes, todayAgenda), 3) Pages API with blocks array creation working, 4) Agenda CRUD with date filtering operational, 5) Putusan public/private filtering working, 6) Cases name/jenis filters functional, 7) Role-based permissions implemented but not strictly enforced (staff can access pages). All endpoints responding correctly with proper data structures."
   - agent: "testing"
     message: "FILE UPLOAD API COMPREHENSIVE TESTING COMPLETE ✅ All 15 file upload tests passed (100% success rate). Verified: 1) Image upload (multipart/form-data → /uploads/images/ with UUID), 2) PDF upload (multipart/form-data → /uploads/pdfs/ with UUID), 3) Auth protection (401 without token), 4) File accessibility (GET requests to uploaded files work), 5) News integration (imageUrl field accepts uploaded image URL), 6) Putusan integration (filePutusan field accepts uploaded PDF URL), 7) Directory structure (/public/uploads/{images,pdfs} exist and writable). File upload system fully functional and integrated with content creation workflows."
+  - agent: "testing"
+    message: "BILINGUAL CONTENT SUPPORT TESTING COMPLETE ✅ All 8 requested tests passed (100% success rate). Verified: 1) Login API working (admin@pa-penajam.go.id), 2) News API accepts and stores bilingual fields (titleEn, contentEn, imageAlt, imageAltEn), 3) Accessibility statement page accessible at /accessibility, 4) Homepage loads correctly with language switcher (ID/EN buttons visible), 5) News public API returns items with bilingual fields, 6) Upload API functional for images, 7) Announcements API supports bilingual fields (titleEn, contentEn), 8) Test cleanup successful. Backend infrastructure for bilingual content fully operational. Frontend shows language switcher and accessibility toolbar."
 
 backend:
   - task: "JWT Authentication (login/verify)"
@@ -490,6 +531,18 @@ backend:
       - working: true
         agent: "testing"
         comment: "TESTED: GET /api/settings ✅ (public), PUT /api/settings ✅ (with auth). Both endpoints working correctly."
+
+  - task: "Bilingual Content Support API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "BILINGUAL CONTENT SUPPORT TESTING COMPLETE ✅ All 8 requested tests passed (100% success rate). Verified: 1) Login API working (admin@pa-penajam.go.id), 2) News API accepts and stores bilingual fields (titleEn, contentEn, imageAlt, imageAltEn), 3) Accessibility statement page accessible at /accessibility, 4) Homepage loads correctly with language switcher (ID/EN buttons visible), 5) News public API returns items with bilingual fields, 6) Upload API functional for images, 7) Announcements API supports bilingual fields (titleEn, contentEn), 8) Test cleanup successful. Backend infrastructure for bilingual content fully operational."
 
 frontend:
   - task: "Landing Page"
