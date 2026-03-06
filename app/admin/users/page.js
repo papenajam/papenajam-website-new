@@ -171,6 +171,8 @@ export default function UsersAdmin() {
               <Label className="text-sm font-medium mb-1.5 block">Role</Label>
               <select className="w-full p-2 border border-gray-200 rounded-lg text-sm" value={form.role} onChange={e => setForm(f => ({...f, role: e.target.value}))}>
                 <option value="admin">Admin</option>
+                <option value="staff">Staff (Kepaniteraan)</option>
+                <option value="editor">Editor (Humas)</option>
                 <option value="superadmin">Super Admin</option>
               </select>
             </div>

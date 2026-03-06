@@ -96,13 +96,19 @@ export default function LandingPage() {
   }
 
   const navLinks = [
-    { id: 'beranda', label: 'Beranda' },
-    { id: 'profil', label: 'Profil' },
-    { id: 'layanan', label: 'Layanan' },
-    { id: 'perkara', label: 'Informasi Perkara' },
-    { id: 'berita', label: 'Berita' },
-    { id: 'pengumuman', label: 'Pengumuman' },
-    { id: 'kontak', label: 'Kontak' },
+    { id: 'beranda', label: 'Beranda', href: null },
+    { id: 'profil', label: 'Profil', href: null },
+    { id: 'layanan', label: 'Layanan', href: null },
+    { id: 'perkara', label: 'Informasi Perkara', href: null },
+    { id: 'berita', label: 'Berita', href: null },
+    { id: 'pengumuman', label: 'Pengumuman', href: null },
+    { id: 'kontak', label: 'Kontak', href: null },
+  ];
+
+  const externalLinks = [
+    { label: 'Agenda Sidang', href: '/agenda-sidang' },
+    { label: 'Putusan', href: '/putusan' },
+    { label: 'Pencarian Perkara', href: '/pencarian-perkara' },
   ];
 
   const scrollTo = (id) => {
@@ -160,6 +166,18 @@ export default function LandingPage() {
                   {link.label}
                 </button>
               ))}
+              <div className="relative group ml-1">
+                <button className={`px-3 py-2 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${scrolled ? 'text-[#1e3a5f] hover:text-[#c9a84c]' : 'text-white/90 hover:text-white'}`}>
+                  Layanan Digital ▾
+                </button>
+                <div className="absolute top-full right-0 mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  {externalLinks.map(link => (
+                    <a key={link.href} href={link.href} className="block px-4 py-2 text-sm text-[#1e3a5f] hover:bg-gray-50 hover:text-[#c9a84c] transition-colors">
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
               <Button
                 size="sm"
                 className="ml-2 bg-[#c9a84c] hover:bg-[#b8962f] text-white text-sm font-semibold"
@@ -738,6 +756,13 @@ export default function LandingPage() {
                     >
                       <ChevronRight className="w-3 h-3" /> {link.label}
                     </button>
+                  </li>
+                ))}
+                {externalLinks.map(link => (
+                  <li key={link.href}>
+                    <a href={link.href} className="text-white/60 hover:text-white text-sm flex items-center gap-2 transition-colors">
+                      <ChevronRight className="w-3 h-3" /> {link.label}
+                    </a>
                   </li>
                 ))}
               </ul>

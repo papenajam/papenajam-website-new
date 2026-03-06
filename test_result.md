@@ -102,7 +102,253 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Official Website and Admin CMS for Pengadilan Agama Penajam (Religious Court of Penajam, Indonesia) - Full stack app with landing page, admin dashboard, news/announcements/services/cases/users management with JWT auth and MongoDB."
+user_problem_statement: "Upgrade Pengadilan Agama Penajam website with: 1) Page Builder (dnd-kit), 2) Agenda Sidang with calendar view, 3) Putusan document management with PDF upload, 4) Perkara search (enhanced), 5) Role-based permissions (admin/staff/editor), 6) Enhanced dashboard with recharts, 7) File upload system, 8) New MongoDB collections (pages, agenda, putusan), 9) Admin UX improvements, 10) Public pages (agenda, putusan, pencarian-perkara)"
+
+backend:
+  - task: "Enhanced Stats API with charts data"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Returns monthlyData, caseTypes, todayAgenda etc. Tested: all fields present"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/stats ✅ (requires auth). Returns all required v2.0 fields: monthlyData (6 months), caseTypes (6 types), todayAgenda (1), totalAgenda, totalPutusan, totalPages. Enhanced dashboard stats working correctly."
+
+  - task: "Pages API (Page Builder)"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "GET/POST/PUT/DELETE /api/pages. GET /api/pages/slug/:slug. Seeded with sample page."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/pages ✅ (1 page retrieved), POST /api/pages ✅ (created with blocks array), GET /api/pages/slug/tentang ✅ (public access without auth). All CRUD operations working correctly."
+
+  - task: "Agenda Sidang API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Full CRUD with date filtering, status filter, pagination. Seeded with 6 items."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/agenda?limit=5 ✅ (retrieved 5/6 items), POST /api/agenda ✅ (created with all required fields), GET /api/agenda?dateFrom=2026-01-01&dateTo=2026-12-31 ✅ (date filter working, 7 items for 2026), PUT /api/agenda/:id ✅ (status update working). Full CRUD and filtering operational."
+
+  - task: "Putusan API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Full CRUD with statusPublish filter for public. Seeded with 2 items."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/putusan?public=true&limit=5 ✅ (retrieved 2 published putusan), POST /api/putusan ✅ (created with statusPublish=true). Public filtering and CRUD operations working correctly."
+
+  - task: "File Upload API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "POST /api/upload handles images and PDFs. Saves to /public/uploads/"
+
+  - task: "Enhanced Cases API with name filter"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added namaPihak filter (searches pemohon/termohon) and jenis filter"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/cases?namaPihak=Ahmad ✅ (retrieved 2 matching cases), GET /api/cases?jenis=Cerai ✅ (retrieved 3 matching cases). Both name and jenis filters working correctly."
+
+  - task: "Role-based auth (ADMIN/STAFF/EDITOR)"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "PERMISSIONS map defines access per role. Staff and editor users seeded."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Admin login ✅, Staff login ✅ (role: staff, can access agenda), Editor login ✅ (role: editor, can access pages and agenda), Users list ✅ (shows all 3 roles: admin, staff, editor). Role-based authentication working correctly."
+
+  - task: "JWT Authentication"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Login tested and working."
+
+frontend:
+  - task: "Page Builder with dnd-kit"
+    implemented: true
+    working: true
+    file: "app/admin/page-builder/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "7 block types, drag-drop reorder, settings panel, preview mode, list view"
+
+  - task: "Admin Agenda Sidang with Calendar"
+    implemented: true
+    working: true
+    file: "app/admin/agenda-sidang/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Table + Calendar views, date/status filters, CRUD modal"
+
+  - task: "Admin Putusan with PDF upload"
+    implemented: true
+    working: true
+    file: "app/admin/putusan/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "CRUD with PDF upload to /api/upload, download links"
+
+  - task: "Enhanced Admin Dashboard with Charts"
+    implemented: true
+    working: true
+    file: "app/admin/dashboard/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Bar chart (perkara per month), Pie chart (by type), today agenda widget, recent news"
+
+  - task: "Public Agenda Sidang page"
+    implemented: true
+    working: true
+    file: "app/agenda-sidang/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Public page with date filters, grouped by date display"
+
+  - task: "Public Putusan page"
+    implemented: true
+    working: true
+    file: "app/putusan/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Public page with search and download links"
+
+  - task: "Public Pencarian Perkara page"
+    implemented: true
+    working: true
+    file: "app/pencarian-perkara/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Advanced search by nomor, nama pihak, tahun, jenis perkara"
+
+  - task: "Dynamic Page Renderer /halaman/[slug]"
+    implemented: true
+    working: true
+    file: "app/halaman/[slug]/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Renders page builder JSON blocks dynamically"
+
+  - task: "Role-based Admin Sidebar Navigation"
+    implemented: true
+    working: true
+    file: "app/admin/layout.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Menu items shown/hidden based on user role"
+
+metadata:
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 3
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Pages API (Page Builder)"
+    - "Agenda Sidang API"
+    - "Putusan API"
+    - "Role-based auth"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://justice-penajam.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
+  - agent: "testing"
+    message: "BACKEND API v2.0 TESTING COMPLETE ✅ Tested all 15 specified endpoints with 100% success rate (20/20 tests passed). Key findings: 1) All authentication working (admin/staff/editor roles), 2) Enhanced stats API returns required chart data (monthlyData, caseTypes, todayAgenda), 3) Pages API with blocks array creation working, 4) Agenda CRUD with date filtering operational, 5) Putusan public/private filtering working, 6) Cases name/jenis filters functional, 7) Role-based permissions implemented but not strictly enforced (staff can access pages). All endpoints responding correctly with proper data structures."
 
 backend:
   - task: "JWT Authentication (login/verify)"
