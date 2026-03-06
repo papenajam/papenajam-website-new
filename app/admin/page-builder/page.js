@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,9 +16,57 @@ import { CSS } from '@dnd-kit/utilities';
 import {
   Plus, Trash2, GripVertical, Eye, Save, ArrowLeft, Settings2,
   Type, Image, LayoutGrid, BarChart2, Zap, AlignLeft, X, Check,
-  ChevronDown, ChevronUp, Layers, Globe, FileText
+  ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+
+// Reusable compact image upload input for page builder settings
+function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' }) {
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload gagal');
+      onChange(data.url);
+    } catch (err) {
+      alert('Upload gagal: ' + err.message);
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  }
+
+  return (
+    <div className="flex gap-1.5">
+      <Input
+        placeholder={placeholder}
+        value={value || ''}
+        onChange={e => onChange(e.target.value)}
+        className="flex-1 text-xs"
+      />
+      <label className="cursor-pointer flex items-center justify-center w-8 h-9 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex-shrink-0 relative">
+        {uploading ? (
+          <div className="w-3.5 h-3.5 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <Upload className="w-3.5 h-3.5 text-gray-500" />
+        )}
+        <input ref={fileRef} type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={handleFile} disabled={uploading} />
+      </label>
+    </div>
+  );
+}
 
 function Toast({ msg, type }) {
   if (!msg) return null;
@@ -127,7 +175,7 @@ function BlockPreview({ block }) {
 }
 
 // Settings panel per block type
-function BlockSettingsPanel({ block, onChange }) {
+function BlockSettingsPanel({ block, onChange, token }) {
   const s = block.settings || {};
   const upd = (key, val) => onChange({ ...block, settings: { ...s, [key]: val } });
   const updItem = (key, i, field, val) => {
@@ -144,7 +192,11 @@ function BlockSettingsPanel({ block, onChange }) {
         <div className="space-y-3">
           <div><Label className="text-xs font-semibold mb-1 block">Judul</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
           <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><textarea className="w-full p-2 border border-gray-200 rounded-lg text-sm h-20 resize-none focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20" value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
-          <div><Label className="text-xs font-semibold mb-1 block">URL Gambar Latar</Label><Input placeholder="https://..." value={s.backgroundImage || ''} onChange={e => upd('backgroundImage', e.target.value)} /></div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Gambar Latar <span className="font-normal text-gray-400">(URL atau Upload)</span></Label>
+            <ImageUploadSmall value={s.backgroundImage || ''} onChange={v => upd('backgroundImage', v)} token={token} placeholder="https://... atau upload" />
+            {s.backgroundImage && <img src={s.backgroundImage} alt="bg preview" className="mt-1.5 w-full h-16 object-cover rounded-lg opacity-80" onError={e=>e.target.style.display='none'} />}
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <div><Label className="text-xs font-semibold mb-1 block">Teks Button</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
             <div><Label className="text-xs font-semibold mb-1 block">Link Button</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} /></div>
@@ -167,7 +219,11 @@ function BlockSettingsPanel({ block, onChange }) {
     case 'image':
       return (
         <div className="space-y-3">
-          <div><Label className="text-xs font-semibold mb-1 block">URL Gambar</Label><Input placeholder="https://..." value={s.src || ''} onChange={e => upd('src', e.target.value)} /></div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Gambar <span className="font-normal text-gray-400">(URL atau Upload)</span></Label>
+            <ImageUploadSmall value={s.src || ''} onChange={v => upd('src', v)} token={token} placeholder="https://... atau upload" />
+            {s.src && <img src={s.src} alt="preview" className="mt-1.5 w-full h-20 object-cover rounded-lg" onError={e=>e.target.style.display='none'} />}
+          </div>
           <div><Label className="text-xs font-semibold mb-1 block">Keterangan</Label><Input value={s.caption || ''} onChange={e => upd('caption', e.target.value)} /></div>
           <div>
             <Label className="text-xs font-semibold mb-1 block">Perataan</Label>
@@ -250,18 +306,29 @@ function BlockSettingsPanel({ block, onChange }) {
           </div>
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-xs font-semibold">URL Gambar</Label>
+              <Label className="text-xs font-semibold">Gambar Galeri</Label>
               <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => upd('images', [...(s.images || []), ''])}>
-                <Plus className="w-3 h-3 mr-1" /> Tambah
+                <Plus className="w-3 h-3 mr-1" /> Tambah URL
               </Button>
             </div>
-            <div className="space-y-1.5 max-h-40 overflow-y-auto">
+            <div className="space-y-1.5 max-h-52 overflow-y-auto">
               {(s.images || []).map((img, i) => (
-                <div key={i} className="flex gap-2">
-                  <Input value={img} onChange={e => { const arr=[...(s.images||[])]; arr[i]=e.target.value; upd('images',arr); }} placeholder="https://..." className="flex-1 text-xs" />
-                  <button onClick={() => removeItem('images', i)} className="text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                <div key={i} className="space-y-1">
+                  <div className="flex gap-2 items-center">
+                    <ImageUploadSmall
+                      value={img}
+                      onChange={v => { const arr=[...(s.images||[])]; arr[i]=v; upd('images',arr); }}
+                      token={token}
+                      placeholder="https://..."
+                    />
+                    <button onClick={() => { const arr=[...(s.images||[])]; arr.splice(i,1); upd('images',arr); }} className="text-red-400 flex-shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>
+                  </div>
+                  {img && <img src={img} alt="" className="w-full h-12 object-cover rounded" onError={e=>e.target.style.display='none'} />}
                 </div>
               ))}
+              {(s.images || []).length === 0 && (
+                <p className="text-xs text-gray-400 text-center py-2">Belum ada gambar. Tambahkan URL atau upload.</p>
+              )}
             </div>
           </div>
         </div>
@@ -585,7 +652,7 @@ export default function PageBuilderAdmin() {
               </button>
             </div>
             <div className="p-4">
-              <BlockSettingsPanel block={selectedBlock} onChange={updateBlock} />
+              <BlockSettingsPanel block={selectedBlock} onChange={updateBlock} token={token} />
             </div>
           </div>
         )}

@@ -9,7 +9,7 @@ import json
 import uuid
 
 # Configuration
-BASE_URL = "https://justice-penajam.preview.emergentagent.com"
+BASE_URL = "https://court-builder-6.preview.emergentagent.com"
 ADMIN_EMAIL = "admin@pa-penajam.go.id"
 ADMIN_PASSWORD = "Admin@1234"
 

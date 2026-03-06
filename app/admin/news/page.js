@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,13 +11,89 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction
 } from '@/components/ui/alert-dialog';
-import { Plus, Pencil, Trash2, Search, Eye, EyeOff, ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Eye, EyeOff, ChevronLeft, ChevronRight, Newspaper, Upload, X, ImageIcon } from 'lucide-react';
 
 function Toast({ msg, type }) {
   if (!msg) return null;
   return (
     <div className={`fixed bottom-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium flex items-center gap-2 ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`}>
       {msg}
+    </div>
+  );
+}
+
+// Reusable image upload component
+function ImageUploadInput({ value, onChange, token, label = 'Gambar' }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const fileRef = useRef(null);
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Hanya file gambar (JPG, PNG, GIF, WebP) yang diperbolehkan');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Ukuran file maksimal 5MB');
+      return;
+    }
+    setError('');
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload gagal');
+      onChange(data.url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  }
+
+  return (
+    <div>
+      <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
+      {value ? (
+        <div className="relative mt-1">
+          <img src={value} alt="preview" className="w-full h-36 object-cover rounded-lg border border-gray-200" onError={e => e.target.style.display='none'} />
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-2 right-2 bg-white rounded-full p-1 shadow border border-gray-200 hover:bg-red-50 text-red-500"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+          <p className="text-xs text-gray-400 mt-1 truncate">{value}</p>
+        </div>
+      ) : (
+        <div className="border-2 border-dashed border-gray-200 rounded-xl hover:border-[#1e3a5f]/30 transition-colors">
+          <label className="cursor-pointer flex flex-col items-center gap-1.5 p-4 text-gray-400 hover:text-[#1e3a5f] transition-colors">
+            <ImageIcon className="w-7 h-7" />
+            <span className="text-sm font-medium">{uploading ? 'Mengupload...' : 'Upload gambar'}</span>
+            <span className="text-xs">JPG, PNG, GIF, WebP — Maks 5MB</span>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} disabled={uploading} />
+          </label>
+        </div>
+      )}
+      <p className="text-xs text-gray-400 mt-1">— atau —</p>
+      <Input
+        placeholder="Masukkan URL gambar langsung..."
+        value={value && !value.startsWith('/uploads') ? value : ''}
+        onChange={e => onChange(e.target.value)}
+        className="mt-1 text-sm"
+      />
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 }
@@ -231,19 +307,22 @@ export default function NewsAdmin() {
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-sm font-medium mb-1.5 block">Kategori</Label>
-                <Input placeholder="Contoh: Kegiatan" value={form.category} onChange={e => setForm(f => ({...f, category: e.target.value}))} />
-              </div>
-              <div>
-                <Label className="text-sm font-medium mb-1.5 block">Tanggal Publikasi</Label>
-                <Input type="date" value={form.publishDate} onChange={e => setForm(f => ({...f, publishDate: e.target.value}))} />
-              </div>
+            <div>
+              <Label className="text-sm font-medium mb-1.5 block">Kategori</Label>
+              <Input placeholder="Contoh: Kegiatan" value={form.category} onChange={e => setForm(f => ({...f, category: e.target.value}))} />
             </div>
             <div>
-              <Label className="text-sm font-medium mb-1.5 block">URL Gambar</Label>
-              <Input placeholder="https://..." value={form.image} onChange={e => setForm(f => ({...f, image: e.target.value}))} />
-              {form.image && <img src={form.image} alt="preview" className="mt-2 w-full h-32 object-cover rounded-lg" onError={e => e.target.style.display='none'} />}
+              <Label className="text-sm font-medium mb-1.5 block">Tanggal Publikasi</Label>
+              <Input type="date" value={form.publishDate} onChange={e => setForm(f => ({...f, publishDate: e.target.value}))} />
+            </div>
+            </div>
+            <div>
+              <ImageUploadInput
+                value={form.image}
+                onChange={v => setForm(f => ({...f, image: v}))}
+                token={token}
+                label="Gambar Berita"
+              />
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="isPublished" checked={form.isPublished} onChange={e => setForm(f => ({...f, isPublished: e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
