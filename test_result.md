@@ -226,6 +226,30 @@ backend:
         comment: "Login tested and working."
 
 frontend:
+  - task: "Admin News with Image Upload"
+    implemented: true
+    working: true
+    file: "app/admin/news/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added ImageUploadInput component - supports file upload (JPG/PNG/GIF/WebP up to 5MB) via /api/upload AND direct URL input. Preview shown after selection. Existing functionality preserved."
+
+  - task: "Page Builder Image Upload in Blocks"
+    implemented: true
+    working: true
+    file: "app/admin/page-builder/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added ImageUploadSmall component to Hero (background image), Image block (src), and Gallery (each image). Combined URL input + upload button in compact design. Thumbnail preview added."
+
   - task: "Page Builder with dnd-kit"
     implemented: true
     working: true
