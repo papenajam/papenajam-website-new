@@ -574,6 +574,332 @@ async function handleRequest(request, pathSegments, method) {
     }
   }
 
+  // ==================== GALLERY ====================
+  if (segment1 === 'gallery') {
+    const col = await getCollection('gallery');
+    if (!segment2) {
+      if (method === 'GET') {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category') || '';
+        const limit = parseInt(url.searchParams.get('limit') || '50');
+        const query = { isActive: true };
+        if (category) query.category = category;
+        const items = await col.find(query).sort({ order: 1, createdAt: -1 }).limit(limit).toArray();
+        const categories = await col.distinct('category', { isActive: true });
+        return NextResponse.json({ items, categories });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = { id: uuidv4(), ...body, isActive: body.isActive !== false, order: body.order || 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'all' && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const items = await col.find({}).sort({ order: 1, createdAt: -1 }).toArray();
+      return NextResponse.json({ items });
+    }
+    if (segment2) {
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
+  // ==================== DOCUMENTS ====================
+  if (segment1 === 'documents') {
+    const col = await getCollection('documents');
+    if (!segment2) {
+      if (method === 'GET') {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category') || '';
+        const search = url.searchParams.get('search') || '';
+        const limit = parseInt(url.searchParams.get('limit') || '20');
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const query = { isActive: true };
+        if (category) query.category = category;
+        if (search) query.title = { $regex: search, $options: 'i' };
+        const total = await col.countDocuments(query);
+        const items = await col.find(query).sort({ createdAt: -1 }).skip((page-1)*limit).limit(limit).toArray();
+        const categories = await col.distinct('category', { isActive: true });
+        return NextResponse.json({ items, total, categories, totalPages: Math.ceil(total/limit) });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = { id: uuidv4(), ...body, isActive: body.isActive !== false, downloadCount: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'download' && segment3) {
+      await col.updateOne({ id: segment3 }, { $inc: { downloadCount: 1 } });
+      const item = await col.findOne({ id: segment3 });
+      return NextResponse.json({ fileUrl: item?.fileUrl, title: item?.title });
+    }
+    if (segment2) {
+      if (method === 'GET') {
+        const item = await col.findOne({ id: segment2 });
+        if (!item) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
+        return NextResponse.json(item);
+      }
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
+  // ==================== FAQ ====================
+  if (segment1 === 'faq') {
+    const col = await getCollection('faq');
+    if (!segment2) {
+      if (method === 'GET') {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category') || '';
+        const query = { isActive: true };
+        if (category) query.category = category;
+        const items = await col.find(query).sort({ order: 1 }).toArray();
+        const categories = await col.distinct('category', { isActive: true });
+        return NextResponse.json({ items, categories });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = { id: uuidv4(), ...body, isActive: body.isActive !== false, order: body.order || 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'all' && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const items = await col.find({}).sort({ order: 1 }).toArray();
+      return NextResponse.json({ items });
+    }
+    if (segment2) {
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
+  // ==================== BANNERS ====================
+  if (segment1 === 'banners') {
+    const col = await getCollection('banners');
+    if (!segment2) {
+      if (method === 'GET') {
+        const now = new Date().toISOString().split('T')[0];
+        const items = await col.find({ isActive: true, $or: [{ endDate: null }, { endDate: '' }, { endDate: { $gte: now } }] }).sort({ order: 1 }).toArray();
+        return NextResponse.json({ items });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = { id: uuidv4(), ...body, isActive: body.isActive !== false, order: body.order || 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'all' && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const items = await col.find({}).sort({ order: 1 }).toArray();
+      return NextResponse.json({ items });
+    }
+    if (segment2) {
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
+  // ==================== COMPLAINTS ====================
+  if (segment1 === 'complaints') {
+    const col = await getCollection('complaints');
+    if (!segment2) {
+      if (method === 'GET') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const url = new URL(request.url);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '20');
+        const status = url.searchParams.get('status') || '';
+        const query = {};
+        if (status) query.status = status;
+        const total = await col.countDocuments(query);
+        const items = await col.find(query).sort({ createdAt: -1 }).skip((page-1)*limit).limit(limit).toArray();
+        return NextResponse.json({ items, total, totalPages: Math.ceil(total/limit) });
+      }
+      if (method === 'POST') {
+        const body = await request.json();
+        if (!body.name || !body.message) return NextResponse.json({ error: 'Nama dan pesan wajib diisi' }, { status: 400 });
+        const item = { id: uuidv4(), ...body, status: 'baru', adminNotes: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json({ message: 'Pengaduan berhasil dikirim', id: item.id }, { status: 201 });
+      }
+    }
+    if (segment2) {
+      if (method === 'GET') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const item = await col.findOne({ id: segment2 });
+        if (!item) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
+        return NextResponse.json(item);
+      }
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
+  // ==================== ANALYTICS ====================
+  if (segment1 === 'analytics') {
+    const col = await getCollection('analytics');
+    if (segment2 === 'track' && method === 'POST') {
+      const body = await request.json();
+      const date = new Date().toISOString().split('T')[0];
+      const path = body.path || '/';
+      await col.updateOne({ date, path }, { $inc: { views: 1 }, $set: { date, path } }, { upsert: true });
+      return NextResponse.json({ ok: true });
+    }
+    if (!segment2 && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const url = new URL(request.url);
+      const days = parseInt(url.searchParams.get('days') || '30');
+      const since = new Date(Date.now() - days * 86400000).toISOString().split('T')[0];
+      const records = await col.find({ date: { $gte: since } }).sort({ date: -1 }).toArray();
+      const byDate = {}, byPath = {};
+      let total = 0;
+      records.forEach(r => {
+        byDate[r.date] = (byDate[r.date] || 0) + r.views;
+        byPath[r.path] = (byPath[r.path] || 0) + r.views;
+        total += r.views;
+      });
+      const dailyData = Object.entries(byDate).sort((a,b) => a[0].localeCompare(b[0])).map(([date, views]) => ({ date, views }));
+      const topPages = Object.entries(byPath).sort((a,b) => b[1]-a[1]).slice(0,10).map(([path, views]) => ({ path, views }));
+      return NextResponse.json({ total, dailyData, topPages, days });
+    }
+  }
+
+  // ==================== SURVEYS ====================
+  if (segment1 === 'surveys') {
+    if (segment2 === 'config') {
+      const col = await getCollection('survey_config');
+      if (method === 'GET') {
+        const config = await col.findOne({ id: 'main' });
+        return NextResponse.json(config || { id: 'main', isActive: true, title: 'Survei Kepuasan', subtitle: 'Bantu kami meningkatkan pelayanan' });
+      }
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: 'main' }, { $set: { ...body, id: 'main', updatedAt: new Date().toISOString() } }, { upsert: true });
+        return NextResponse.json({ message: 'Konfigurasi survei disimpan' });
+      }
+    }
+    if (segment2 === 'submit' && method === 'POST') {
+      const col = await getCollection('survey_responses');
+      const body = await request.json();
+      const item = { id: uuidv4(), ...body, createdAt: new Date().toISOString() };
+      await col.insertOne(item);
+      return NextResponse.json({ message: 'Terima kasih atas masukan Anda!' });
+    }
+    if (!segment2 && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const col = await getCollection('survey_responses');
+      const url = new URL(request.url);
+      const page = parseInt(url.searchParams.get('page') || '1');
+      const limit = parseInt(url.searchParams.get('limit') || '20');
+      const total = await col.countDocuments();
+      const items = await col.find({}).sort({ createdAt: -1 }).skip((page-1)*limit).limit(limit).toArray();
+      const all = await col.find({}, { projection: { rating: 1 } }).toArray();
+      const avg = all.length ? (all.reduce((s, r) => s + (r.rating || 0), 0) / all.length).toFixed(1) : 0;
+      return NextResponse.json({ items, total, totalPages: Math.ceil(total/limit), averageRating: parseFloat(avg), totalResponses: all.length });
+    }
+  }
+
+  // ==================== SEARCH ====================
+  if (segment1 === 'search' && method === 'GET') {
+    const url = new URL(request.url);
+    const q = url.searchParams.get('q') || '';
+    if (!q || q.length < 2) return NextResponse.json({ results: [] });
+    const regex = { $regex: q, $options: 'i' };
+    const [newsItems, annItems, docItems, faqItems, pageItems] = await Promise.all([
+      getCollection('news').then(c => c.find({ $or: [{ title: regex }, { content: regex }], isPublished: true }).limit(5).toArray()),
+      getCollection('announcements').then(c => c.find({ $or: [{ title: regex }, { content: regex }], isActive: true }).limit(5).toArray()),
+      getCollection('documents').then(c => c.find({ $or: [{ title: regex }, { description: regex }], isActive: true }).limit(5).toArray()),
+      getCollection('faq').then(c => c.find({ $or: [{ question: regex }, { answer: regex }], isActive: true }).limit(5).toArray()),
+      getCollection('pages').then(c => c.find({ title: regex, status: 'published', slug: { $ne: '_homepage' } }).limit(3).toArray()),
+    ]);
+    const results = [
+      ...newsItems.map(i => ({ id: i.id, type: 'news', title: i.title, excerpt: i.content?.replace(/<[^>]+>/g,'').substring(0,100), url: `/berita/${i.id}` })),
+      ...annItems.map(i => ({ id: i.id, type: 'announcement', title: i.title, excerpt: i.content?.replace(/<[^>]+>/g,'').substring(0,100), url: `/#pengumuman` })),
+      ...docItems.map(i => ({ id: i.id, type: 'document', title: i.title, excerpt: i.description?.substring(0,100), url: `/dokumen` })),
+      ...faqItems.map(i => ({ id: i.id, type: 'faq', title: i.question, excerpt: i.answer?.replace(/<[^>]+>/g,'').substring(0,100), url: `/faq` })),
+      ...pageItems.map(i => ({ id: i.id, type: 'page', title: i.title, excerpt: '', url: `/p/${i.slug}` })),
+    ];
+    return NextResponse.json({ results, total: results.length });
+  }
+
   // ==================== MENUS ====================
   if (segment1 === 'menus') {
     const col = await getCollection('menus');
@@ -819,6 +1145,77 @@ async function seedDatabase() {
       { id: uuidv4(), label: 'e-Court', labelEn: 'e-Court', url: 'https://ecourt.mahkamahagung.go.id', type: 'external', icon: '💻', order: 5, isActive: true, parentId: layananId, description: 'Pendaftaran elektronik', descriptionEn: 'Electronic registration' },
     ];
     await menusCol.insertMany([...menuItems, ...subLayanan].map(m => ({ ...m, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() })));
+  }
+
+  // Seed Gallery
+  const galleryCol = await getCollection('gallery');
+  const galleryCount = await galleryCol.countDocuments();
+  if (galleryCount === 0) {
+    await galleryCol.insertMany([
+      { id: uuidv4(), title: 'Gedung Pengadilan Agama Penajam', titleEn: 'Penajam Religious Court Building', description: 'Tampak depan gedung pengadilan', category: 'Gedung', imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80', isActive: true, order: 0, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Sidang Keliling 2024', titleEn: 'Mobile Court 2024', description: 'Pelaksanaan sidang keliling di kecamatan', category: 'Kegiatan', imageUrl: 'https://images.unsplash.com/photo-1575505586569-646b2ca898fc?w=800&q=80', isActive: true, order: 1, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Sosialisasi e-Court', titleEn: 'e-Court Socialization', description: 'Sosialisasi layanan elektronik kepada masyarakat', category: 'Kegiatan', imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80', isActive: true, order: 2, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Pelayanan Terpadu', titleEn: 'Integrated Service', description: 'Layanan terpadu satu pintu', category: 'Layanan', imageUrl: 'https://images.unsplash.com/photo-1521791055366-0d553872952f?w=800&q=80', isActive: true, order: 3, createdAt: new Date().toISOString() },
+    ]);
+  }
+
+  // Seed Documents
+  const docsCol = await getCollection('documents');
+  const docsCount = await docsCol.countDocuments();
+  if (docsCount === 0) {
+    await docsCol.insertMany([
+      { id: uuidv4(), title: 'Maklumat Pelayanan Pengadilan Agama Penajam', titleEn: 'Service Declaration', description: 'Maklumat pelayanan publik tahun 2024', category: 'Maklumat', fileUrl: '', fileType: 'pdf', isActive: true, order: 0, downloadCount: 0, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Standar Pelayanan (SP) Kepaniteraan', titleEn: 'Service Standards', description: 'Standar operasional pelayanan kepaniteraan', category: 'Standar Pelayanan', fileUrl: '', fileType: 'pdf', isActive: true, order: 1, downloadCount: 0, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Persyaratan Pendaftaran Perkara Cerai Gugat', titleEn: 'Divorce Case Requirements', description: 'Dokumen yang diperlukan untuk pendaftaran perkara cerai gugat', category: 'Persyaratan', fileUrl: '', fileType: 'pdf', isActive: true, order: 2, downloadCount: 0, createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Biaya Perkara Estimasi 2024', titleEn: 'Case Fee Estimate 2024', description: 'Estimasi biaya panjar perkara tahun 2024', category: 'Biaya', fileUrl: '', fileType: 'pdf', isActive: true, order: 3, downloadCount: 0, createdAt: new Date().toISOString() },
+    ]);
+  }
+
+  // Seed FAQ
+  const faqCol = await getCollection('faq');
+  const faqCount = await faqCol.countDocuments();
+  if (faqCount === 0) {
+    await faqCol.insertMany([
+      { id: uuidv4(), question: 'Apa saja perkara yang ditangani Pengadilan Agama?', questionEn: 'What cases are handled by the Religious Court?', answer: 'Pengadilan Agama menangani perkara perkawinan (cerai gugat, cerai talak, itsbat nikah), kewarisan, wasiat, hibah, wakaf, zakat, infaq, shadaqah, dan ekonomi syariah bagi masyarakat Muslim.', answerEn: 'The Religious Court handles marriage cases (divorce, marriage confirmation), inheritance, wills, grants, endowments, and Islamic economic disputes for Muslims.', category: 'Umum', isActive: true, order: 0, createdAt: new Date().toISOString() },
+      { id: uuidv4(), question: 'Berapa biaya pendaftaran perkara?', questionEn: 'How much does case registration cost?', answer: 'Biaya pendaftaran perkara bervariasi tergantung jenis perkara dan domisili para pihak. Estimasi biaya tersedia di loket informasi atau dapat diunduh di bagian Dokumen.', answerEn: 'Case registration fees vary depending on the type of case. Fee estimates are available at the information counter or can be downloaded in the Documents section.', category: 'Biaya', isActive: true, order: 1, createdAt: new Date().toISOString() },
+      { id: uuidv4(), question: 'Jam pelayanan pengadilan?', questionEn: 'What are the court service hours?', answer: 'Pelayanan dibuka Senin-Kamis pukul 08:00-16:00 WITA dan Jumat pukul 08:00-11:00 WITA.', answerEn: 'Service hours are Monday-Thursday 08:00-16:00 WITA and Friday 08:00-11:00 WITA.', category: 'Umum', isActive: true, order: 2, createdAt: new Date().toISOString() },
+      { id: uuidv4(), question: 'Bagaimana cara mendaftarkan perkara secara online (e-Court)?', questionEn: 'How to register a case online (e-Court)?', answer: 'Pendaftaran online dilakukan melalui portal e-Court Mahkamah Agung di ecourt.mahkamahagung.go.id. Anda perlu membuat akun terlebih dahulu dan mengikuti panduan yang tersedia.', answerEn: 'Online registration is done through the Supreme Court e-Court portal at ecourt.mahkamahagung.go.id.', category: 'e-Court', isActive: true, order: 3, createdAt: new Date().toISOString() },
+      { id: uuidv4(), question: 'Berapa lama proses sidang?', questionEn: 'How long does the court process take?', answer: 'Durasi proses persidangan bervariasi tergantung kompleksitas perkara. Perkara sederhana bisa selesai dalam 1-3 bulan, sementara perkara yang lebih kompleks bisa memakan waktu lebih lama.', answerEn: 'Court process duration varies depending on case complexity, typically 1-3 months for simple cases.', category: 'Proses', isActive: true, order: 4, createdAt: new Date().toISOString() },
+      { id: uuidv4(), question: 'Apa itu Pos Bantuan Hukum (Posbakum)?', questionEn: 'What is Legal Aid (Posbakum)?', answer: 'Pos Bantuan Hukum (Posbakum) adalah layanan konsultasi hukum gratis bagi masyarakat tidak mampu. Tersedia di lingkungan pengadilan pada jam kerja.', answerEn: 'Posbakum is a free legal consultation service for underprivileged people, available at the court during working hours.', category: 'Layanan', isActive: true, order: 5, createdAt: new Date().toISOString() },
+    ]);
+  }
+
+  // Seed Banners
+  const bannersCol = await getCollection('banners');
+  const bannersCount = await bannersCol.countDocuments();
+  if (bannersCount === 0) {
+    await bannersCol.insertMany([
+      { id: uuidv4(), title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', buttonText: 'Lihat Layanan', buttonUrl: '#layanan', imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80', bgColor: '#1e3a5f', textColor: '#ffffff', isActive: true, order: 0, startDate: '', endDate: '', createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Layanan e-Court Tersedia', subtitle: 'Daftarkan perkara Anda secara online, kapan saja dan di mana saja', buttonText: 'Daftar e-Court', buttonUrl: 'https://ecourt.mahkamahagung.go.id', imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80', bgColor: '#c9a84c', textColor: '#ffffff', isActive: true, order: 1, startDate: '', endDate: '', createdAt: new Date().toISOString() },
+    ]);
+  }
+
+  // Seed Settings tambahan (social media, SEO, WhatsApp)
+  const settingsCol2 = await getCollection('settings');
+  const socialExists = await settingsCol2.findOne({ key: 'whatsapp' });
+  if (!socialExists) {
+    const newSettings = [
+      { key: 'whatsapp', value: '' },
+      { key: 'facebook', value: '' },
+      { key: 'instagram', value: '' },
+      { key: 'twitter', value: '' },
+      { key: 'youtube', value: '' },
+      { key: 'seo_title', value: 'Pengadilan Agama Penajam - Memberikan Keadilan yang Berkeadilan' },
+      { key: 'seo_description', value: 'Website resmi Pengadilan Agama Penajam, Kabupaten Penajam Paser Utara, Kalimantan Timur.' },
+      { key: 'seo_keywords', value: 'pengadilan agama, penajam, perceraian, waris, nikah, hukum islam' },
+      { key: 'footer_description', value: 'Pengadilan Agama Penajam adalah lembaga peradilan yang bertugas memberikan keadilan bagi masyarakat Muslim di Kabupaten Penajam Paser Utara.' },
+      { key: 'footer_copyright', value: 'Pengadilan Agama Penajam. Hak Cipta Dilindungi.' },
+      { key: 'analytics_enabled', value: 'true' },
+      { key: 'survey_popup_enabled', value: 'false' },
+    ];
+    for (const s of newSettings) {
+      await settingsCol2.updateOne({ key: s.key }, { $set: s }, { upsert: true });
+    }
   }
 }
 

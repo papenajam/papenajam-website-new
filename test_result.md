@@ -427,6 +427,8 @@ agent_communication:
     message: "BILINGUAL CONTENT SUPPORT TESTING COMPLETE ✅ All 8 requested tests passed (100% success rate). Verified: 1) Login API working (admin@pa-penajam.go.id), 2) News API accepts and stores bilingual fields (titleEn, contentEn, imageAlt, imageAltEn), 3) Accessibility statement page accessible at /accessibility, 4) Homepage loads correctly with language switcher (ID/EN buttons visible), 5) News public API returns items with bilingual fields, 6) Upload API functional for images, 7) Announcements API supports bilingual fields (titleEn, contentEn), 8) Test cleanup successful. Backend infrastructure for bilingual content fully operational. Frontend shows language switcher and accessibility toolbar."
   - agent: "testing"
     message: "HOMEPAGE BUILDER API TESTING COMPLETE ✅ All 9 specific tests passed (100% success rate). Verified requested endpoints: 1) GET /api/pages/slug/_homepage ✅ (returns homepage with blocks array: hero_home, services_grid, news_ann, case_search, contact_info), 2) POST /api/pages ✅ (created test page slug: test-api-verify, status: published), 3) PUT /api/pages/{id} ✅ (updated homepage blocks and changed hero_home title), 4) GET /api/pages/slug/_homepage after update ✅ (verified title change persisted: 'Pengadilan Agama Penajam - UPDATED TITLE'), 5) Authentication protection ✅ (POST/PUT require JWT token, return 401 without auth). Homepage Builder API fully operational with proper CRUD operations, block management, and authentication as requested."
+  - agent: "testing"
+    message: "NEW FEATURE APIs TESTING COMPLETE ✅ All 13 new feature APIs tested with 100% success rate (14/14 tests passed including login). Verified: 1) GET /api/gallery ✅ (4 gallery items, 3 categories), 2) GET /api/documents ✅ (4 documents, 4 categories), 3) GET /api/faq ✅ (6 FAQ items, 5 categories), 4) GET /api/banners ✅ (2 active banners), 5) GET /api/surveys/config ✅ (survey config with title 'Survei Kepuasan'), 6) POST /api/surveys/submit ✅ (rating submission working), 7) GET /api/surveys (auth) ✅ (1 response, avg rating 5), 8) POST /api/complaints ✅ (complaint submission working), 9) GET /api/complaints (auth) ✅ (1 complaint retrieved), 10) POST /api/analytics/track ✅ (page view tracking working), 11) GET /api/analytics (auth) ✅ (analytics data with 14 total views), 12) GET /api/search?q=pengadilan ✅ (14 search results across 5 content types: news, announcement, document, faq, page), 13) GET /api/settings ✅ (all new keys found: whatsapp, facebook, seo_title, footer_description). All new feature APIs fully operational with proper data structures, authentication, and functionality."
 
 backend:
   - task: "JWT Authentication (login/verify)"
@@ -548,6 +550,114 @@ backend:
       - working: true
         agent: "testing"
         comment: "BILINGUAL CONTENT SUPPORT TESTING COMPLETE ✅ All 8 requested tests passed (100% success rate). Verified: 1) Login API working (admin@pa-penajam.go.id), 2) News API accepts and stores bilingual fields (titleEn, contentEn, imageAlt, imageAltEn), 3) Accessibility statement page accessible at /accessibility, 4) Homepage loads correctly with language switcher (ID/EN buttons visible), 5) News public API returns items with bilingual fields, 6) Upload API functional for images, 7) Announcements API supports bilingual fields (titleEn, contentEn), 8) Test cleanup successful. Backend infrastructure for bilingual content fully operational."
+
+  - task: "Gallery API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/gallery ✅ Retrieved 4 gallery items with 3 categories. Gallery API working correctly with category filtering and active status filtering."
+
+  - task: "Documents API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/documents ✅ Retrieved 4 documents with 4 categories, total: 4. Documents API working correctly with category filtering, search, and pagination support."
+
+  - task: "FAQ API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/faq ✅ Retrieved 6 FAQ items with 5 categories. FAQ API working correctly with category filtering and order sorting."
+
+  - task: "Banners API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/banners ✅ Retrieved 2 active banners. Banners API working correctly with active status and date filtering."
+
+  - task: "Surveys API (Config and Submit)"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/surveys/config ✅ (survey config with title 'Survei Kepuasan'), POST /api/surveys/submit ✅ (rating submission working), GET /api/surveys (auth) ✅ (1 response, avg rating 5). Complete survey system working with config, submission, and admin retrieval."
+
+  - task: "Complaints API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: POST /api/complaints ✅ (complaint submission working), GET /api/complaints (auth) ✅ (1 complaint retrieved). Complaints system working with public submission and admin management."
+
+  - task: "Analytics API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: POST /api/analytics/track ✅ (page view tracking working), GET /api/analytics (auth) ✅ (analytics data with 14 total views, daily data, top pages). Analytics system working with page view tracking and admin dashboard data."
+
+  - task: "Search API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/search?q=pengadilan ✅ Retrieved 14 search results across 5 content types (news: 5, announcement: 4, document: 1, faq: 3, page: 1). Global search working correctly across all content types."
+
+  - task: "Enhanced Settings API"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: GET /api/settings ✅ All new keys found: whatsapp, facebook, seo_title, footer_description. Enhanced settings API working correctly with all required new configuration keys."
 
 frontend:
   - task: "Landing Page"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Homepage Builder API Testing Script
-Tests the specific endpoints requested for the Pengadilan Agama Penajam website
+Backend API Testing for Pengadilan Agama Penajam Website
+Testing all new feature APIs as requested in the review.
 """
 
 import requests
@@ -14,483 +14,440 @@ BASE_URL = "https://pengadilan-beranda.preview.emergentagent.com"
 ADMIN_EMAIL = "admin@pa-penajam.go.id"
 ADMIN_PASSWORD = "Admin@1234"
 
-class HomepageBuilderTester:
+class APITester:
     def __init__(self):
         self.base_url = BASE_URL
         self.token = None
+        self.session = requests.Session()
         self.test_results = []
         
     def log_test(self, test_name, success, details=""):
-        """Log test results"""
+        """Log test result"""
         status = "✅ PASS" if success else "❌ FAIL"
         self.test_results.append({
             'test': test_name,
+            'status': status,
             'success': success,
-            'details': details,
-            'timestamp': datetime.now().isoformat()
+            'details': details
         })
-        print(f"{status} {test_name}")
+        print(f"{status}: {test_name}")
         if details:
-            print(f"    Details: {details}")
-        print()
-
-    def authenticate(self):
-        """Login and get JWT token"""
+            print(f"   Details: {details}")
+    
+    def login(self):
+        """Login to get JWT token"""
         try:
-            print("🔐 Authenticating admin user...")
-            response = requests.post(
-                f"{self.base_url}/api/auth/login",
-                json={
-                    "email": ADMIN_EMAIL,
-                    "password": ADMIN_PASSWORD
-                },
-                headers={"Content-Type": "application/json"}
-            )
+            url = f"{self.base_url}/api/auth/login"
+            data = {
+                "email": ADMIN_EMAIL,
+                "password": ADMIN_PASSWORD
+            }
+            
+            response = self.session.post(url, json=data)
             
             if response.status_code == 200:
-                data = response.json()
-                self.token = data.get('token')
-                user = data.get('user', {})
-                self.log_test(
-                    "Admin Authentication", 
-                    True, 
-                    f"Logged in as {user.get('name')} ({user.get('role')})"
-                )
+                result = response.json()
+                self.token = result.get('token')
+                self.log_test("Admin Login", True, f"Token obtained, user: {result.get('user', {}).get('name', 'Unknown')}")
                 return True
             else:
-                self.log_test(
-                    "Admin Authentication", 
-                    False, 
-                    f"Status: {response.status_code}, Response: {response.text}"
-                )
+                self.log_test("Admin Login", False, f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
         except Exception as e:
-            self.log_test("Admin Authentication", False, f"Exception: {str(e)}")
+            self.log_test("Admin Login", False, f"Exception: {str(e)}")
             return False
-
-    def get_auth_headers(self):
-        """Get headers with JWT token"""
-        return {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.token}"
-        }
-
-    def test_get_homepage_initial(self):
-        """Test 1: GET /api/pages/slug/_homepage - Should return 200 with configured homepage blocks"""
+    
+    def get_headers(self, auth_required=False):
+        """Get request headers"""
+        headers = {'Content-Type': 'application/json'}
+        if auth_required and self.token:
+            headers['Authorization'] = f'Bearer {self.token}'
+        return headers
+    
+    def test_gallery_api(self):
+        """Test GET /api/gallery - should return gallery items with categories"""
         try:
-            print("📄 Testing GET /api/pages/slug/_homepage (initial)...")
-            response = requests.get(f"{self.base_url}/api/pages/slug/_homepage")
+            url = f"{self.base_url}/api/gallery"
+            response = self.session.get(url)
             
             if response.status_code == 200:
                 data = response.json()
-                blocks = data.get('blocks', [])
-                slug = data.get('slug')
+                items = data.get('items', [])
+                categories = data.get('categories', [])
                 
-                # Check if it's the homepage
-                if slug == '_homepage':
-                    self.log_test(
-                        "GET Homepage (Initial)", 
-                        True, 
-                        f"Found homepage with {len(blocks)} blocks. Blocks: {[b.get('type') for b in blocks]}"
-                    )
-                    return data
-                else:
-                    self.log_test(
-                        "GET Homepage (Initial)", 
-                        False, 
-                        f"Expected slug '_homepage', got '{slug}'"
-                    )
-                    return None
-            elif response.status_code == 404:
-                # Homepage doesn't exist yet, this is acceptable
-                self.log_test(
-                    "GET Homepage (Initial)", 
-                    True, 
-                    "Homepage not found (404) - will be created during testing"
-                )
-                return None
+                self.log_test("GET /api/gallery", True, 
+                    f"Retrieved {len(items)} gallery items, {len(categories)} categories")
+                return True
             else:
-                self.log_test(
-                    "GET Homepage (Initial)", 
-                    False, 
-                    f"Status: {response.status_code}, Response: {response.text}"
-                )
-                return None
+                self.log_test("GET /api/gallery", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
                 
         except Exception as e:
-            self.log_test("GET Homepage (Initial)", False, f"Exception: {str(e)}")
-            return None
-
-    def test_create_test_page(self):
-        """Test 2: POST /api/pages - Create a test page"""
+            self.log_test("GET /api/gallery", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_documents_api(self):
+        """Test GET /api/documents - should return documents with categories"""
         try:
-            print("📝 Testing POST /api/pages (create test page)...")
+            url = f"{self.base_url}/api/documents"
+            response = self.session.get(url)
             
-            test_page_data = {
-                "title": "Test API Verify Page",
-                "slug": "test-api-verify",
-                "blocks": [],
-                "status": "published"
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('items', [])
+                categories = data.get('categories', [])
+                total = data.get('total', 0)
+                
+                self.log_test("GET /api/documents", True, 
+                    f"Retrieved {len(items)} documents, {len(categories)} categories, total: {total}")
+                return True
+            else:
+                self.log_test("GET /api/documents", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/documents", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_faq_api(self):
+        """Test GET /api/faq - should return FAQ items"""
+        try:
+            url = f"{self.base_url}/api/faq"
+            response = self.session.get(url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('items', [])
+                categories = data.get('categories', [])
+                
+                self.log_test("GET /api/faq", True, 
+                    f"Retrieved {len(items)} FAQ items, {len(categories)} categories")
+                return True
+            else:
+                self.log_test("GET /api/faq", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/faq", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_banners_api(self):
+        """Test GET /api/banners - should return active banners"""
+        try:
+            url = f"{self.base_url}/api/banners"
+            response = self.session.get(url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('items', [])
+                
+                self.log_test("GET /api/banners", True, 
+                    f"Retrieved {len(items)} active banners")
+                return True
+            else:
+                self.log_test("GET /api/banners", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/banners", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_surveys_config_api(self):
+        """Test GET /api/surveys/config - should return survey config"""
+        try:
+            url = f"{self.base_url}/api/surveys/config"
+            response = self.session.get(url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                survey_id = data.get('id')
+                is_active = data.get('isActive')
+                title = data.get('title')
+                
+                self.log_test("GET /api/surveys/config", True, 
+                    f"Survey config: id={survey_id}, active={is_active}, title='{title}'")
+                return True
+            else:
+                self.log_test("GET /api/surveys/config", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/surveys/config", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_surveys_submit_api(self):
+        """Test POST /api/surveys/submit - submit rating"""
+        try:
+            url = f"{self.base_url}/api/surveys/submit"
+            data = {
+                "rating": 5,
+                "comment": "Sangat baik"
             }
             
-            response = requests.post(
-                f"{self.base_url}/api/pages",
-                json=test_page_data,
-                headers=self.get_auth_headers()
-            )
+            response = self.session.post(url, json=data)
+            
+            if response.status_code == 200:
+                result = response.json()
+                message = result.get('message', '')
+                
+                self.log_test("POST /api/surveys/submit", True, 
+                    f"Survey submitted successfully: {message}")
+                return True
+            else:
+                self.log_test("POST /api/surveys/submit", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("POST /api/surveys/submit", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_surveys_get_api(self):
+        """Test GET /api/surveys (with auth) - should return survey responses with averageRating"""
+        try:
+            url = f"{self.base_url}/api/surveys"
+            headers = self.get_headers(auth_required=True)
+            response = self.session.get(url, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('items', [])
+                total = data.get('total', 0)
+                avg_rating = data.get('averageRating', 0)
+                total_responses = data.get('totalResponses', 0)
+                
+                self.log_test("GET /api/surveys (auth)", True, 
+                    f"Retrieved {len(items)} responses, total: {total}, avg rating: {avg_rating}, total responses: {total_responses}")
+                return True
+            else:
+                self.log_test("GET /api/surveys (auth)", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/surveys (auth)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_complaints_submit_api(self):
+        """Test POST /api/complaints - submit complaint"""
+        try:
+            url = f"{self.base_url}/api/complaints"
+            data = {
+                "name": "Test User",
+                "email": "test@test.com",
+                "message": "Test complaint"
+            }
+            
+            response = self.session.post(url, json=data)
             
             if response.status_code == 201:
+                result = response.json()
+                message = result.get('message', '')
+                complaint_id = result.get('id', '')
+                
+                self.log_test("POST /api/complaints", True, 
+                    f"Complaint submitted: {message}, ID: {complaint_id}")
+                return True
+            else:
+                self.log_test("POST /api/complaints", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("POST /api/complaints", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_complaints_get_api(self):
+        """Test GET /api/complaints (with auth) - should return complaints list"""
+        try:
+            url = f"{self.base_url}/api/complaints"
+            headers = self.get_headers(auth_required=True)
+            response = self.session.get(url, headers=headers)
+            
+            if response.status_code == 200:
                 data = response.json()
-                page_id = data.get('id')
-                self.log_test(
-                    "POST Create Test Page", 
-                    True, 
-                    f"Created page with ID: {page_id}, slug: {data.get('slug')}"
-                )
-                return data
+                items = data.get('items', [])
+                total = data.get('total', 0)
+                total_pages = data.get('totalPages', 0)
+                
+                self.log_test("GET /api/complaints (auth)", True, 
+                    f"Retrieved {len(items)} complaints, total: {total}, pages: {total_pages}")
+                return True
             else:
-                self.log_test(
-                    "POST Create Test Page", 
-                    False, 
-                    f"Status: {response.status_code}, Response: {response.text}"
-                )
-                return None
+                self.log_test("GET /api/complaints (auth)", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
                 
         except Exception as e:
-            self.log_test("POST Create Test Page", False, f"Exception: {str(e)}")
-            return None
-
-    def test_create_or_update_homepage(self):
-        """Test 3: Create or update homepage with blocks"""
+            self.log_test("GET /api/complaints (auth)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_analytics_track_api(self):
+        """Test POST /api/analytics/track - track page view"""
         try:
-            print("🏠 Testing homepage creation/update...")
-            
-            # First, check if homepage exists
-            existing_homepage = self.test_get_homepage_initial()
-            
-            homepage_blocks = [
-                {
-                    "id": "hero-home-1",
-                    "type": "hero_home",
-                    "settings": {
-                        "title": "Pengadilan Agama Penajam - API Test",
-                        "subtitle": "Testing Homepage Builder API",
-                        "backgroundImage": "https://images.unsplash.com/photo-1667849921481-9e13c239ee3d?w=1400&q=80",
-                        "buttonText": "Lihat Layanan",
-                        "buttonLink": "#layanan"
-                    }
-                },
-                {
-                    "id": "services-grid-1",
-                    "type": "services_grid",
-                    "settings": {
-                        "title": "Layanan Kami",
-                        "subtitle": "Pelayanan terbaik untuk masyarakat"
-                    }
-                },
-                {
-                    "id": "news-ann-1",
-                    "type": "news_ann",
-                    "settings": {
-                        "newsTitle": "Berita Terkini",
-                        "announcementTitle": "Pengumuman"
-                    }
-                },
-                {
-                    "id": "case-search-1",
-                    "type": "case_search",
-                    "settings": {
-                        "title": "Pencarian Perkara",
-                        "subtitle": "Cari informasi perkara Anda"
-                    }
-                },
-                {
-                    "id": "profile-cards-1",
-                    "type": "profile_cards",
-                    "settings": {
-                        "title": "Profil Pengadilan"
-                    }
-                },
-                {
-                    "id": "contact-info-1",
-                    "type": "contact_info",
-                    "settings": {
-                        "title": "Hubungi Kami"
-                    }
-                }
-            ]
-            
-            if existing_homepage:
-                # Update existing homepage
-                homepage_id = existing_homepage.get('id')
-                update_data = {
-                    "title": "Homepage - Updated via API",
-                    "blocks": homepage_blocks,
-                    "status": "published"
-                }
-                
-                response = requests.put(
-                    f"{self.base_url}/api/pages/{homepage_id}",
-                    json=update_data,
-                    headers=self.get_auth_headers()
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    self.log_test(
-                        "PUT Update Homepage", 
-                        True, 
-                        f"Updated homepage with {len(homepage_blocks)} blocks"
-                    )
-                    return data
-                else:
-                    self.log_test(
-                        "PUT Update Homepage", 
-                        False, 
-                        f"Status: {response.status_code}, Response: {response.text}"
-                    )
-                    return None
-            else:
-                # Create new homepage
-                homepage_data = {
-                    "title": "Homepage - Created via API",
-                    "slug": "_homepage",
-                    "blocks": homepage_blocks,
-                    "status": "published"
-                }
-                
-                response = requests.post(
-                    f"{self.base_url}/api/pages",
-                    json=homepage_data,
-                    headers=self.get_auth_headers()
-                )
-                
-                if response.status_code == 201:
-                    data = response.json()
-                    self.log_test(
-                        "POST Create Homepage", 
-                        True, 
-                        f"Created homepage with {len(homepage_blocks)} blocks"
-                    )
-                    return data
-                else:
-                    self.log_test(
-                        "POST Create Homepage", 
-                        False, 
-                        f"Status: {response.status_code}, Response: {response.text}"
-                    )
-                    return None
-                    
-        except Exception as e:
-            self.log_test("Homepage Creation/Update", False, f"Exception: {str(e)}")
-            return None
-
-    def test_update_homepage_title(self, homepage_data):
-        """Test 4: PUT /api/pages/{id} - Update homepage blocks (change title in hero_home block)"""
-        try:
-            print("✏️ Testing PUT /api/pages/{id} (update hero title)...")
-            
-            if not homepage_data:
-                self.log_test("PUT Update Hero Title", False, "No homepage data available")
-                return None
-                
-            homepage_id = homepage_data.get('id')
-            current_blocks = homepage_data.get('blocks', [])
-            
-            # Find and update hero_home block
-            updated_blocks = []
-            hero_updated = False
-            
-            for block in current_blocks:
-                if block.get('type') == 'hero_home':
-                    # Update the title in hero_home block
-                    updated_block = block.copy()
-                    updated_block['settings'] = block.get('settings', {}).copy()
-                    updated_block['settings']['title'] = "Pengadilan Agama Penajam - UPDATED TITLE"
-                    updated_blocks.append(updated_block)
-                    hero_updated = True
-                else:
-                    updated_blocks.append(block)
-            
-            if not hero_updated:
-                self.log_test("PUT Update Hero Title", False, "No hero_home block found to update")
-                return None
-            
-            update_data = {
-                "title": homepage_data.get('title'),
-                "blocks": updated_blocks,
-                "status": "published"
+            url = f"{self.base_url}/api/analytics/track"
+            data = {
+                "path": "/"
             }
             
-            response = requests.put(
-                f"{self.base_url}/api/pages/{homepage_id}",
-                json=update_data,
-                headers=self.get_auth_headers()
-            )
+            response = self.session.post(url, json=data)
             
             if response.status_code == 200:
-                data = response.json()
-                self.log_test(
-                    "PUT Update Hero Title", 
-                    True, 
-                    "Successfully updated hero_home block title"
-                )
-                return data
+                result = response.json()
+                ok = result.get('ok', False)
+                
+                self.log_test("POST /api/analytics/track", True, 
+                    f"Page view tracked successfully: {ok}")
+                return True
             else:
-                self.log_test(
-                    "PUT Update Hero Title", 
-                    False, 
-                    f"Status: {response.status_code}, Response: {response.text}"
-                )
-                return None
+                self.log_test("POST /api/analytics/track", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
                 
         except Exception as e:
-            self.log_test("PUT Update Hero Title", False, f"Exception: {str(e)}")
-            return None
-
-    def test_get_homepage_after_update(self):
-        """Test 5: GET /api/pages/slug/_homepage - Verify the change was saved"""
+            self.log_test("POST /api/analytics/track", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_analytics_get_api(self):
+        """Test GET /api/analytics (with auth) - should return analytics data"""
         try:
-            print("🔍 Testing GET /api/pages/slug/_homepage (after update)...")
-            response = requests.get(f"{self.base_url}/api/pages/slug/_homepage")
+            url = f"{self.base_url}/api/analytics"
+            headers = self.get_headers(auth_required=True)
+            response = self.session.get(url, headers=headers)
             
             if response.status_code == 200:
                 data = response.json()
-                blocks = data.get('blocks', [])
+                total = data.get('total', 0)
+                daily_data = data.get('dailyData', [])
+                top_pages = data.get('topPages', [])
+                days = data.get('days', 0)
                 
-                # Check if hero_home block has updated title
-                hero_block = None
-                for block in blocks:
-                    if block.get('type') == 'hero_home':
-                        hero_block = block
-                        break
+                self.log_test("GET /api/analytics (auth)", True, 
+                    f"Analytics data: total views: {total}, daily data points: {len(daily_data)}, top pages: {len(top_pages)}, days: {days}")
+                return True
+            else:
+                self.log_test("GET /api/analytics (auth)", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
                 
-                if hero_block:
-                    hero_title = hero_block.get('settings', {}).get('title', '')
-                    if "UPDATED TITLE" in hero_title:
-                        self.log_test(
-                            "GET Homepage (After Update)", 
-                            True, 
-                            f"Verified title update: '{hero_title}'"
-                        )
+        except Exception as e:
+            self.log_test("GET /api/analytics (auth)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_search_api(self):
+        """Test GET /api/search?q=pengadilan - should return search results across multiple content types"""
+        try:
+            url = f"{self.base_url}/api/search?q=pengadilan"
+            response = self.session.get(url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                results = data.get('results', [])
+                total = data.get('total', 0)
+                
+                # Count results by type
+                type_counts = {}
+                for result in results:
+                    result_type = result.get('type', 'unknown')
+                    type_counts[result_type] = type_counts.get(result_type, 0) + 1
+                
+                self.log_test("GET /api/search?q=pengadilan", True, 
+                    f"Search results: {total} total, types: {type_counts}")
+                return True
+            else:
+                self.log_test("GET /api/search?q=pengadilan", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("GET /api/search?q=pengadilan", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_settings_api(self):
+        """Test GET /api/settings - should include new keys (whatsapp, facebook, seo_title, footer_description)"""
+        try:
+            url = f"{self.base_url}/api/settings"
+            response = self.session.get(url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check for new keys
+                new_keys = ['whatsapp', 'facebook', 'seo_title', 'footer_description']
+                found_keys = []
+                missing_keys = []
+                
+                for key in new_keys:
+                    if key in data:
+                        found_keys.append(key)
                     else:
-                        self.log_test(
-                            "GET Homepage (After Update)", 
-                            False, 
-                            f"Title not updated. Current title: '{hero_title}'"
-                        )
-                else:
-                    self.log_test(
-                        "GET Homepage (After Update)", 
-                        False, 
-                        "No hero_home block found in updated homepage"
-                    )
+                        missing_keys.append(key)
                 
-                return data
+                # Also check for existing keys
+                existing_keys = ['court_name', 'hero_title', 'address', 'phone', 'email']
+                existing_found = [key for key in existing_keys if key in data]
+                
+                self.log_test("GET /api/settings", True, 
+                    f"Settings retrieved. New keys found: {found_keys}, missing: {missing_keys}, existing keys: {len(existing_found)}")
+                return True
             else:
-                self.log_test(
-                    "GET Homepage (After Update)", 
-                    False, 
-                    f"Status: {response.status_code}, Response: {response.text}"
-                )
-                return None
+                self.log_test("GET /api/settings", False, 
+                    f"Status: {response.status_code}, Response: {response.text}")
+                return False
                 
         except Exception as e:
-            self.log_test("GET Homepage (After Update)", False, f"Exception: {str(e)}")
-            return None
-
-    def test_auth_protection(self):
-        """Test 6: Verify authentication is required for POST/PUT operations"""
-        try:
-            print("🔒 Testing authentication protection...")
-            
-            # Test POST without auth
-            response = requests.post(
-                f"{self.base_url}/api/pages",
-                json={"title": "Test", "slug": "test", "blocks": []},
-                headers={"Content-Type": "application/json"}
-            )
-            
-            if response.status_code == 401:
-                self.log_test(
-                    "Auth Protection (POST)", 
-                    True, 
-                    "POST correctly requires authentication (401)"
-                )
-            else:
-                self.log_test(
-                    "Auth Protection (POST)", 
-                    False, 
-                    f"Expected 401, got {response.status_code}"
-                )
-            
-            # Test PUT without auth (using a dummy ID)
-            response = requests.put(
-                f"{self.base_url}/api/pages/dummy-id",
-                json={"title": "Test Update"},
-                headers={"Content-Type": "application/json"}
-            )
-            
-            if response.status_code == 401:
-                self.log_test(
-                    "Auth Protection (PUT)", 
-                    True, 
-                    "PUT correctly requires authentication (401)"
-                )
-            else:
-                self.log_test(
-                    "Auth Protection (PUT)", 
-                    False, 
-                    f"Expected 401, got {response.status_code}"
-                )
-                
-        except Exception as e:
-            self.log_test("Auth Protection", False, f"Exception: {str(e)}")
-
+            self.log_test("GET /api/settings", False, f"Exception: {str(e)}")
+            return False
+    
     def run_all_tests(self):
-        """Run all Homepage Builder API tests"""
-        print("🚀 Starting Homepage Builder API Tests")
-        print("=" * 60)
+        """Run all API tests"""
+        print("=" * 80)
+        print("PENGADILAN AGAMA PENAJAM - NEW FEATURE API TESTING")
+        print("=" * 80)
         print(f"Base URL: {self.base_url}")
-        print(f"Admin Email: {ADMIN_EMAIL}")
-        print("=" * 60)
-        print()
+        print(f"Admin: {ADMIN_EMAIL}")
+        print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("=" * 80)
         
-        # Step 1: Authenticate
-        if not self.authenticate():
-            print("❌ Authentication failed. Cannot proceed with tests.")
+        # Step 1: Login to get JWT token
+        if not self.login():
+            print("❌ Cannot proceed without authentication")
             return False
         
-        # Step 2: Test initial homepage GET
-        initial_homepage = self.test_get_homepage_initial()
+        print("\n" + "=" * 50)
+        print("TESTING NEW FEATURE APIs")
+        print("=" * 50)
         
-        # Step 3: Test creating a test page
-        test_page = self.test_create_test_page()
+        # Test all APIs
+        test_methods = [
+            self.test_gallery_api,
+            self.test_documents_api,
+            self.test_faq_api,
+            self.test_banners_api,
+            self.test_surveys_config_api,
+            self.test_surveys_submit_api,
+            self.test_surveys_get_api,
+            self.test_complaints_submit_api,
+            self.test_complaints_get_api,
+            self.test_analytics_track_api,
+            self.test_analytics_get_api,
+            self.test_search_api,
+            self.test_settings_api,
+        ]
         
-        # Step 4: Create or update homepage
-        homepage_data = self.test_create_or_update_homepage()
+        for test_method in test_methods:
+            test_method()
         
-        # Step 5: Update homepage (change hero title)
-        if homepage_data:
-            updated_homepage = self.test_update_homepage_title(homepage_data)
-        
-        # Step 6: Verify the update
-        self.test_get_homepage_after_update()
-        
-        # Step 7: Test authentication protection
-        self.test_auth_protection()
-        
-        # Print summary
-        self.print_summary()
-        
-        return True
-
-    def print_summary(self):
-        """Print test summary"""
-        print("\n" + "=" * 60)
-        print("📊 TEST SUMMARY")
-        print("=" * 60)
+        # Summary
+        print("\n" + "=" * 80)
+        print("TEST SUMMARY")
+        print("=" * 80)
         
         passed = sum(1 for result in self.test_results if result['success'])
         total = len(self.test_results)
@@ -498,39 +455,18 @@ class HomepageBuilderTester:
         print(f"Total Tests: {total}")
         print(f"Passed: {passed}")
         print(f"Failed: {total - passed}")
-        print(f"Success Rate: {(passed/total)*100:.1f}%")
-        print()
+        print(f"Success Rate: {(passed/total*100):.1f}%")
         
-        print("📋 DETAILED RESULTS:")
-        print("-" * 40)
+        print("\nDETAILED RESULTS:")
         for result in self.test_results:
-            status = "✅" if result['success'] else "❌"
-            print(f"{status} {result['test']}")
+            print(f"{result['status']}: {result['test']}")
             if result['details']:
-                print(f"    {result['details']}")
+                print(f"   {result['details']}")
         
-        print("\n" + "=" * 60)
-        
-        if passed == total:
-            print("🎉 ALL TESTS PASSED! Homepage Builder API is working correctly.")
-        else:
-            print(f"⚠️  {total - passed} test(s) failed. Please check the issues above.")
-        
-        print("=" * 60)
-
-def main():
-    """Main function"""
-    tester = HomepageBuilderTester()
-    
-    try:
-        success = tester.run_all_tests()
-        return 0 if success else 1
-    except KeyboardInterrupt:
-        print("\n\n⚠️ Tests interrupted by user")
-        return 1
-    except Exception as e:
-        print(f"\n\n❌ Unexpected error: {str(e)}")
-        return 1
+        print("=" * 80)
+        return passed == total
 
 if __name__ == "__main__":
-    sys.exit(main())
+    tester = APITester()
+    success = tester.run_all_tests()
+    sys.exit(0 if success else 1)

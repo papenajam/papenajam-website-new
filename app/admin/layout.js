@@ -21,8 +21,12 @@ const sidebarGroups = [
     items: [
       { id: 'homepage', label: 'Pengaturan Beranda', path: '/admin/homepage', icon: Home, roles: ['superadmin','admin'] },
       { id: 'menu', label: 'Pengaturan Menu', path: '/admin/menu', icon: Layers, roles: ['superadmin','admin'] },
+      { id: 'banners', label: 'Banner & Slider', path: '/admin/banners', icon: Globe, roles: ['superadmin','admin'] },
       { id: 'news', label: 'Berita', path: '/admin/news', icon: Newspaper, roles: ['superadmin','admin','editor'] },
       { id: 'announcements', label: 'Pengumuman', path: '/admin/announcements', icon: Bell, roles: ['superadmin','admin','editor'] },
+      { id: 'gallery', label: 'Galeri Foto', path: '/admin/gallery', icon: Search, roles: ['superadmin','admin','editor'] },
+      { id: 'documents', label: 'Dokumen Publik', path: '/admin/documents', icon: FileText, roles: ['superadmin','admin','editor'] },
+      { id: 'faq', label: 'FAQ', path: '/admin/faq', icon: CalendarDays, roles: ['superadmin','admin','editor'] },
       { id: 'services', label: 'Layanan', path: '/admin/services', icon: Briefcase, roles: ['superadmin','admin','editor'] },
       { id: 'page-builder', label: 'Page Builder', path: '/admin/page-builder', icon: Layers, roles: ['superadmin','admin','editor'] },
     ]
@@ -33,6 +37,14 @@ const sidebarGroups = [
       { id: 'cases', label: 'Perkara', path: '/admin/cases', icon: FileSearch, roles: ['superadmin','admin','staff'] },
       { id: 'agenda-sidang', label: 'Agenda Sidang', path: '/admin/agenda-sidang', icon: CalendarDays, roles: ['superadmin','admin','staff'] },
       { id: 'putusan', label: 'Putusan', path: '/admin/putusan', icon: FileText, roles: ['superadmin','admin','staff'] },
+    ]
+  },
+  {
+    label: 'Interaksi',
+    items: [
+      { id: 'complaints', label: 'Pengaduan', path: '/admin/complaints', icon: Bell, roles: ['superadmin','admin'] },
+      { id: 'surveys', label: 'Survei Kepuasan', path: '/admin/surveys', icon: Search, roles: ['superadmin','admin'] },
+      { id: 'analytics', label: 'Statistik', path: '/admin/analytics', icon: LayoutDashboard, roles: ['superadmin','admin'] },
     ]
   },
   {
