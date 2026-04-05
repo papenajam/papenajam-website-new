@@ -9,7 +9,7 @@ import {
   FileText, Calendar, DollarSign, Package, Shield, Monitor, Users, Stamp,
   Facebook, Twitter, Instagram, Youtube,
   Scale, Building2, BookOpen, TrendingUp, CheckCircle, Clock, ClipboardList,
-  ArrowRight, ExternalLink, Globe, Award
+  ArrowRight, ExternalLink, Globe, Award, Newspaper
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -584,142 +584,189 @@ export default function LandingPage() {
       </section>
 
       {/* ========================================================
-          NEWS SECTION
+          BERITA & PENGUMUMAN — 1 SECTION, 2 KOLOM KARTU
           ======================================================== */}
       <main id="main-content" tabIndex={-1} aria-label={lang === 'id' ? 'Konten utama' : 'Main content'}>
         <section
           id="berita"
-          aria-labelledby="news-heading"
-          className="py-20 bg-white"
-          style={{ scrollMarginTop: '80px' }}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-10">
-              <div>
-                <h2 id="news-heading" className="text-3xl font-extrabold text-[#1e3a5f] mb-2">
-                  {t('news.title')}
-                </h2>
-                <p className="text-gray-600">{t('news.subtitle')}</p>
-              </div>
-              <a
-                href="/berita"
-                className="hidden md:flex items-center gap-2 text-[#c9a84c] font-semibold hover:underline text-sm min-h-[44px]"
-                aria-label={t('news.allNews')}
-              >
-                {t('news.allNews')} <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </a>
-            </div>
-            {loading ? (
-              <div className="grid md:grid-cols-3 gap-6" aria-label={t('news.loading')} aria-busy="true">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-gray-100 rounded-2xl h-64 animate-pulse" aria-hidden="true" />
-                ))}
-              </div>
-            ) : news.length === 0 ? (
-              <p className="text-gray-500 text-center py-10">{t('news.noNews')}</p>
-            ) : (
-              <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0" role="list">
-                {news.map((item) => (
-                  <li key={item.id}>
-                    <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all h-full flex flex-col">
-                      {item.image && (
-                        <div className="h-48 overflow-hidden">
-                          <img
-                            src={item.image}
-                            alt={item.imageAlt || item.title}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
-                            width="400"
-                            height="192"
-                          />
-                        </div>
-                      )}
-                      <div className="p-5 flex flex-col flex-1">
-                        {item.category && (
-                          <Badge className="bg-[#1e3a5f]/10 text-[#1e3a5f] w-fit mb-2 text-xs">{item.category}</Badge>
-                        )}
-                        <h3 className="font-bold text-[#1e3a5f] mb-2 line-clamp-2 text-base leading-tight">
-                          {item.title}
-                        </h3>
-                        <p className="text-gray-500 text-xs mb-3 flex-1 line-clamp-3">
-                          {item.content?.replace(/<[^>]+>/g, '').substring(0, 120)}...
-                        </p>
-                        <div className="flex items-center justify-between mt-auto">
-                          <time
-                            dateTime={item.publishedAt || item.createdAt}
-                            className="text-xs text-gray-400"
-                          >
-                            {formatDate(item.publishedAt || item.createdAt)}
-                          </time>
-                          <a
-                            href={`/berita/${item.id}`}
-                            className="text-[#c9a84c] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]"
-                            aria-label={`${t('news.readMore')}: ${item.title}`}
-                          >
-                            {t('news.readMore')} <ChevronRight className="w-3 h-3" aria-hidden="true" />
-                          </a>
-                        </div>
-                      </div>
-                    </article>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </section>
-
-        {/* ========================================================
-            ANNOUNCEMENTS SECTION
-            ======================================================== */}
-        <section
-          id="pengumuman"
-          aria-labelledby="announcements-heading"
+          aria-labelledby="news-ann-heading"
           className="py-20 bg-gray-50"
           style={{ scrollMarginTop: '80px' }}
         >
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-10">
-              <div>
-                <h2 id="announcements-heading" className="text-3xl font-extrabold text-[#1e3a5f] mb-2">
-                  {t('announcements.title')}
-                </h2>
-                <p className="text-gray-600">{t('announcements.subtitle')}</p>
-              </div>
+            {/* Section Header */}
+            <div className="text-center mb-12">
+              <h2 id="news-ann-heading" className="text-3xl font-extrabold text-[#1e3a5f] mb-3">
+                {lang === 'id' ? 'Berita & Pengumuman' : 'News & Announcements'}
+              </h2>
+              <p className="text-gray-500 max-w-xl mx-auto text-sm">
+                {lang === 'id'
+                  ? 'Informasi terbaru dan pengumuman resmi dari Pengadilan Agama Penajam'
+                  : 'Latest news and official announcements from Penajam Religious Court'}
+              </p>
             </div>
-            {loading ? (
-              <div className="space-y-4" aria-busy="true">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-gray-100 rounded-xl h-20 animate-pulse" aria-hidden="true" />
-                ))}
+
+            {/* 2-Column Card Layout */}
+            <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+
+              {/* ---- KARTU BERITA ---- */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                {/* Card Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#1e3a5f]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                      <Newspaper className="w-4 h-4 text-[#c9a84c]" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-sm">{t('news.title')}</h3>
+                      <p className="text-white/50 text-xs">{t('news.subtitle')}</p>
+                    </div>
+                  </div>
+                  <a
+                    href="/berita"
+                    className="text-[#c9a84c] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]"
+                    aria-label={t('news.allNews')}
+                  >
+                    {t('news.allNews')} <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  </a>
+                </div>
+
+                {/* Card Body */}
+                <div className="flex-1 divide-y divide-gray-50">
+                  {loading ? (
+                    <div className="p-6 space-y-4" aria-busy="true">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex gap-3 animate-pulse">
+                          <div className="w-20 h-16 bg-gray-100 rounded-xl flex-shrink-0" aria-hidden="true" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-3 bg-gray-100 rounded w-3/4" aria-hidden="true" />
+                            <div className="h-3 bg-gray-100 rounded w-1/2" aria-hidden="true" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : news.length === 0 ? (
+                    <div className="p-10 text-center text-gray-400 text-sm">{t('news.noNews')}</div>
+                  ) : (
+                    <ul className="list-none p-0 m-0" role="list">
+                      {news.slice(0, 4).map((item) => (
+                        <li key={item.id}>
+                          <a
+                            href={`/berita/${item.id}`}
+                            aria-label={`${t('news.readMore')}: ${item.title}`}
+                            className="flex gap-3.5 px-5 py-4 hover:bg-gray-50 transition-colors group"
+                          >
+                            {/* Thumbnail */}
+                            {item.image ? (
+                              <div className="w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                                <img
+                                  src={item.image}
+                                  alt={item.imageAlt || item.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  loading="lazy"
+                                  width="80"
+                                  height="64"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-20 h-16 rounded-xl bg-[#1e3a5f]/5 flex items-center justify-center flex-shrink-0">
+                                <Newspaper className="w-6 h-6 text-[#1e3a5f]/30" aria-hidden="true" />
+                              </div>
+                            )}
+                            {/* Text */}
+                            <div className="flex-1 min-w-0">
+                              {item.category && (
+                                <span className="inline-block text-[10px] font-semibold text-[#c9a84c] bg-[#c9a84c]/10 px-2 py-0.5 rounded-full mb-1">
+                                  {item.category}
+                                </span>
+                              )}
+                              <p className="text-sm font-semibold text-[#1e3a5f] line-clamp-2 leading-snug group-hover:text-[#c9a84c] transition-colors">
+                                {item.title}
+                              </p>
+                              <time
+                                dateTime={item.publishedAt || item.createdAt}
+                                className="text-xs text-gray-400 mt-1 block"
+                              >
+                                {formatDate(item.publishedAt || item.createdAt)}
+                              </time>
+                            </div>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
-            ) : announcements.length === 0 ? (
-              <p className="text-gray-500 text-center py-10">{t('announcements.noAnnouncements')}</p>
-            ) : (
-              <ul className="space-y-4 max-w-3xl mx-auto list-none p-0" role="list">
-                {announcements.map((ann) => (
-                  <li key={ann.id}>
-                    <article className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-[#c9a84c]/10 rounded-xl flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                          <ClipboardList className="w-5 h-5 text-[#c9a84c]" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-[#1e3a5f] mb-1">{ann.title}</h3>
-                          <p className="text-gray-500 text-sm line-clamp-2">
-                            {ann.content?.replace(/<[^>]+>/g, '').substring(0, 150)}
-                          </p>
-                          <time dateTime={ann.publishedAt || ann.createdAt} className="text-xs text-gray-400 mt-2 block">
-                            {formatDate(ann.publishedAt || ann.createdAt)}
-                          </time>
-                        </div>
-                      </div>
-                    </article>
-                  </li>
-                ))}
-              </ul>
-            )}
+
+              {/* ---- KARTU PENGUMUMAN ---- */}
+              <div id="pengumuman" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style={{ scrollMarginTop: '80px' }}>
+                {/* Card Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#c9a84c]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                      <ClipboardList className="w-4 h-4 text-white" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-sm">{t('announcements.title')}</h3>
+                      <p className="text-white/70 text-xs">{t('announcements.subtitle')}</p>
+                    </div>
+                  </div>
+                  <a
+                    href="/pengumuman"
+                    className="text-white/90 text-xs font-semibold hover:text-white hover:underline flex items-center gap-1 min-h-[44px]"
+                    aria-label={t('announcements.allAnnouncements')}
+                  >
+                    {t('announcements.allAnnouncements')} <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  </a>
+                </div>
+
+                {/* Card Body */}
+                <div className="flex-1 divide-y divide-gray-50">
+                  {loading ? (
+                    <div className="p-6 space-y-4" aria-busy="true">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" aria-hidden="true" />
+                      ))}
+                    </div>
+                  ) : announcements.length === 0 ? (
+                    <div className="p-10 text-center text-gray-400 text-sm">{t('announcements.noAnnouncements')}</div>
+                  ) : (
+                    <ul className="list-none p-0 m-0" role="list">
+                      {announcements.slice(0, 5).map((ann, idx) => (
+                        <li key={ann.id}>
+                          <div className="flex items-start gap-4 px-5 py-4 hover:bg-gray-50 transition-colors group">
+                            {/* Index Badge */}
+                            <div className="w-8 h-8 rounded-full bg-[#c9a84c]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-[#c9a84c] text-xs font-extrabold" aria-hidden="true">
+                                {String(idx + 1).padStart(2, '0')}
+                              </span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-[#1e3a5f] text-sm leading-snug line-clamp-2">
+                                {ann.title}
+                              </h4>
+                              <p className="text-gray-500 text-xs mt-1 line-clamp-2 leading-relaxed">
+                                {ann.content?.replace(/<[^>]+>/g, '').substring(0, 100)}
+                              </p>
+                              <time
+                                dateTime={ann.publishedAt || ann.createdAt}
+                                className="text-xs text-gray-400 mt-1 block"
+                              >
+                                {formatDate(ann.publishedAt || ann.createdAt)}
+                              </time>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+            </div>{/* end grid */}
           </div>
         </section>
+
 
         {/* ========================================================
             CONTACT SECTION
