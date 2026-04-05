@@ -22,12 +22,14 @@ const HERO_FALLBACK = 'https://images.unsplash.com/photo-1667849921481-9e13c239e
 
 // Default blocks jika homepage belum dikonfigurasi admin
 const DEFAULT_BLOCKS = [
-  { id: 'default-hero',     type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true } },
-  { id: 'default-services', type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' } },
-  { id: 'default-news',     type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
-  { id: 'default-perkara',  type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' } },
-  { id: 'default-profile',  type: 'profile_cards', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat' } },
-  { id: 'default-contact',  type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' } },
+  { id: 'default-hero',      type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true } },
+  { id: 'default-banner',    type: 'banner_slider', settings: { autoPlay: true, showArrows: true, showDots: true } },
+  { id: 'default-services',  type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' } },
+  { id: 'default-news',      type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
+  { id: 'default-gallery',   type: 'gallery_grid',  settings: { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan kami', limit: 8, columns: 4, showViewAll: true } },
+  { id: 'default-docs',      type: 'document_list', settings: { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi Pengadilan Agama Penajam', limit: 6, showViewAll: true } },
+  { id: 'default-perkara',   type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' } },
+  { id: 'default-contact',   type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' } },
 ];
 
 // ============================================================
