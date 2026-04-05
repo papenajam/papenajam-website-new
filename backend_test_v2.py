@@ -11,7 +11,7 @@ import uuid
 from datetime import datetime
 
 # Configuration - using production URL from env
-BASE_URL = "https://pengadilan-beranda.preview.emergentagent.com"
+BASE_URL = "https://agama-portal-dev.preview.emergentagent.com"
 
 # Test credentials as specified
 CREDENTIALS = {

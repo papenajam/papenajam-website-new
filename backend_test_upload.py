@@ -12,7 +12,7 @@ import os
 from PIL import Image
 
 # Configuration
-BASE_URL = "https://pengadilan-beranda.preview.emergentagent.com"
+BASE_URL = "https://agama-portal-dev.preview.emergentagent.com"
 ADMIN_EMAIL = "admin@pa-penajam.go.id"
 ADMIN_PASSWORD = "Admin@1234"
 
