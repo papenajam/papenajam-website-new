@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectDB, getCollection } from '@/lib/db';
 import { generateToken, hashPassword, comparePassword, requireAuth } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, unlink } from 'fs/promises';
 import path from 'path';
 
 function corsHeaders() {
@@ -139,16 +139,99 @@ async function handleRequest(request, pathSegments, method) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const ext = file.name.split('.').pop().toLowerCase();
-      const type = ['pdf'].includes(ext) ? 'pdfs' : 'images';
-      const fileName = `${uuidv4()}.${ext}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', type);
+      const imageExts = ['jpg','jpeg','png','gif','webp','svg','bmp'];
+      const pdfExts = ['pdf'];
+      const videoExts = ['mp4','mov','avi','wmv','mkv'];
+      const folderType = pdfExts.includes(ext) ? 'pdfs' : videoExts.includes(ext) ? 'videos' : 'images';
+      const mediaType = imageExts.includes(ext) ? 'image' : pdfExts.includes(ext) ? 'pdf' : videoExts.includes(ext) ? 'video' : 'file';
+      const mediaId = uuidv4();
+      const fileName = `${mediaId}.${ext}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', folderType);
+      const fileUrl = `/uploads/${folderType}/${fileName}`;
 
       await mkdir(uploadDir, { recursive: true });
       await writeFile(path.join(uploadDir, fileName), buffer);
 
-      return NextResponse.json({ url: `/uploads/${type}/${fileName}`, fileName, type });
+      // Save metadata to media collection
+      const mediaCol = await getCollection('media');
+      const titleFromName = file.name.replace(/\.[^/.]+$/, '');
+      await mediaCol.insertOne({
+        id: mediaId,
+        filename: fileName,
+        originalName: file.name,
+        url: fileUrl,
+        type: mediaType,
+        mimeType: file.type || '',
+        size: bytes.byteLength,
+        ext: ext,
+        title: titleFromName,
+        alt: '',
+        uploadedBy: auth.name || auth.email || 'admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      return NextResponse.json({ url: fileUrl, fileName, type: folderType, id: mediaId });
     } catch (err) {
       return NextResponse.json({ error: 'Upload failed: ' + err.message }, { status: 500 });
+    }
+  }
+
+  // ==================== MEDIA LIBRARY ====================
+  if (segment1 === 'media') {
+    const col = await getCollection('media');
+    if (!segment2) {
+      if (method === 'GET') {
+        const url = new URL(request.url);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '30');
+        const search = url.searchParams.get('search') || '';
+        const type = url.searchParams.get('type') || '';
+        const sortField = url.searchParams.get('sortField') || 'createdAt';
+        const sortDir = url.searchParams.get('sortDir') === 'asc' ? 1 : -1;
+        const query = {};
+        if (search) query.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { originalName: { $regex: search, $options: 'i' } },
+        ];
+        if (type && type !== 'all') query.type = type;
+        const total = await col.countDocuments(query);
+        const items = await col.find(query).sort({ [sortField]: sortDir }).skip((page-1)*limit).limit(limit).toArray();
+        return NextResponse.json({ items, total, page, totalPages: Math.ceil(total/limit) });
+      }
+    }
+    if (segment2) {
+      if (method === 'GET') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const item = await col.findOne({ id: segment2 });
+        if (!item) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
+        return NextResponse.json(item);
+      }
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const allowedFields = ['title', 'alt'];
+        const update = {};
+        for (const k of allowedFields) { if (body[k] !== undefined) update[k] = body[k]; }
+        update.updatedAt = new Date().toISOString();
+        await col.updateOne({ id: segment2 }, { $set: update });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const item = await col.findOne({ id: segment2 });
+        if (item) {
+          try {
+            const filePath = path.join(process.cwd(), 'public', item.url);
+            await unlink(filePath);
+          } catch {}
+          await col.deleteOne({ id: segment2 });
+        }
+        return NextResponse.json({ message: 'File berhasil dihapus' });
+      }
     }
   }
 

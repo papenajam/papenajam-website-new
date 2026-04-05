@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   Scale, LayoutDashboard, Newspaper, Bell, Briefcase, FileSearch,
   Users, Settings, LogOut, Menu, X, ChevronRight, ChevronDown,
-  CalendarDays, FileText, Layers, Search, Home, Globe
+  CalendarDays, FileText, Layers, Search, Home, Globe, Image as ImageIcon
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LANGUAGES } from '@/lib/i18n';
@@ -26,6 +26,7 @@ const sidebarGroups = [
       { id: 'announcements', label: 'Pengumuman', path: '/admin/announcements', icon: Bell, roles: ['superadmin','admin','editor'] },
       { id: 'gallery', label: 'Galeri Foto', path: '/admin/gallery', icon: Search, roles: ['superadmin','admin','editor'] },
       { id: 'documents', label: 'Dokumen Publik', path: '/admin/documents', icon: FileText, roles: ['superadmin','admin','editor'] },
+      { id: 'media', label: 'Media Library', path: '/admin/media', icon: ImageIcon, roles: ['superadmin','admin','editor'] },
       { id: 'faq', label: 'FAQ', path: '/admin/faq', icon: CalendarDays, roles: ['superadmin','admin','editor'] },
       { id: 'services', label: 'Layanan', path: '/admin/services', icon: Briefcase, roles: ['superadmin','admin','editor'] },
       { id: 'page-builder', label: 'Page Builder', path: '/admin/page-builder', icon: Layers, roles: ['superadmin','admin','editor'] },
