@@ -65,36 +65,48 @@ function Toast({ msg, type }) {
 // ─── Block Types ─────────────────────────────────────────────────────────────
 const BLOCK_TYPES = [
   // Dynamic (pull from DB)
-  { type: 'hero_home',      label: 'Hero Beranda',       icon: Home,        desc: 'Banner hero + statistik live',          color: 'bg-blue-50 text-blue-700',   dynamic: true },
-  { type: 'news_ann',       label: 'Berita & Pengumuman', icon: Newspaper,   desc: '2 kolom kartu dari database',           color: 'bg-emerald-50 text-emerald-700', dynamic: true },
-  { type: 'services_grid',  label: 'Layanan',             icon: Briefcase,   desc: 'Grid layanan dari database',            color: 'bg-violet-50 text-violet-700',  dynamic: true },
-  { type: 'case_search',    label: 'Cari Perkara',        icon: Search,      desc: 'Widget pencarian perkara',              color: 'bg-sky-50 text-sky-700',        dynamic: true },
-  { type: 'contact_info',   label: 'Kontak',              icon: Phone,       desc: 'Informasi kontak dari pengaturan',      color: 'bg-orange-50 text-orange-700',  dynamic: true },
-  { type: 'profile_cards',  label: 'Profil Pengadilan',   icon: User,        desc: 'Visi, Misi, Lokasi',                   color: 'bg-teal-50 text-teal-700',      dynamic: true },
+  { type: 'hero_home',      label: 'Hero Beranda',         icon: Home,        desc: 'Banner hero + statistik live',            color: 'bg-blue-50 text-blue-700',       dynamic: true },
+  { type: 'news_ann',       label: 'Berita & Pengumuman',  icon: Newspaper,   desc: '2 kolom kartu dari database',             color: 'bg-emerald-50 text-emerald-700', dynamic: true },
+  { type: 'services_grid',  label: 'Layanan',              icon: Briefcase,   desc: 'Grid layanan dari database',              color: 'bg-violet-50 text-violet-700',   dynamic: true },
+  { type: 'gallery_grid',   label: 'Galeri Foto',          icon: ImageIcon,   desc: 'Grid foto dari database galeri',          color: 'bg-pink-50 text-pink-700',       dynamic: true },
+  { type: 'faq_section',    label: 'FAQ',                  icon: LayoutGrid,  desc: 'Pertanyaan & jawaban dari database FAQ',  color: 'bg-cyan-50 text-cyan-700',       dynamic: true },
+  { type: 'complaint_cta',  label: 'CTA Pengaduan',        icon: Zap,         desc: 'Section ajakan ke form pengaduan',        color: 'bg-rose-50 text-rose-700',       dynamic: true },
+  { type: 'visitor_stats',  label: 'Statistik Pengunjung', icon: BarChart2,   desc: 'Statistik kunjungan website live',        color: 'bg-lime-50 text-lime-700',       dynamic: true },
+  { type: 'banner_slider',  label: 'Banner Slider',        icon: Globe,       desc: 'Slider banner dari manajemen banner',     color: 'bg-fuchsia-50 text-fuchsia-700', dynamic: true },
+  { type: 'document_list',  label: 'Daftar Dokumen',       icon: Type,        desc: 'Daftar dokumen publik terbaru',           color: 'bg-yellow-50 text-yellow-700',   dynamic: true },
+  { type: 'case_search',    label: 'Cari Perkara',         icon: Search,      desc: 'Widget pencarian perkara',                color: 'bg-sky-50 text-sky-700',         dynamic: true },
+  { type: 'contact_info',   label: 'Kontak',               icon: Phone,       desc: 'Informasi kontak dari pengaturan',        color: 'bg-orange-50 text-orange-700',   dynamic: true },
+  { type: 'profile_cards',  label: 'Profil Pengadilan',    icon: User,        desc: 'Visi, Misi, Lokasi',                      color: 'bg-teal-50 text-teal-700',       dynamic: true },
   // Static
-  { type: 'hero',           label: 'Hero (Statis)',        icon: Layers,      desc: 'Banner dengan gambar & teks bebas',    color: 'bg-indigo-50 text-indigo-700' },
-  { type: 'stats',          label: 'Statistik',            icon: BarChart2,   desc: 'Angka statistik',                      color: 'bg-amber-50 text-amber-700' },
-  { type: 'text',           label: 'Teks / HTML',          icon: Type,        desc: 'Blok teks & rich content',             color: 'bg-gray-50 text-gray-700' },
-  { type: 'image',          label: 'Gambar',               icon: Image,       desc: 'Gambar dengan keterangan',             color: 'bg-green-50 text-green-700' },
-  { type: 'cardgrid',       label: 'Card Grid',            icon: LayoutGrid,  desc: 'Grid kartu manual',                    color: 'bg-purple-50 text-purple-700' },
-  { type: 'cta',            label: 'CTA',                  icon: Zap,         desc: 'Call-to-action button',                color: 'bg-red-50 text-red-700' },
-  { type: 'gallery',        label: 'Galeri',               icon: Image,       desc: 'Grid foto',                            color: 'bg-pink-50 text-pink-700' },
+  { type: 'hero',           label: 'Hero (Statis)',         icon: Layers,      desc: 'Banner dengan gambar & teks bebas',       color: 'bg-indigo-50 text-indigo-700' },
+  { type: 'stats',          label: 'Statistik Manual',      icon: BarChart2,   desc: 'Angka statistik manual',                  color: 'bg-amber-50 text-amber-700' },
+  { type: 'text',           label: 'Teks / HTML',           icon: Type,        desc: 'Blok teks & rich content',                color: 'bg-gray-50 text-gray-700' },
+  { type: 'image',          label: 'Gambar',                icon: Image,       desc: 'Gambar dengan keterangan',                color: 'bg-green-50 text-green-700' },
+  { type: 'cardgrid',       label: 'Card Grid',             icon: LayoutGrid,  desc: 'Grid kartu manual',                       color: 'bg-purple-50 text-purple-700' },
+  { type: 'cta',            label: 'CTA (Statis)',          icon: Zap,         desc: 'Call-to-action button statis',            color: 'bg-red-50 text-red-700' },
+  { type: 'gallery',        label: 'Galeri Manual',         icon: Image,       desc: 'Grid foto dari URL manual',               color: 'bg-pink-50 text-pink-700' },
 ];
 
 const defaultSettings = {
-  hero_home:     { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', backgroundImage: '', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true },
-  news_ann:      { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 },
-  services_grid: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' },
-  case_search:   { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' },
-  contact_info:  { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' },
-  profile_cards: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat' },
-  hero:          { title: 'Judul Section', subtitle: 'Sub-judul atau deskripsi.', backgroundImage: '', buttonText: 'Selengkapnya', buttonLink: '#' },
-  stats:         { items: [{ id: uuidv4(), number: '500+', label: 'Perkara' }, { id: uuidv4(), number: '20', label: 'Tahun' }, { id: uuidv4(), number: '100%', label: 'Komitmen' }] },
-  text:          { content: '<p>Tulis konten Anda di sini.</p>' },
-  image:         { src: '', caption: '', alignment: 'center' },
-  cardgrid:      { title: 'Layanan Kami', items: [{ id: uuidv4(), icon: '⚖️', title: 'Kartu 1', description: 'Deskripsi.' }, { id: uuidv4(), icon: '📋', title: 'Kartu 2', description: 'Deskripsi.' }, { id: uuidv4(), icon: '🏛️', title: 'Kartu 3', description: 'Deskripsi.' }] },
-  cta:           { title: 'Hubungi Kami', subtitle: 'Kami siap membantu.', buttonText: 'Hubungi', buttonLink: '#kontak', bgColor: '#1e3a5f' },
-  gallery:       { images: [], columns: 3 },
+  hero_home:      { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', backgroundImage: '', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true },
+  news_ann:       { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 },
+  services_grid:  { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' },
+  gallery_grid:   { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan kami', category: '', limit: 8, columns: 4, showViewAll: true },
+  faq_section:    { title: 'Tanya Jawab (FAQ)', subtitle: 'Pertanyaan yang sering diajukan masyarakat', category: '', limit: 6, bgColor: '#f9fafb' },
+  complaint_cta:  { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1e3a5f', showPhone: true },
+  visitor_stats:  { title: 'Website Statistik', days: 30, showChart: true, bgColor: '#1e3a5f' },
+  banner_slider:  { autoPlay: true, showArrows: true, showDots: true },
+  document_list:  { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi Pengadilan Agama Penajam', category: '', limit: 6, showViewAll: true },
+  case_search:    { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' },
+  contact_info:   { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' },
+  profile_cards:  { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat' },
+  hero:           { title: 'Judul Section', subtitle: 'Sub-judul atau deskripsi.', backgroundImage: '', buttonText: 'Selengkapnya', buttonLink: '#' },
+  stats:          { items: [{ id: uuidv4(), number: '500+', label: 'Perkara' }, { id: uuidv4(), number: '20', label: 'Tahun' }, { id: uuidv4(), number: '100%', label: 'Komitmen' }] },
+  text:           { content: '<p>Tulis konten Anda di sini.</p>' },
+  image:          { src: '', caption: '', alignment: 'center' },
+  cardgrid:       { title: 'Layanan Kami', items: [{ id: uuidv4(), icon: '⚖️', title: 'Kartu 1', description: 'Deskripsi.' }, { id: uuidv4(), icon: '📋', title: 'Kartu 2', description: 'Deskripsi.' }, { id: uuidv4(), icon: '🏛️', title: 'Kartu 3', description: 'Deskripsi.' }] },
+  cta:            { title: 'Hubungi Kami', subtitle: 'Kami siap membantu.', buttonText: 'Hubungi', buttonLink: '#kontak', bgColor: '#1e3a5f' },
+  gallery:        { images: [], columns: 3 },
 };
 
 // ─── Block Preview (builder canvas) ──────────────────────────────────────────
@@ -104,8 +116,20 @@ function BlockPreview({ block }) {
 
   // Dynamic blocks → placeholder card
   if (bt?.dynamic) {
-    const icons = { hero_home: '🏠', news_ann: '📰', services_grid: '⚙️', case_search: '🔍', contact_info: '📞', profile_cards: '🏛️' };
-    const labels = { hero_home: 'Hero Beranda + Statistik Live', news_ann: 'Berita & Pengumuman (2 Kolom)', services_grid: 'Layanan dari Database', case_search: 'Widget Pencarian Perkara', contact_info: 'Informasi Kontak', profile_cards: 'Profil — Visi, Misi, Lokasi' };
+    const icons = {
+      hero_home: '🏠', news_ann: '📰', services_grid: '⚙️', case_search: '🔍',
+      contact_info: '📞', profile_cards: '🏛️', gallery_grid: '🖼️',
+      faq_section: '❓', complaint_cta: '📩', visitor_stats: '📊',
+      banner_slider: '🎨', document_list: '📋',
+    };
+    const labels = {
+      hero_home: 'Hero Beranda + Statistik Live', news_ann: 'Berita & Pengumuman (2 Kolom)',
+      services_grid: 'Layanan dari Database', case_search: 'Widget Pencarian Perkara',
+      contact_info: 'Informasi Kontak', profile_cards: 'Profil — Visi, Misi, Lokasi',
+      gallery_grid: 'Galeri Foto dari Database', faq_section: 'FAQ Accordion dari Database',
+      complaint_cta: 'Section CTA Pengaduan', visitor_stats: 'Statistik Pengunjung Live',
+      banner_slider: 'Slider Banner dari Manajemen Banner', document_list: 'Daftar Dokumen Publik',
+    };
     return (
       <div className={`rounded-xl p-6 border-2 border-dashed flex items-center gap-4 ${bt.color.replace('text-', 'border-').replace('bg-', 'bg-')}`}>
         <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl ${bt.color}`}>
@@ -268,6 +292,99 @@ function SettingsPanel({ block, onChange, token }) {
         <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
         <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
         <p className="text-xs text-teal-600 bg-teal-50 rounded-lg p-2">✅ Menampilkan Visi, Misi, dan Lokasi pengadilan.</p>
+      </div>
+    );
+    case 'gallery_grid': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Kategori (kosong=semua)</Label><Input value={s.category || ''} onChange={e => upd('category', e.target.value)} placeholder="Kegiatan, Gedung..." /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Jumlah Foto</Label><Input type="number" min={4} max={20} value={s.limit || 8} onChange={e => upd('limit', +e.target.value)} /></div>
+        </div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Kolom</Label>
+          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('columns',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns===n?'bg-[#1e3a5f] text-white border-[#1e3a5f]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
+        </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan tombol "Lihat Semua Galeri"</span>
+        </label>
+        <p className="text-xs text-pink-600 bg-pink-50 rounded-lg p-2">✅ Foto dari menu Galeri di admin, diurutkan berdasarkan urutan yang diatur.</p>
+      </div>
+    );
+    case 'faq_section': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Kategori (kosong=semua)</Label><Input value={s.category || ''} onChange={e => upd('category', e.target.value)} placeholder="Umum, Biaya..." /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={3} max={20} value={s.limit || 6} onChange={e => upd('limit', +e.target.value)} /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#f9fafb'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <p className="text-xs text-cyan-600 bg-cyan-50 rounded-lg p-2">✅ Pertanyaan dari menu FAQ di admin. Kelola di Konten → FAQ.</p>
+      </div>
+    );
+    case 'complaint_cta': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul / Deskripsi</Label><textarea className="w-full p-2 border rounded-lg text-sm h-20 resize-none" value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Teks Tombol</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Link Tombol</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showPhone !== false} onChange={e => upd('showPhone', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan nomor telepon dari pengaturan</span>
+        </label>
+      </div>
+    );
+    case 'visitor_stats': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Periode Data (hari)</Label>
+          <div className="flex gap-2">{[7,14,30,90].map(n=><button key={n} onClick={()=>upd('days',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.days===n?'bg-[#1e3a5f] text-white border-[#1e3a5f]':'border-gray-200 text-gray-600'}`}>{n} Hari</button>)}</div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showChart !== false} onChange={e => upd('showChart', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan grafik kunjungan</span>
+        </label>
+        <p className="text-xs text-lime-600 bg-lime-50 rounded-lg p-2">✅ Data dari sistem analitik website. Otomatis tercatat setiap ada kunjungan.</p>
+      </div>
+    );
+    case 'banner_slider': return (
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.autoPlay !== false} onChange={e => upd('autoPlay', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Auto-play slider (5 detik)</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showArrows !== false} onChange={e => upd('showArrows', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan tombol navigasi</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showDots !== false} onChange={e => upd('showDots', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan indikator titik</span>
+        </label>
+        <p className="text-xs text-fuchsia-600 bg-fuchsia-50 rounded-lg p-2">✅ Banner dari menu "Banner & Slider" di admin. Tambah banner baru di sana.</p>
+      </div>
+    );
+    case 'document_list': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Kategori (kosong=semua)</Label><Input value={s.category || ''} onChange={e => upd('category', e.target.value)} placeholder="Maklumat, Formulir..." /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={3} max={12} value={s.limit || 6} onChange={e => upd('limit', +e.target.value)} /></div>
+        </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <span className="text-xs font-semibold">Tampilkan tombol "Lihat Semua Dokumen"</span>
+        </label>
+        <p className="text-xs text-yellow-600 bg-yellow-50 rounded-lg p-2">✅ Dokumen dari menu "Dokumen Publik" di admin.</p>
       </div>
     );
     // ── Static Blocks ──

@@ -442,10 +442,281 @@ function GalleryBlock({ settings }) {
 }
 
 // ============================================================
-// BLOCK RENDERER SWITCH
+// NEW BLOCK RENDERERS (Gallery, FAQ, Complaint CTA, Visitor Stats, Banner, Documents)
 // ============================================================
+
+function GalleryGridBlock({ settings, galleryItems }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const limit = s.limit || 8;
+  const cols = s.columns || 4;
+  const items = (s.category ? galleryItems.filter(i => i.category === s.category) : galleryItems).slice(0, limit);
+  const [lightbox, setLightbox] = useState(null);
+  return (
+    <section id="galeri" className="py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-[#1e3a5f] mb-3">{s.title || 'Galeri Foto'}</h2>
+          {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="text-center py-12 text-gray-400"><p>Belum ada foto di galeri</p></div>
+        ) : (
+          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+            {items.map(item => (
+              <button key={item.id} onClick={() => setLightbox(item)}
+                className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
+                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+                  <p className="text-white text-xs font-semibold text-left line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+        {s.showViewAll !== false && (
+          <div className="text-center mt-8">
+            <a href="/galeri" className="inline-flex items-center gap-2 border-2 border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+              {lang === 'id' ? 'Lihat Semua Galeri' : 'View All Gallery'} →
+            </a>
+          </div>
+        )}
+      </div>
+      {lightbox && (
+        <div className="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4" onClick={() => setLightbox(null)}>
+          <div className="max-w-4xl w-full" onClick={e => e.stopPropagation()}>
+            <img src={lightbox.imageUrl} alt={lightbox.title} className="w-full max-h-[75vh] object-contain rounded-xl" />
+            <div className="text-white text-center mt-3">
+              <p className="font-bold">{lang === 'en' && lightbox.titleEn ? lightbox.titleEn : lightbox.title}</p>
+            </div>
+            <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl">&times;</button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function FAQSectionBlock({ settings, faqItems }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const [openId, setOpenId] = useState(null);
+  const limit = s.limit || 6;
+  const items = (s.category ? faqItems.filter(i => i.category === s.category) : faqItems).slice(0, limit);
+  return (
+    <section id="faq" className="py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4 max-w-3xl">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-[#1e3a5f] mb-3">{s.title || 'Tanya Jawab'}</h2>
+          {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="text-center py-8 text-gray-400"><p>Belum ada FAQ tersedia</p></div>
+        ) : (
+          <div className="space-y-3 mb-8">
+            {items.map(item => {
+              const q = lang === 'en' && item.questionEn ? item.questionEn : item.question;
+              const a = lang === 'en' && item.answerEn ? item.answerEn : item.answer;
+              const isOpen = openId === item.id;
+              return (
+                <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  <button onClick={() => setOpenId(isOpen ? null : item.id)}
+                    className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
+                    <span className="font-semibold text-[#1e3a5f] text-sm pr-4">{q}</span>
+                    <span className={`text-[#c9a84c] flex-shrink-0 text-xl leading-none transition-transform ${isOpen ? 'rotate-45' : ''}`}>+</span>
+                  </button>
+                  {isOpen && <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-50 pt-4">{a}</div>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <div className="text-center">
+          <a href="/faq" className="inline-flex items-center gap-2 border-2 border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+            {lang === 'id' ? 'Lihat Semua FAQ' : 'View All FAQ'} →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ComplaintCTABlock({ settings, siteSettings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  return (
+    <section id="pengaduan" className="py-20" style={{ background: s.bgColor || '#1e3a5f', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">📩</div>
+          <h2 className="text-3xl font-extrabold text-white mb-4">{s.title || 'Sampaikan Pengaduan Anda'}</h2>
+          <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+            {s.subtitle || 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.'}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href={s.buttonLink || '/pengaduan'}
+              className="inline-flex items-center justify-center bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
+              {s.buttonText || 'Kirim Pengaduan'} →
+            </a>
+            {s.showPhone !== false && siteSettings.phone && (
+              <a href={`tel:${siteSettings.phone.replace(/[^0-9+]/g, '')}`}
+                className="inline-flex items-center justify-center border-2 border-white/30 text-white hover:bg-white/10 font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
+                📞 {siteSettings.phone}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VisitorStatsBlock({ settings, visitorStats }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const stats = visitorStats || { total: 0, topPages: [], dailyData: [] };
+  const maxViews = stats.dailyData?.length ? Math.max(...stats.dailyData.map(d => d.views), 1) : 1;
+  return (
+    <section className="py-16" style={{ background: s.bgColor || '#1e3a5f', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        {s.title && (
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-extrabold text-white mb-2">{s.title}</h2>
+          </div>
+        )}
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+          {[
+            { label: lang === 'id' ? 'Total Kunjungan' : 'Total Visits', value: stats.total?.toLocaleString() || '0', sub: `${s.days || 30} ${lang === 'id' ? 'hari terakhir' : 'days'}` },
+            { label: lang === 'id' ? 'Rata-rata/Hari' : 'Daily Average', value: stats.dailyData?.length ? Math.round(stats.total / stats.dailyData.length).toLocaleString() : '0', sub: lang === 'id' ? 'Kunjungan per hari' : 'Visits per day' },
+            { label: lang === 'id' ? 'Halaman Terpopuler' : 'Top Page', value: stats.topPages?.[0]?.path?.replace('/', '') || '-', sub: `${stats.topPages?.[0]?.views || 0} ${lang === 'id' ? 'kunjungan' : 'visits'}` },
+          ].map(({ label, value, sub }) => (
+            <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/10">
+              <p className="text-3xl font-extrabold text-[#c9a84c]">{value}</p>
+              <p className="text-white font-semibold text-sm mt-1">{label}</p>
+              <p className="text-white/50 text-xs mt-0.5">{sub}</p>
+            </div>
+          ))}
+        </div>
+        {s.showChart !== false && stats.dailyData?.length > 0 && (
+          <div className="max-w-4xl mx-auto bg-white/10 rounded-2xl p-6 border border-white/10">
+            <p className="text-white/70 text-sm mb-3 font-medium">{lang === 'id' ? 'Tren kunjungan harian' : 'Daily visit trend'}</p>
+            <div className="flex items-end gap-1 h-20">
+              {stats.dailyData.slice(-30).map(d => (
+                <div key={d.date} className="flex-1 flex flex-col items-center justify-end" title={`${d.date}: ${d.views}`}>
+                  <div className="w-full rounded-t-sm bg-[#c9a84c]/80 transition-all" style={{ height: `${(d.views / maxViews) * 70}px`, minHeight: d.views > 0 ? 2 : 0 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function BannerSliderBlock({ settings, bannerItems }) {
+  const s = settings || {};
+  const [current, setCurrent] = useState(0);
+  const { lang } = useLanguage();
+  const banners = bannerItems || [];
+
+  useEffect(() => {
+    if (!s.autoPlay || banners.length <= 1) return;
+    const t = setInterval(() => setCurrent(c => (c + 1) % banners.length), 5000);
+    return () => clearInterval(t);
+  }, [banners.length, s.autoPlay]);
+
+  if (banners.length === 0) return null;
+  const banner = banners[current];
+
+  return (
+    <section className="relative overflow-hidden" style={{ minHeight: 420, background: banner.bgColor || '#1e3a5f' }}>
+      {banner.imageUrl && (
+        <div className="absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700" style={{ backgroundImage: `url(${banner.imageUrl})` }} />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+      <div className="container mx-auto px-4 py-24 relative z-10 flex items-center min-h-[420px]">
+        <div className="max-w-2xl">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight" style={{ color: banner.textColor || '#ffffff' }}>{banner.title}</h2>
+          {banner.subtitle && <p className="text-lg mb-8 opacity-80" style={{ color: banner.textColor || '#ffffff' }}>{banner.subtitle}</p>}
+          {banner.buttonText && (
+            <a href={banner.buttonUrl || '#'} target={banner.buttonUrl?.startsWith('http') ? '_blank' : undefined} rel={banner.buttonUrl?.startsWith('http') ? 'noopener' : undefined}
+              className="inline-flex items-center bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors">
+              {banner.buttonText}
+            </a>
+          )}
+        </div>
+      </div>
+      {banners.length > 1 && s.showArrows !== false && (
+        <>
+          <button onClick={() => setCurrent(c => (c - 1 + banners.length) % banners.length)} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors">‹</button>
+          <button onClick={() => setCurrent(c => (c + 1) % banners.length)} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors">›</button>
+        </>
+      )}
+      {banners.length > 1 && s.showDots !== false && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {banners.map((_, i) => <button key={i} onClick={() => setCurrent(i)} className={`h-2 rounded-full transition-all ${i === current ? 'bg-white w-6' : 'bg-white/50 w-2'}`} />)}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function DocumentListBlock({ settings, documentItems }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const limit = s.limit || 6;
+  const items = (s.category ? documentItems.filter(i => i.category === s.category) : documentItems).slice(0, limit);
+
+  async function handleDownload(item) {
+    if (!item.fileUrl) return;
+    await fetch(`/api/documents/download/${item.id}`, { method: 'POST' }).catch(() => {});
+    window.open(item.fileUrl, '_blank');
+  }
+
+  return (
+    <section id="dokumen" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-[#1e3a5f] mb-3">{s.title || 'Dokumen & Peraturan'}</h2>
+          {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="text-center py-12 text-gray-400"><p>Belum ada dokumen tersedia</p></div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {items.map(item => (
+              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+                <span className="text-3xl flex-shrink-0">{item.fileType === 'pdf' ? '📄' : '📋'}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-[#1e3a5f] text-sm leading-snug line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
+                  {item.description && <p className="text-gray-400 text-xs mt-1 line-clamp-1">{item.description}</p>}
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="px-2 py-0.5 bg-[#1e3a5f]/10 text-[#1e3a5f] text-xs rounded-full">{item.category}</span>
+                  </div>
+                </div>
+                <button onClick={() => handleDownload(item)} disabled={!item.fileUrl}
+                  className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}>
+                  ⬇
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {s.showViewAll !== false && (
+          <div className="text-center mt-8">
+            <a href="/dokumen" className="inline-flex items-center gap-2 border-2 border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+              {lang === 'id' ? 'Lihat Semua Dokumen' : 'View All Documents'} →
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function renderBlock(block, ctx) {
-  const { stats, news, announcements, siteSettings, services,
+  const { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems,
     onSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun,
     searchLoading, searchResult, statusColor, statusLabel, formatDate } = ctx;
   const s = block.settings || {};
@@ -456,6 +727,12 @@ function renderBlock(block, ctx) {
     case 'case_search':   return <CaseSearchBlock key={block.id} settings={s} onSearch={onSearch} searchNomor={searchNomor} setSearchNomor={setSearchNomor} searchTahun={searchTahun} setSearchTahun={setSearchTahun} searchLoading={searchLoading} searchResult={searchResult} statusColor={statusColor} statusLabel={statusLabel} />;
     case 'contact_info':  return <ContactInfoBlock key={block.id} settings={s} siteSettings={siteSettings} />;
     case 'profile_cards': return <ProfileCardsBlock key={block.id} settings={s} />;
+    case 'gallery_grid':  return <GalleryGridBlock key={block.id} settings={s} galleryItems={galleryItems} />;
+    case 'faq_section':   return <FAQSectionBlock key={block.id} settings={s} faqItems={faqItems} />;
+    case 'complaint_cta': return <ComplaintCTABlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'visitor_stats': return <VisitorStatsBlock key={block.id} settings={s} visitorStats={visitorStats} />;
+    case 'banner_slider': return <BannerSliderBlock key={block.id} settings={s} bannerItems={bannerItems} />;
+    case 'document_list': return <DocumentListBlock key={block.id} settings={s} documentItems={documentItems} />;
     case 'hero':          return <HeroStaticBlock key={block.id} settings={s} />;
     case 'stats':         return <StatsBlock key={block.id} settings={s} />;
     case 'text':          return <TextBlock key={block.id} settings={s} />;
@@ -472,12 +749,17 @@ function renderBlock(block, ctx) {
 // ============================================================
 export default function DynamicHomepage() {
   const { t, lang } = useLanguage();
-  const [blocks, setBlocks] = useState(null);        // null = loading
+  const [blocks, setBlocks] = useState(null);
   const [news, setNews] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [services, setServices] = useState([]);
   const [siteSettings, setSiteSettings] = useState({});
   const [stats, setStats] = useState({ casesThisYear: 0, casesDone: 0, casesOngoing: 0 });
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [faqItems, setFaqItems] = useState([]);
+  const [visitorStats, setVisitorStats] = useState({ total: 0, dailyData: [], topPages: [] });
+  const [bannerItems, setBannerItems] = useState([]);
+  const [documentItems, setDocumentItems] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [searchNomor, setSearchNomor] = useState('');
   const [searchTahun, setSearchTahun] = useState('');
@@ -497,28 +779,37 @@ export default function DynamicHomepage() {
   async function loadAll() {
     try {
       await fetch('/api/seed', { method: 'POST' }).catch(() => {});
-      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes] = await Promise.all([
+      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes] = await Promise.all([
         fetch('/api/pages/slug/_homepage'),
         fetch('/api/news?public=true&limit=8'),
         fetch('/api/announcements?public=true&limit=8'),
         fetch('/api/services'),
         fetch('/api/settings'),
         fetch('/api/cases'),
+        fetch('/api/gallery'),
+        fetch('/api/faq'),
+        fetch('/api/analytics?days=30').catch(() => ({ ok: false })),
+        fetch('/api/banners'),
+        fetch('/api/documents?limit=12'),
       ]);
-      // Homepage blocks
       if (hpRes.ok) {
         const hp = await hpRes.json();
         setBlocks(hp.blocks && hp.blocks.length > 0 ? hp.blocks : DEFAULT_BLOCKS);
       } else {
-        setBlocks(DEFAULT_BLOCKS); // fallback: tampilkan layout default jika belum dikonfigurasi
+        setBlocks(DEFAULT_BLOCKS);
       }
-      const [newsData, annData, svcData, settingsData, casesData] = await Promise.all([
-        newsRes.json(), annRes.json(), svcRes.json(), settingsRes.json(), casesRes.json()
+      const [newsData, annData, svcData, settingsData, casesData, galleryData, faqData, bannersData, docsData] = await Promise.all([
+        newsRes.json(), annRes.json(), svcRes.json(), settingsRes.json(), casesRes.json(),
+        galleryRes.json(), faqRes.json(), bannersRes.json(), docsRes.json(),
       ]);
       setNews(newsData.items || []);
       setAnnouncements(annData.items || []);
       setServices(svcData.items || []);
       setSiteSettings(settingsData || {});
+      setGalleryItems(galleryData.items || []);
+      setFaqItems(faqData.items || []);
+      setBannerItems(bannersData.items || []);
+      setDocumentItems(docsData.items || []);
       const allCases = casesData.items || [];
       const thisYear = String(new Date().getFullYear());
       setStats({
@@ -526,6 +817,11 @@ export default function DynamicHomepage() {
         casesDone: allCases.filter(c => c.status === 'selesai').length,
         casesOngoing: allCases.filter(c => c.status === 'berjalan').length,
       });
+      // Analytics (non-critical — no auth needed for public)
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setVisitorStats(statsData);
+      }
     } catch (e) { console.error(e); setBlocks([]); }
     finally { setDataLoading(false); }
   }
@@ -549,7 +845,7 @@ export default function DynamicHomepage() {
   const statusColor = (s) => ({ selesai: 'bg-green-100 text-green-700', berjalan: 'bg-blue-100 text-blue-700', terdaftar: 'bg-yellow-100 text-yellow-700' }[s] || 'bg-gray-100 text-gray-700');
   const statusLabel = (s) => ({ selesai: t('status.done'), berjalan: t('status.ongoing'), terdaftar: t('status.registered') }[s] || s);
 
-  const ctx = { stats, news, announcements, siteSettings, services, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
+  const ctx = { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
 
   const scrollTo = (id) => {
     setActiveNav(id);
