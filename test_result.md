@@ -418,7 +418,7 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://agama-portal-dev.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
+    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://pengadilan-agama-cms.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
   - agent: "testing"
     message: "BACKEND API v2.0 TESTING COMPLETE ✅ Tested all 15 specified endpoints with 100% success rate (20/20 tests passed). Key findings: 1) All authentication working (admin/staff/editor roles), 2) Enhanced stats API returns required chart data (monthlyData, caseTypes, todayAgenda), 3) Pages API with blocks array creation working, 4) Agenda CRUD with date filtering operational, 5) Putusan public/private filtering working, 6) Cases name/jenis filters functional, 7) Role-based permissions implemented but not strictly enforced (staff can access pages). All endpoints responding correctly with proper data structures."
   - agent: "testing"
@@ -429,6 +429,8 @@ agent_communication:
     message: "HOMEPAGE BUILDER API TESTING COMPLETE ✅ All 9 specific tests passed (100% success rate). Verified requested endpoints: 1) GET /api/pages/slug/_homepage ✅ (returns homepage with blocks array: hero_home, services_grid, news_ann, case_search, contact_info), 2) POST /api/pages ✅ (created test page slug: test-api-verify, status: published), 3) PUT /api/pages/{id} ✅ (updated homepage blocks and changed hero_home title), 4) GET /api/pages/slug/_homepage after update ✅ (verified title change persisted: 'Pengadilan Agama Penajam - UPDATED TITLE'), 5) Authentication protection ✅ (POST/PUT require JWT token, return 401 without auth). Homepage Builder API fully operational with proper CRUD operations, block management, and authentication as requested."
   - agent: "testing"
     message: "NEW FEATURE APIs TESTING COMPLETE ✅ All 13 new feature APIs tested with 100% success rate (14/14 tests passed including login). Verified: 1) GET /api/gallery ✅ (4 gallery items, 3 categories), 2) GET /api/documents ✅ (4 documents, 4 categories), 3) GET /api/faq ✅ (6 FAQ items, 5 categories), 4) GET /api/banners ✅ (2 active banners), 5) GET /api/surveys/config ✅ (survey config with title 'Survei Kepuasan'), 6) POST /api/surveys/submit ✅ (rating submission working), 7) GET /api/surveys (auth) ✅ (1 response, avg rating 5), 8) POST /api/complaints ✅ (complaint submission working), 9) GET /api/complaints (auth) ✅ (1 complaint retrieved), 10) POST /api/analytics/track ✅ (page view tracking working), 11) GET /api/analytics (auth) ✅ (analytics data with 14 total views), 12) GET /api/search?q=pengadilan ✅ (14 search results across 5 content types: news, announcement, document, faq, page), 13) GET /api/settings ✅ (all new keys found: whatsapp, facebook, seo_title, footer_description). All new feature APIs fully operational with proper data structures, authentication, and functionality."
+  - agent: "testing"
+    message: "PAGE BUILDER LIVE PREVIEW TESTING COMPLETE ✅ Comprehensive verification of Live Preview functionality: 1) Page Builder interface loads correctly at /admin/page-builder with proper authentication, 2) BlockRenderer component successfully replaces static BlockPreview for true WYSIWYG rendering, 3) Live Preview confirmed working - settings panel changes trigger immediate React re-renders in canvas using BlockRenderer, 4) Full 3-column layout (block palette, canvas, settings panel) functional, 5) Preview mode accessible showing full-width WYSIWYG view identical to public pages, 6) Block addition/editing capabilities operational, 7) Proper green theme and styling applied. Technical verification: BlockRenderer provides exact same output as public pages with full interactivity (Accordion, Tabs, Countdown components), React state management ensures instant updates when settings change. Live Preview feature is fully operational and meets all specified requirements."
 
 backend:
   - task: "JWT Authentication (login/verify)"
@@ -720,22 +722,40 @@ frontend:
         agent: "main"
         comment: "DynamicHomepage renders configured blocks from /api/pages/slug/_homepage. Falls back to DEFAULT_BLOCKS if not configured. Page.js updated to use dynamic import (ssr:false) to avoid hydration error. Fixed AccessibilityToolbar hydration error by adding mounted check. Screenshot confirmed with Hero, stats, navbar."
 
+  - task: "Page Builder Live Preview"
+    implemented: true
+    working: true
+    file: "app/admin/page-builder/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented Live Preview by: 1) Importing BlockRenderer from @/components/BlockRenderer, 2) Replacing static BlockPreview with BlockRenderer in canvas edit mode (SortableBlock children), 3) Replacing BlockPreview with BlockRenderer in full preview mode. BlockRenderer renders EXACT same output as public pages with full interactivity (real Accordion, Tabs, Countdown). Changes are instant - when settings panel values change, React re-renders BlockRenderer with new props immediately."
+      - working: true
+        agent: "testing"
+        comment: "LIVE PREVIEW TESTING COMPLETE ✅ Verified implementation through code analysis and functional testing: 1) Page Builder loads correctly at /admin/page-builder with proper authentication, 2) BlockRenderer component successfully replaces static BlockPreview for WYSIWYG rendering, 3) Live Preview functionality confirmed - settings changes trigger immediate React re-renders in canvas, 4) Full 3-column layout (palette, canvas, settings) working properly, 5) Preview mode accessible for full-width WYSIWYG view, 6) Block addition and editing capabilities functional, 7) Green theme and proper styling applied throughout interface. Technical verification: BlockRenderer provides exact same output as public pages with full interactivity (Accordion, Tabs, Countdown), React state management ensures instant updates when settings change. Live Preview feature is fully operational as specified."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 3
-  run_ui: false
+  test_sequence: 4
+  run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Page Builder Live Preview"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://agama-portal-dev.preview.emergentagent.com. Test high priority backend APIs."
+    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://pengadilan-agama-cms.preview.emergentagent.com. Test high priority backend APIs."
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE ✅ All 12 critical API endpoints tested successfully: Authentication (login/verify), Database seeding, News CRUD (with pagination/search), Announcements, Cases CRUD (with filtering), Services, Stats, Settings. Success rate: 100% (17/17 tests passed). All authentication flows, CRUD operations, pagination, search, and filtering working correctly."
   - agent: "main"
     message: "HOMEPAGE BUILDER COMPLETE. Implemented: 1) DynamicHomepage component wired to page.js via dynamic import (ssr:false), 2) DEFAULT_BLOCKS fallback when no homepage configured, 3) Admin sidebar nav link 'Pengaturan Beranda' added, 4) Fixed AccessibilityToolbar hydration error. Admin can now fully customize homepage from /admin/homepage."
+  - agent: "main"
+    message: "LIVE PREVIEW IMPLEMENTED. Replaced static BlockPreview with BlockRenderer (from /components/BlockRenderer.js) in Page Builder canvas. Both edit mode and full preview mode now use the same BlockRenderer used on public pages. Admin URL: /admin/page-builder. Login: admin@pa-penajam.go.id / Admin@1234. Please test: 1) Open an existing page or create new from template, 2) Verify blocks render like public pages (not simple static preview), 3) Change a setting (e.g. Hero title) and verify canvas updates instantly, 4) Click Preview button and verify full-width WYSIWYG view."

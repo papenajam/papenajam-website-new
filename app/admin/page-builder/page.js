@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import MediaPickerModal from '@/components/MediaPickerModal';
+import BlockRenderer from '@/components/BlockRenderer';
 
 // Compact image input for page builder settings — with Library picker
 function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' }) {
@@ -829,10 +830,10 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
   const btype = BLOCK_TYPES.find(t => t.type === block.type);
 
   return (
-    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-xl transition-all ${isSelected ? 'border-[#d4a017] shadow-md' : 'border-transparent hover:border-gray-200'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
+    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-xl transition-all overflow-hidden ${isSelected ? 'border-[#d4a017] shadow-lg' : 'border-transparent hover:border-[#1b5e20]/30'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
       {/* Block toolbar */}
-      <div className={`absolute -top-8 left-0 right-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${isSelected ? 'opacity-100 pointer-events-auto' : 'group-hover:pointer-events-auto'}`}>
-        <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg shadow-sm px-2 py-1 pointer-events-auto">
+      <div className={`absolute top-2 left-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${isSelected ? 'opacity-100 pointer-events-auto' : 'group-hover:pointer-events-auto'}`}>
+        <div className="flex items-center gap-1 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-md px-2 py-1 pointer-events-auto">
           <button {...attributes} {...listeners} className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing p-0.5">
             <GripVertical className="w-3.5 h-3.5" />
           </button>
@@ -840,13 +841,16 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
           <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1b5e20] p-0.5">
             <Settings2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={() => onDelete(block.id)} className="text-gray-400 hover:text-red-500 p-0.5">
+          <button onClick={(e) => { e.stopPropagation(); onDelete(block.id); }} className="text-gray-400 hover:text-red-500 p-0.5">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
+      {/* Live preview content — pointer-events-none so clicks go to the wrapper for selection */}
       <div onClick={() => onSelect(block.id)} className="cursor-pointer">
-        {children}
+        <div className="pointer-events-none select-none">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -1247,8 +1251,8 @@ export default function PageBuilderAdmin() {
               </div>
             ) : (
               preview ? (
-                <div className="space-y-4 bg-white rounded-2xl overflow-hidden shadow-sm p-6">
-                  {blocks.map(block => <BlockPreview key={block.id} block={block} />)}
+                <div className="space-y-0 bg-white rounded-2xl overflow-hidden shadow-sm">
+                  {blocks.map(block => <BlockRenderer key={block.id} block={block} />)}
                 </div>
               ) : (
                 <DndContext
@@ -1267,7 +1271,7 @@ export default function PageBuilderAdmin() {
                           onSelect={setSelectedBlockId}
                           onDelete={deleteBlock}
                         >
-                          <BlockPreview block={block} />
+                          <BlockRenderer block={block} />
                         </SortableBlock>
                       ))}
                     </div>
