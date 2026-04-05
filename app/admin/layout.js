@@ -42,6 +42,7 @@ const sidebarGroups = [
   {
     label: 'Interaksi',
     items: [
+      { id: 'sidebar', label: 'Sidebar Melayang', path: '/admin/sidebar', icon: Layers, roles: ['superadmin','admin'] },
       { id: 'complaints', label: 'Pengaduan', path: '/admin/complaints', icon: Bell, roles: ['superadmin','admin'] },
       { id: 'surveys', label: 'Survei Kepuasan', path: '/admin/surveys', icon: Search, roles: ['superadmin','admin'] },
       { id: 'analytics', label: 'Statistik', path: '/admin/analytics', icon: LayoutDashboard, roles: ['superadmin','admin'] },

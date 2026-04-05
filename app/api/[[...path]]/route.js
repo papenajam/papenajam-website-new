@@ -574,6 +574,58 @@ async function handleRequest(request, pathSegments, method) {
     }
   }
 
+  // ==================== SIDEBAR WIDGETS ====================
+  if (segment1 === 'sidebar-widgets') {
+    const col = await getCollection('sidebar_widgets');
+    if (!segment2) {
+      if (method === 'GET') {
+        const items = await col.find({ isActive: true }).sort({ order: 1 }).toArray();
+        return NextResponse.json({ items });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = { id: uuidv4(), ...body, isActive: body.isActive !== false, order: body.order || 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'all' && method === 'GET') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const items = await col.find({}).sort({ order: 1 }).toArray();
+      return NextResponse.json({ items });
+    }
+    if (segment2 === 'bulk' && method === 'PUT') {
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const body = await request.json();
+      const { items } = body;
+      if (!Array.isArray(items)) return NextResponse.json({ error: 'items harus array' }, { status: 400 });
+      await col.deleteMany({});
+      if (items.length > 0) {
+        await col.insertMany(items.map(item => ({ ...item, id: item.id || uuidv4(), updatedAt: new Date().toISOString(), createdAt: item.createdAt || new Date().toISOString() })));
+      }
+      return NextResponse.json({ message: 'Sidebar widgets disimpan', count: items.length });
+    }
+    if (segment2) {
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        return NextResponse.json(await col.findOne({ id: segment2 }));
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
   // ==================== GALLERY ====================
   if (segment1 === 'gallery') {
     const col = await getCollection('gallery');
@@ -820,10 +872,10 @@ async function handleRequest(request, pathSegments, method) {
       return NextResponse.json({ ok: true });
     }
     if (!segment2 && method === 'GET') {
-      const auth = requireAuth(request);
-      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       const url = new URL(request.url);
       const days = parseInt(url.searchParams.get('days') || '30');
+      // Public: hanya bisa lihat total, admin bisa lihat detail
+      const authUser = requireAuth(request);
       const since = new Date(Date.now() - days * 86400000).toISOString().split('T')[0];
       const records = await col.find({ date: { $gte: since } }).sort({ date: -1 }).toArray();
       const byDate = {}, byPath = {};
@@ -835,6 +887,10 @@ async function handleRequest(request, pathSegments, method) {
       });
       const dailyData = Object.entries(byDate).sort((a,b) => a[0].localeCompare(b[0])).map(([date, views]) => ({ date, views }));
       const topPages = Object.entries(byPath).sort((a,b) => b[1]-a[1]).slice(0,10).map(([path, views]) => ({ path, views }));
+      // Non-admin hanya mendapat total dan dailyData ringkas
+      if (!authUser) {
+        return NextResponse.json({ total, days });
+      }
       return NextResponse.json({ total, dailyData, topPages, days });
     }
   }
@@ -1104,6 +1160,17 @@ async function seedDatabase() {
     for (const s of settingsData) {
       await settingsCol.updateOne({ key: s.key }, { $set: s }, { upsert: true });
     }
+  }
+
+  // Seed Sidebar Widgets
+  const sidebarWidgetsCol = await getCollection('sidebar_widgets');
+  const swCount = await sidebarWidgetsCol.countDocuments();
+  if (swCount === 0) {
+    await sidebarWidgetsCol.insertMany([
+      { id: uuidv4(), type: 'faq', label: 'FAQ', labelEn: 'FAQ', icon: '❓', color: '#1e3a5f', isActive: true, order: 0, settings: { limit: 4, title: 'Pertanyaan Umum', showAll: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: uuidv4(), type: 'stats', label: 'Statistik', labelEn: 'Stats', icon: '📊', color: '#c9a84c', isActive: true, order: 1, settings: { title: 'Statistik', showCases: true, showVisitors: true, days: 30 }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: uuidv4(), type: 'contact', label: 'Kontak', labelEn: 'Contact', icon: '📞', color: '#2d5a8e', isActive: true, order: 2, settings: { title: 'Hubungi Kami', showPhone: true, showEmail: true, showHours: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    ]);
   }
 
   // Seed sample page

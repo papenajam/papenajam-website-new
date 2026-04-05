@@ -4,6 +4,7 @@ import { AccessibilityProvider } from '@/contexts/AccessibilityContext';
 import AccessibilityToolbar from './AccessibilityToolbar';
 import WhatsAppWidget from './WhatsAppWidget';
 import SurveyWidget from './SurveyWidget';
+import FloatingSidebar from './FloatingSidebar';
 import { useEffect } from 'react';
 
 function AnalyticsTracker() {
@@ -32,6 +33,7 @@ export default function AppProviders({ children }) {
         </a>
         <AnalyticsTracker />
         <AccessibilityToolbar />
+        <FloatingSidebar />
         <WhatsAppWidget />
         <SurveyWidget />
         {children}
