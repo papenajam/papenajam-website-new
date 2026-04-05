@@ -480,7 +480,184 @@ function BlockSettingsPanel({ block, onChange, token }) {
         accept="image"
       />
       {renderBlockSettings({ block, s, upd, updItem, addItem, removeItem, token, setGalleryPickerOpen })}
+      {/* ── Typography & Color Controls — shared for all blocks ── */}
+      <StyleControls block={block} onChange={onChange} />
     </>
+  );
+}
+
+// ─── Color Presets ────────────────────────────────────────────────────────────
+const COLOR_PRESETS = [
+  '#1b5e20','#2e7d32','#388e3c','#4caf50','#c8e6c9','#e8f5e9',
+  '#d4a017','#f57f17','#fffde7',
+  '#e07028','#bf360c',
+  '#1a237e','#0d47a1','#bbdefb',
+  '#37474f','#263238','#f5f5f5',
+  '#b71c1c','#ffffff','#000000',
+];
+
+function ColorPicker({ label, value, onChange }) {
+  return (
+    <div>
+      {label && <Label className="text-xs font-semibold mb-1.5 block">{label}</Label>}
+      <div className="flex flex-wrap gap-1 mb-1.5">
+        {COLOR_PRESETS.map(c => (
+          <button key={c} type="button" onClick={() => onChange(c)} title={c}
+            className={`w-5 h-5 rounded border-2 transition-all hover:scale-110 ${value === c ? 'border-gray-600 scale-90 ring-1 ring-offset-1 ring-gray-400' : 'border-transparent'}`}
+            style={{ background: c, boxShadow: c === '#ffffff' || c === '#fffde7' ? 'inset 0 0 0 1px #e5e7eb' : undefined }}
+          />
+        ))}
+        <button type="button" onClick={() => onChange('')} title="Hapus / Default"
+          className={`w-5 h-5 rounded border-2 text-[8px] font-bold flex items-center justify-center transition-all ${!value ? 'border-gray-500 bg-gray-100 text-gray-600' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}`}>
+          ✕
+        </button>
+      </div>
+      <div className="flex gap-1.5 items-center">
+        <input type="color" value={value || '#ffffff'} onChange={e => onChange(e.target.value)}
+          className="w-8 h-7 rounded border border-gray-200 cursor-pointer p-0.5 flex-shrink-0" />
+        <Input value={value || ''} onChange={e => onChange(e.target.value)}
+          placeholder="#rrggbb atau kosongkan"
+          className="flex-1 h-7 text-xs font-mono" />
+      </div>
+    </div>
+  );
+}
+
+// ─── StyleControls — shared Typography & Color panel for all blocks ───────────
+function StyleControls({ block, onChange }) {
+  const [open, setOpen] = useState(false);
+  const s  = block.settings || {};
+  const st = s.style || {};
+  const upd = (key, val) => onChange({ ...block, settings: { ...s, style: { ...st, [key]: val } } });
+
+  const TITLE_SIZES = [
+    { k:'',    l:'Default' },
+    { k:'14px',l:'XS'  },
+    { k:'18px',l:'SM'  },
+    { k:'24px',l:'MD'  },
+    { k:'30px',l:'LG'  },
+    { k:'36px',l:'XL'  },
+    { k:'48px',l:'2XL' },
+    { k:'60px',l:'3XL' },
+  ];
+  const BODY_SIZES = [
+    { k:'',    l:'Default' },
+    { k:'12px',l:'XS' },
+    { k:'14px',l:'SM' },
+    { k:'16px',l:'MD' },
+    { k:'18px',l:'LG' },
+    { k:'20px',l:'XL' },
+  ];
+  const WEIGHTS = [
+    { k:'',   l:'Default'  },
+    { k:'400',l:'Normal'   },
+    { k:'500',l:'Medium'   },
+    { k:'600',l:'Semibold' },
+    { k:'700',l:'Bold'     },
+    { k:'800',l:'Black'    },
+  ];
+  const PAD_PRESETS = [
+    { k:'',     l:'Default' },
+    { k:'none', l:'Hapus'   },
+    { k:'xs',   l:'XS'      },
+    { k:'sm',   l:'S'       },
+    { k:'md',   l:'M'       },
+    { k:'lg',   l:'L'       },
+    { k:'xl',   l:'XL'      },
+  ];
+
+  const BtnGroup = ({ items, value, onSelect }) => (
+    <div className="flex flex-wrap gap-1">
+      {items.map(({ k, l }) => (
+        <button key={k} type="button" onClick={() => onSelect(k)}
+          className={`px-2 py-0.5 rounded text-[11px] font-semibold border transition-all ${(value||'') === k ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="mt-4 border-t border-dashed border-gray-200 pt-3">
+      <button type="button" onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider hover:text-[#1b5e20] py-1 transition-colors">
+        <span className="flex items-center gap-1.5">
+          <span className="text-base">🎨</span> Tampilan &amp; Tipografi
+          {(st.bgColor || st.textColor || st.titleSize || st.bodySize || st.padding || st.textAlign || st.titleWeight || st.bodyWeight || st.titleColor) && (
+            <span className="ml-1 px-1.5 py-0.5 bg-[#1b5e20]/10 text-[#1b5e20] rounded text-[9px] font-bold">AKTIF</span>
+          )}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-4 pb-1">
+
+          {/* ── Section Colors ── */}
+          <div className="bg-gray-50/80 rounded-xl p-3 space-y-3 border border-gray-100">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Warna Section</p>
+            <ColorPicker label="Latar Belakang" value={st.bgColor || ''} onChange={v => upd('bgColor', v)} />
+            <ColorPicker label="Warna Teks Utama" value={st.textColor || ''} onChange={v => upd('textColor', v)} />
+          </div>
+
+          {/* ── Padding ── */}
+          <div>
+            <Label className="text-xs font-semibold mb-1.5 block">Jarak Dalam (Padding)</Label>
+            <BtnGroup items={PAD_PRESETS} value={st.padding || ''} onSelect={v => upd('padding', v)} />
+            <p className="text-[10px] text-gray-400 mt-1">S=32px · M=48px(default) · L=64px · XL=96px</p>
+          </div>
+
+          {/* ── Text Alignment ── */}
+          <div>
+            <Label className="text-xs font-semibold mb-1.5 block">Perataan Teks</Label>
+            <div className="flex gap-1">
+              {[['','Default'],['left','Kiri ←'],['center','Tengah ↔'],['right','Kanan →']].map(([k,l]) => (
+                <button key={k} type="button" onClick={() => upd('textAlign', k)}
+                  className={`flex-1 py-1 rounded text-[10px] font-semibold border transition-all ${(st.textAlign||'') === k ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}>
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Title Typography ── */}
+          <div className="bg-gray-50/80 rounded-xl p-3 space-y-2 border border-gray-100">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Tipografi Judul</p>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran</Label>
+              <BtnGroup items={TITLE_SIZES} value={st.titleSize || ''} onSelect={v => upd('titleSize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ketebalan</Label>
+              <BtnGroup items={WEIGHTS} value={st.titleWeight || ''} onSelect={v => upd('titleWeight', v)} />
+            </div>
+            <ColorPicker label="Warna Judul (Custom)" value={st.titleColor || ''} onChange={v => upd('titleColor', v)} />
+          </div>
+
+          {/* ── Body Typography ── */}
+          <div className="bg-gray-50/80 rounded-xl p-3 space-y-2 border border-gray-100">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Tipografi Teks Isi</p>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran</Label>
+              <BtnGroup items={BODY_SIZES} value={st.bodySize || ''} onSelect={v => upd('bodySize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ketebalan</Label>
+              <BtnGroup items={WEIGHTS} value={st.bodyWeight || ''} onSelect={v => upd('bodyWeight', v)} />
+            </div>
+          </div>
+
+          {/* Reset button */}
+          {(st.bgColor || st.textColor || st.titleSize || st.bodySize || st.padding || st.textAlign || st.titleWeight || st.bodyWeight || st.titleColor) && (
+            <button type="button"
+              onClick={() => onChange({ ...block, settings: { ...s, style: {} } })}
+              className="w-full text-xs text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 rounded-lg border border-red-200 transition-colors font-semibold">
+              🔄 Reset Tampilan ke Default
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
