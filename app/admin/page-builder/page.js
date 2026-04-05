@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useReducer } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +17,7 @@ import {
   Plus, Trash2, GripVertical, Eye, Save, ArrowLeft, Settings2,
   Type, Image, LayoutGrid, BarChart2, Zap, AlignLeft, X, Check,
   ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon, FolderOpen,
-  List, LayoutPanelTop, MapPin, AlarmClock
+  List, LayoutPanelTop, MapPin, AlarmClock, Undo2, Redo2
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import MediaPickerModal from '@/components/MediaPickerModal';
@@ -859,7 +859,52 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
 export default function PageBuilderAdmin() {
   const [pages, setPages] = useState([]);
   const [selectedPage, setSelectedPage] = useState(null);
-  const [blocks, setBlocks] = useState([]);
+
+  // ── Undo/Redo history ───────────────────────────────────────────────────────
+  // State: { past: blocks[][], present: blocks[], future: blocks[][] }
+  const [blocksState, blocksDispatch] = useReducer(
+    (state, action) => {
+      switch (action.type) {
+        case 'RESET':
+          // Load a page – wipe history, start fresh
+          return { past: [], present: action.blocks, future: [] };
+        case 'SET': {
+          // Normal edit – push present to past, set new present, clear future
+          const past = [...state.past, state.present].slice(-50); // max 50
+          return { past, present: action.blocks, future: [] };
+        }
+        case 'UNDO':
+          if (state.past.length === 0) return state;
+          return {
+            past:    state.past.slice(0, -1),
+            present: state.past[state.past.length - 1],
+            future:  [state.present, ...state.future].slice(0, 50),
+          };
+        case 'REDO':
+          if (state.future.length === 0) return state;
+          return {
+            past:    [...state.past, state.present].slice(-50),
+            present: state.future[0],
+            future:  state.future.slice(1),
+          };
+        default:
+          return state;
+      }
+    },
+    { past: [], present: [], future: [] }
+  );
+
+  const blocks    = blocksState.present;
+  const canUndo   = blocksState.past.length > 0;
+  const canRedo   = blocksState.future.length > 0;
+  const setBlocks = (newBlocksOrFn) => {
+    const next = typeof newBlocksOrFn === 'function' ? newBlocksOrFn(blocks) : newBlocksOrFn;
+    blocksDispatch({ type: 'SET', blocks: next });
+  };
+  const resetBlocks = (newBlocks) => blocksDispatch({ type: 'RESET', blocks: newBlocks });
+  const undo = () => blocksDispatch({ type: 'UNDO' });
+  const redo = () => blocksDispatch({ type: 'REDO' });
+  // ───────────────────────────────────────────────────────────────────────────
   const [selectedBlockId, setSelectedBlockId] = useState(null);
   const [activeId, setActiveId] = useState(null);
   const [preview, setPreview] = useState(false);
@@ -884,6 +929,19 @@ export default function PageBuilderAdmin() {
 
   useEffect(() => { fetchPages(); }, []);
 
+  // Keyboard shortcut: Ctrl+Z = undo, Ctrl+Y / Ctrl+Shift+Z = redo
+  useEffect(() => {
+    if (view !== 'builder') return;
+    function onKeyDown(e) {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+        if (e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+        if ((e.key === 'y') || (e.key === 'z' && e.shiftKey)) { e.preventDefault(); redo(); }
+      }
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [view, canUndo, canRedo]);
+
   async function fetchPages() {
     setLoading(true);
     try {
@@ -895,7 +953,7 @@ export default function PageBuilderAdmin() {
 
   function openBuilder(page) {
     setSelectedPage(page);
-    setBlocks(page.blocks || []);
+    resetBlocks(page.blocks || []);
     setPageMeta({ title: page.title, slug: page.slug, status: page.status || 'draft' });
     setSelectedBlockId(null);
     setView('builder');
@@ -988,11 +1046,9 @@ export default function PageBuilderAdmin() {
     const { active, over } = e;
     setActiveId(null);
     if (active.id !== over?.id) {
-      setBlocks(items => {
-        const oldIndex = items.findIndex(i => i.id === active.id);
-        const newIndex = items.findIndex(i => i.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = blocks.findIndex(i => i.id === active.id);
+      const newIndex = blocks.findIndex(i => i.id === over.id);
+      setBlocks(arrayMove(blocks, oldIndex, newIndex));
     }
   }
 
@@ -1197,6 +1253,28 @@ export default function PageBuilderAdmin() {
             <option value="draft">Draft</option>
             <option value="published">Dipublikasi</option>
           </select>
+        </div>
+        {/* ── Undo / Redo ── */}
+        <div className="flex items-center gap-1 border border-gray-200 rounded-lg p-0.5 bg-gray-50">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            title={canUndo ? `Undo (${blocksState.past.length} langkah) — Ctrl+Z` : 'Tidak ada yang bisa di-undo'}
+            className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${canUndo ? 'text-gray-700 hover:bg-white hover:shadow-sm cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`}
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+            {canUndo && <span className="tabular-nums text-[10px] text-gray-500">{blocksState.past.length}</span>}
+          </button>
+          <div className="w-px h-4 bg-gray-200" />
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            title={canRedo ? `Redo (${blocksState.future.length} langkah) — Ctrl+Y` : 'Tidak ada yang bisa di-redo'}
+            className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${canRedo ? 'text-gray-700 hover:bg-white hover:shadow-sm cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`}
+          >
+            {canRedo && <span className="tabular-nums text-[10px] text-gray-500">{blocksState.future.length}</span>}
+            <Redo2 className="w-3.5 h-3.5" />
+          </button>
         </div>
         <Button variant="outline" size="sm" onClick={() => setPreview(!preview)}>
           <Eye className="w-4 h-4 mr-1" /> {preview ? 'Edit' : 'Preview'}
