@@ -6,11 +6,12 @@ import WhatsAppWidget from './WhatsAppWidget';
 import SurveyWidget from './SurveyWidget';
 import FloatingSidebar from './FloatingSidebar';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 function AnalyticsTracker() {
   useEffect(() => {
-    // Track page view
     const path = window.location.pathname;
+    if (path.startsWith('/admin')) return; // Don't track admin pages
     fetch('/api/analytics/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -21,6 +22,9 @@ function AnalyticsTracker() {
 }
 
 export default function AppProviders({ children }) {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith('/admin');
+
   return (
     <LanguageProvider>
       <AccessibilityProvider>
@@ -33,11 +37,16 @@ export default function AppProviders({ children }) {
         </a>
         <AnalyticsTracker />
         <AccessibilityToolbar />
-        <FloatingSidebar />
-        <WhatsAppWidget />
-        <SurveyWidget />
+        {!isAdmin && (
+          <>
+            <FloatingSidebar />
+            <WhatsAppWidget />
+            <SurveyWidget />
+          </>
+        )}
         {children}
       </AccessibilityProvider>
     </LanguageProvider>
   );
 }
+

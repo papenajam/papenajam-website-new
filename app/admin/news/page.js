@@ -11,7 +11,8 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction
 } from '@/components/ui/alert-dialog';
-import { Plus, Pencil, Trash2, Search, Eye, EyeOff, ChevronLeft, ChevronRight, Newspaper, Upload, X, ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Eye, EyeOff, ChevronLeft, ChevronRight, Newspaper, Upload, X, ImageIcon, FolderOpen } from 'lucide-react';
+import MediaPickerModal from '@/components/MediaPickerModal';
 
 function Toast({ msg, type }) {
   if (!msg) return null;
@@ -22,10 +23,11 @@ function Toast({ msg, type }) {
   );
 }
 
-// Reusable image upload component
+// Reusable image upload component with Media Library picker
 function ImageUploadInput({ value, onChange, token, label = 'Gambar' }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef(null);
 
   async function handleFile(e) {
@@ -64,6 +66,16 @@ function ImageUploadInput({ value, onChange, token, label = 'Gambar' }) {
   return (
     <div>
       <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
+
+      {/* Media Library picker modal */}
+      <MediaPickerModal
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url) => { onChange(url); setPickerOpen(false); }}
+        token={token}
+        accept="image"
+      />
+
       {value ? (
         <div className="relative mt-1">
           <img src={value} alt="preview" className="w-full h-36 object-cover rounded-lg border border-gray-200" onError={e => e.target.style.display='none'} />
@@ -86,13 +98,31 @@ function ImageUploadInput({ value, onChange, token, label = 'Gambar' }) {
           </label>
         </div>
       )}
-      <p className="text-xs text-gray-400 mt-1">— atau —</p>
-      <Input
-        placeholder="Masukkan URL gambar langsung..."
-        value={value && !value.startsWith('/uploads') ? value : ''}
-        onChange={e => onChange(e.target.value)}
-        className="mt-1 text-sm"
-      />
+
+      {/* Action row: separator + library picker + URL input */}
+      <div className="flex items-center gap-2 mt-2">
+        <div className="flex-1 h-px bg-gray-200" />
+        <span className="text-xs text-gray-400 flex-shrink-0">atau</span>
+        <div className="flex-1 h-px bg-gray-200" />
+      </div>
+      <div className="flex gap-2 mt-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setPickerOpen(true)}
+          className="flex-shrink-0 gap-1.5 text-[#1b5e20] border-[#1b5e20]/30 hover:bg-[#1b5e20]/5 text-xs"
+        >
+          <FolderOpen className="w-3.5 h-3.5" />
+          Pilih dari Library
+        </Button>
+        <Input
+          placeholder="atau masukkan URL gambar..."
+          value={value && !value.startsWith('/uploads') ? value : ''}
+          onChange={e => onChange(e.target.value)}
+          className="flex-1 text-sm"
+        />
+      </div>
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );

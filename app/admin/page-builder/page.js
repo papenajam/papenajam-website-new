@@ -16,13 +16,15 @@ import { CSS } from '@dnd-kit/utilities';
 import {
   Plus, Trash2, GripVertical, Eye, Save, ArrowLeft, Settings2,
   Type, Image, LayoutGrid, BarChart2, Zap, AlignLeft, X, Check,
-  ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon
+  ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon, FolderOpen
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import MediaPickerModal from '@/components/MediaPickerModal';
 
-// Reusable compact image upload input for page builder settings
+// Compact image input for page builder settings — with Library picker
 function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' }) {
   const [uploading, setUploading] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef(null);
 
   async function handleFile(e) {
@@ -49,21 +51,71 @@ function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' 
   }
 
   return (
-    <div className="flex gap-1.5">
-      <Input
-        placeholder={placeholder}
-        value={value || ''}
-        onChange={e => onChange(e.target.value)}
-        className="flex-1 text-xs"
+    <div className="space-y-1.5">
+      {/* Media Library picker modal */}
+      <MediaPickerModal
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url) => { onChange(url); setPickerOpen(false); }}
+        token={token}
+        accept="image"
       />
-      <label className="cursor-pointer flex items-center justify-center w-8 h-9 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex-shrink-0 relative">
-        {uploading ? (
-          <div className="w-3.5 h-3.5 border-2 border-[#1b5e20] border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <Upload className="w-3.5 h-3.5 text-gray-500" />
-        )}
-        <input ref={fileRef} type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={handleFile} disabled={uploading} />
-      </label>
+
+      {/* URL input + Upload button */}
+      <div className="flex gap-1.5">
+        <Input
+          placeholder={placeholder}
+          value={value || ''}
+          onChange={e => onChange(e.target.value)}
+          className="flex-1 text-xs"
+        />
+        <label
+          className="cursor-pointer flex items-center justify-center w-8 h-9 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex-shrink-0 relative"
+          title="Upload gambar baru"
+        >
+          {uploading ? (
+            <div className="w-3.5 h-3.5 border-2 border-[#1b5e20] border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Upload className="w-3.5 h-3.5 text-gray-500" />
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            onChange={handleFile}
+            disabled={uploading}
+          />
+        </label>
+        {/* Library picker button */}
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="flex items-center justify-center w-8 h-9 border border-[#1b5e20]/40 rounded-lg hover:bg-[#1b5e20]/5 hover:border-[#1b5e20] transition-colors flex-shrink-0"
+          title="Pilih dari Media Library"
+        >
+          <FolderOpen className="w-3.5 h-3.5 text-[#1b5e20]" />
+        </button>
+      </div>
+
+      {/* Image preview */}
+      {value && (
+        <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+          <img
+            src={value}
+            alt="preview"
+            className="w-full h-24 object-cover"
+            onError={e => e.target.parentElement.style.display = 'none'}
+          />
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-1.5 right-1.5 w-5 h-5 bg-white/90 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 shadow-sm border border-gray-200 transition-colors"
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -332,6 +384,28 @@ function BlockSettingsPanel({ block, onChange, token }) {
   const addItem = (key, def) => onChange({ ...block, settings: { ...s, [key]: [...(s[key] || []), { id: uuidv4(), ...def }] } });
   const removeItem = (key, i) => { const arr = [...(s[key] || [])]; arr.splice(i, 1); onChange({ ...block, settings: { ...s, [key]: arr } }); };
 
+  // Gallery block — Media Library picker (single-select, adds to images array)
+  const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
+
+  return (
+    <>
+      {/* Gallery Library Picker (shared across all gallery blocks) */}
+      <MediaPickerModal
+        isOpen={galleryPickerOpen}
+        onClose={() => setGalleryPickerOpen(false)}
+        onSelect={(url) => {
+          upd('images', [...(s.images || []), url]);
+          setGalleryPickerOpen(false);
+        }}
+        token={token}
+        accept="image"
+      />
+      {renderBlockSettings({ block, s, upd, updItem, addItem, removeItem, token, setGalleryPickerOpen })}
+    </>
+  );
+}
+
+function renderBlockSettings({ block, s, upd, updItem, addItem, removeItem, token, setGalleryPickerOpen }) {
   switch (block.type) {
     case 'hero':
       return (
@@ -453,9 +527,17 @@ function BlockSettingsPanel({ block, onChange, token }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <Label className="text-xs font-semibold">Gambar Galeri</Label>
-              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => upd('images', [...(s.images || []), ''])}>
-                <Plus className="w-3 h-3 mr-1" /> Tambah URL
-              </Button>
+              <div className="flex gap-1.5">
+                <Button size="sm" variant="outline"
+                  className="h-7 text-[10px] gap-1 text-[#1b5e20] border-[#1b5e20]/30 hover:bg-[#1b5e20]/5"
+                  onClick={() => setGalleryPickerOpen(true)}>
+                  <FolderOpen className="w-3 h-3" /> Library
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-[10px]"
+                  onClick={() => upd('images', [...(s.images || []), ''])}>
+                  <Plus className="w-3 h-3 mr-0.5" /> URL
+                </Button>
+              </div>
             </div>
             <div className="space-y-1.5 max-h-52 overflow-y-auto">
               {(s.images || []).map((img, i) => (
@@ -469,11 +551,10 @@ function BlockSettingsPanel({ block, onChange, token }) {
                     />
                     <button onClick={() => { const arr=[...(s.images||[])]; arr.splice(i,1); upd('images',arr); }} className="text-red-400 flex-shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
-                  {img && <img src={img} alt="" className="w-full h-12 object-cover rounded" onError={e=>e.target.style.display='none'} />}
                 </div>
               ))}
               {(s.images || []).length === 0 && (
-                <p className="text-xs text-gray-400 text-center py-2">Belum ada gambar. Tambahkan URL atau upload.</p>
+                <p className="text-xs text-gray-400 text-center py-2">Belum ada gambar. Pilih dari Library atau tambah URL.</p>
               )}
             </div>
           </div>
