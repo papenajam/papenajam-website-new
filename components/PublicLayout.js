@@ -29,18 +29,22 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
     }
   };
 
-  const footerLinks = [
-    { href: '/', label: lang === 'id' ? 'Beranda' : 'Home' },
-    { href: '/agenda-sidang', label: lang === 'id' ? 'Agenda Sidang' : 'Court Schedule' },
-    { href: '/putusan', label: lang === 'id' ? 'Putusan' : 'Court Decisions' },
-    { href: '/pencarian-perkara', label: lang === 'id' ? 'Pencarian Perkara' : 'Case Search' },
-    { href: '/galeri', label: lang === 'id' ? 'Galeri Foto' : 'Photo Gallery' },
-    { href: '/dokumen', label: lang === 'id' ? 'Dokumen Publik' : 'Public Documents' },
-    { href: '/faq', label: 'FAQ' },
-    { href: '/pengaduan', label: lang === 'id' ? 'Pengaduan' : 'Complaints' },
-    { href: '/pencarian', label: lang === 'id' ? 'Pencarian' : 'Search' },
-    { href: '/accessibility', label: `♿ ${lang === 'id' ? 'Aksesibilitas' : 'Accessibility'}` },
-  ];
+  const footerLinksData = (() => {
+    try {
+      if (siteSettings.footer_links) return JSON.parse(siteSettings.footer_links);
+    } catch {}
+    return [
+      { href: '/', label: lang === 'id' ? 'Beranda' : 'Home', labelEn: 'Home' },
+      { href: '/agenda-sidang', label: lang === 'id' ? 'Agenda Sidang' : 'Court Schedule', labelEn: 'Court Schedule' },
+      { href: '/putusan', label: lang === 'id' ? 'Putusan' : 'Court Decisions', labelEn: 'Court Decisions' },
+      { href: '/pencarian-perkara', label: lang === 'id' ? 'Pencarian Perkara' : 'Case Search', labelEn: 'Case Search' },
+      { href: '/galeri', label: lang === 'id' ? 'Galeri Foto' : 'Photo Gallery', labelEn: 'Photo Gallery' },
+      { href: '/dokumen', label: lang === 'id' ? 'Dokumen Publik' : 'Public Documents', labelEn: 'Public Documents' },
+      { href: '/faq', label: 'FAQ', labelEn: 'FAQ' },
+      { href: '/pengaduan', label: lang === 'id' ? 'Pengaduan' : 'Complaints', labelEn: 'Complaints' },
+      { href: '/accessibility', label: `♿ ${lang === 'id' ? 'Aksesibilitas' : 'Accessibility'}`, labelEn: 'Accessibility' },
+    ];
+  })();
 
   const socialLinks = [
     siteSettings.facebook && { href: siteSettings.facebook, label: 'Facebook', icon: '📘' },
@@ -124,8 +128,8 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
                   <Scale className="w-5 h-5 text-[#d4a017]" aria-hidden="true" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm">{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
-                  <p className="font-extrabold text-[#d4a017]">Penajam</p>
+                  <p className="font-bold text-sm">{siteSettings.court_name ? siteSettings.court_name.replace('Penajam', '').trim() : (lang === 'id' ? 'Pengadilan Agama' : 'Religious Court')}</p>
+                  <p className="font-extrabold text-[#d4a017]">{siteSettings.court_name ? 'Penajam' : 'Penajam'}</p>
                 </div>
               </div>
               <p className="text-white/60 text-sm leading-relaxed">
@@ -147,27 +151,31 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
               )}
             </div>
 
-            {/* Quick Links */}
+            {/* Quick Links — 100% dynamic */}
             <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
               <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">
-                {lang === 'id' ? 'Tautan Cepat' : 'Quick Links'}
+                {lang === 'id'
+                  ? (siteSettings.footer_links_title || 'Tautan Cepat')
+                  : (siteSettings.footer_links_title_en || 'Quick Links')}
               </h3>
               <ul className="list-none p-0 grid grid-cols-2 gap-x-4 gap-y-1.5">
-                {footerLinks.map(link => (
-                  <li key={link.href}>
+                {footerLinksData.map((link, idx) => (
+                  <li key={idx}>
                     <a href={link.href}
                       className="text-white/60 hover:text-white text-sm transition-colors flex items-center gap-1 min-h-[36px]">
-                      {link.label}
+                      {lang === 'id' ? link.label : (link.labelEn || link.label)}
                     </a>
                   </li>
                 ))}
               </ul>
             </nav>
 
-            {/* Contact */}
+            {/* Contact — dynamic */}
             <div>
               <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">
-                {lang === 'id' ? 'Kontak Kami' : 'Contact Us'}
+                {lang === 'id'
+                  ? (siteSettings.footer_contact_title || 'Kontak Kami')
+                  : (siteSettings.footer_contact_title_en || 'Contact Us')}
               </h3>
               <div className="space-y-2 text-sm text-white/60">
                 {siteSettings.address && (
@@ -190,14 +198,16 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
                       className="hover:text-white transition-colors">{siteSettings.email}</a>
                   </p>
                 )}
-                <p className="flex items-start gap-2">
-                  <span className="flex-shrink-0">🕐</span>
-                  <span className="leading-relaxed">
-                    {lang === 'id'
-                      ? 'Sen–Kam: 08.00–16.00 WITA\nJum: 08.00–11.00 WITA'
-                      : 'Mon–Thu: 08:00–16:00\nFri: 08:00–11:00'}
-                  </span>
-                </p>
+                {(siteSettings.footer_hours || true) && (
+                  <p className="flex items-start gap-2">
+                    <span className="flex-shrink-0">🕐</span>
+                    <span className="leading-relaxed whitespace-pre-line">
+                      {siteSettings.footer_hours || (lang === 'id'
+                        ? 'Sen–Kam: 08.00–16.00 WITA\nJum: 08.00–11.00 WITA'
+                        : 'Mon–Thu: 08:00–16:00\nFri: 08:00–11:00')}
+                    </span>
+                  </p>
+                )}
               </div>
             </div>
           </div>

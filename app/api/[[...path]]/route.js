@@ -1279,6 +1279,22 @@ async function seedDatabase() {
       { key: 'footer_copyright', value: 'Pengadilan Agama Penajam. Hak Cipta Dilindungi.' },
       { key: 'analytics_enabled', value: 'true' },
       { key: 'survey_popup_enabled', value: 'false' },
+      { key: 'footer_hours', value: 'Sen–Kam: 08.00–16.00 WITA\nJum: 08.00–11.00 WITA' },
+      { key: 'footer_links_title', value: 'Tautan Cepat' },
+      { key: 'footer_links_title_en', value: 'Quick Links' },
+      { key: 'footer_contact_title', value: 'Kontak Kami' },
+      { key: 'footer_contact_title_en', value: 'Contact Us' },
+      { key: 'footer_links', value: JSON.stringify([
+        { label: 'Beranda', labelEn: 'Home', href: '/' },
+        { label: 'Agenda Sidang', labelEn: 'Court Schedule', href: '/agenda-sidang' },
+        { label: 'Putusan', labelEn: 'Court Decisions', href: '/putusan' },
+        { label: 'Pencarian Perkara', labelEn: 'Case Search', href: '/pencarian-perkara' },
+        { label: 'Galeri Foto', labelEn: 'Photo Gallery', href: '/galeri' },
+        { label: 'Dokumen Publik', labelEn: 'Public Documents', href: '/dokumen' },
+        { label: 'FAQ', labelEn: 'FAQ', href: '/faq' },
+        { label: 'Pengaduan', labelEn: 'Complaints', href: '/pengaduan' },
+        { label: 'Aksesibilitas', labelEn: 'Accessibility', href: '/accessibility' },
+      ]) },
     ];
     for (const s of newSettings) {
       await settingsCol2.updateOne({ key: s.key }, { $set: s }, { upsert: true });
