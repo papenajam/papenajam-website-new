@@ -17,7 +17,8 @@ import {
   Plus, Trash2, GripVertical, Eye, Save, ArrowLeft, Settings2,
   Type, Image, LayoutGrid, BarChart2, Zap, AlignLeft, X, Check,
   ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon, FolderOpen,
-  List, LayoutPanelTop, MapPin, AlarmClock, Undo2, Redo2
+  List, LayoutPanelTop, MapPin, AlarmClock, Undo2, Redo2,
+  Smartphone, Tablet, Monitor
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import MediaPickerModal from '@/components/MediaPickerModal';
@@ -482,6 +483,8 @@ function BlockSettingsPanel({ block, onChange, token }) {
       {renderBlockSettings({ block, s, upd, updItem, addItem, removeItem, token, setGalleryPickerOpen })}
       {/* ── Typography & Color Controls — shared for all blocks ── */}
       <StyleControls block={block} onChange={onChange} />
+      {/* ── Responsive Controls — visibility & overrides per device ── */}
+      <ResponsiveControls block={block} onChange={onChange} />
     </>
   );
 }
@@ -653,6 +656,147 @@ function StyleControls({ block, onChange }) {
               onClick={() => onChange({ ...block, settings: { ...s, style: {} } })}
               className="w-full text-xs text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 rounded-lg border border-red-200 transition-colors font-semibold">
               🔄 Reset Tampilan ke Default
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── ResponsiveControls — visibility & overrides per device ───────────────────
+function ResponsiveControls({ block, onChange }) {
+  const [open, setOpen] = useState(false);
+  const s  = block.settings || {};
+  const st = s.style || {};
+  const r  = st.responsive || {};
+
+  const upd = (key, val) => onChange({
+    ...block,
+    settings: { ...s, style: { ...st, responsive: { ...r, [key]: val } } },
+  });
+
+  const showM = r.showMobile  !== false;
+  const showT = r.showTablet  !== false;
+  const showD = r.showDesktop !== false;
+
+  const hasOverrides = r.mobilePadding || r.tabletPadding || r.mobileTitleSize || r.tabletTitleSize || r.mobileBodySize || r.tabletBodySize;
+  const hasHidden    = !showM || !showT || !showD;
+
+  const SIZES = [
+    { k: '',     l: 'Default' },
+    { k: '14px', l: 'XS' },
+    { k: '18px', l: 'SM' },
+    { k: '24px', l: 'MD' },
+    { k: '30px', l: 'LG' },
+    { k: '36px', l: 'XL' },
+    { k: '48px', l: '2XL' },
+  ];
+  const BODY_SIZES = SIZES.slice(0, 6);
+  const PAD = [
+    { k: '',      l: 'Default' },
+    { k: 'none',  l: 'Hapus'   },
+    { k: 'xs',    l: 'XS'      },
+    { k: 'sm',    l: 'S'       },
+    { k: 'md',    l: 'M'       },
+    { k: 'lg',    l: 'L'       },
+    { k: 'xl',    l: 'XL'      },
+  ];
+  const BtnGroup = ({ items, value, onSelect }) => (
+    <div className="flex flex-wrap gap-1">
+      {items.map(({ k, l }) => (
+        <button key={k} type="button" onClick={() => onSelect(k)}
+          className={`px-2 py-0.5 rounded text-[11px] font-semibold border transition-all ${(value || '') === k ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="mt-3 border-t border-dashed border-gray-200 pt-3">
+      <button type="button" onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider hover:text-[#1b5e20] py-1 transition-colors">
+        <span className="flex items-center gap-1.5">
+          <span className="text-base">📱</span> Responsif
+          {(hasHidden || hasOverrides) && (
+            <span className="ml-1 px-1.5 py-0.5 bg-blue-500/10 text-blue-600 rounded text-[9px] font-bold">AKTIF</span>
+          )}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-4 pb-1">
+
+          {/* ── Visibility ── */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Tampilkan Blok di</p>
+            <div className="grid grid-cols-3 gap-1.5">
+              {[
+                { key: 'showMobile',  val: showM, icon: '📱', label: 'Mobile',  sub: '< 768px' },
+                { key: 'showTablet',  val: showT, icon: '💻', label: 'Tablet',  sub: '768–1024px' },
+                { key: 'showDesktop', val: showD, icon: '🖥️',  label: 'Desktop', sub: '> 1024px' },
+              ].map(({ key, val, icon, label, sub }) => (
+                <button key={key} type="button" onClick={() => upd(key, !val)}
+                  className={`p-2 rounded-xl border-2 text-center transition-all select-none ${val ? 'border-[#1b5e20] bg-[#1b5e20]/5 text-[#1b5e20]' : 'border-red-200 bg-red-50 text-red-400'}`}>
+                  <div className="text-lg leading-none mb-0.5">{icon}</div>
+                  <div className={`text-[9px] font-bold ${val ? 'text-[#1b5e20]' : 'text-red-400'}`}>{val ? 'Tampil' : 'Tersembunyi'}</div>
+                  <div className="text-[8px] text-gray-400 mt-0.5">{sub}</div>
+                </button>
+              ))}
+            </div>
+            {!showM && !showT && !showD && (
+              <p className="text-[10px] text-red-500 mt-1.5 flex items-center gap-1">⚠️ Blok tersembunyi di semua perangkat!</p>
+            )}
+          </div>
+
+          <div className="border-t border-gray-100" />
+
+          {/* ── Mobile Overrides ── */}
+          <div className="bg-blue-50/60 rounded-xl p-3 space-y-2.5 border border-blue-100">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-blue-500">
+              📱 Override Mobile
+            </p>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran Judul</Label>
+              <BtnGroup items={SIZES} value={r.mobileTitleSize || ''} onSelect={v => upd('mobileTitleSize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran Teks Isi</Label>
+              <BtnGroup items={BODY_SIZES} value={r.mobileBodySize || ''} onSelect={v => upd('mobileBodySize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Padding</Label>
+              <BtnGroup items={PAD} value={r.mobilePadding || ''} onSelect={v => upd('mobilePadding', v)} />
+            </div>
+          </div>
+
+          {/* ── Tablet Overrides ── */}
+          <div className="bg-purple-50/60 rounded-xl p-3 space-y-2.5 border border-purple-100">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-purple-500">
+              💻 Override Tablet
+            </p>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran Judul</Label>
+              <BtnGroup items={SIZES} value={r.tabletTitleSize || ''} onSelect={v => upd('tabletTitleSize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Ukuran Teks Isi</Label>
+              <BtnGroup items={BODY_SIZES} value={r.tabletBodySize || ''} onSelect={v => upd('tabletBodySize', v)} />
+            </div>
+            <div>
+              <Label className="text-[11px] text-gray-500 mb-1 block">Padding</Label>
+              <BtnGroup items={PAD} value={r.tabletPadding || ''} onSelect={v => upd('tabletPadding', v)} />
+            </div>
+          </div>
+
+          {/* Reset */}
+          {(hasHidden || hasOverrides) && (
+            <button type="button"
+              onClick={() => onChange({ ...block, settings: { ...s, style: { ...st, responsive: { showMobile: true, showTablet: true, showDesktop: true } } } })}
+              className="w-full text-xs text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 rounded-lg border border-red-200 transition-colors font-semibold">
+              🔄 Reset Responsif ke Default
             </button>
           )}
         </div>
@@ -1005,6 +1149,12 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
   const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
   const btype = BLOCK_TYPES.find(t => t.type === block.type);
+  const r = block.settings?.style?.responsive || {};
+  const hiddenOn = [
+    r.showMobile  === false && 'M',
+    r.showTablet  === false && 'T',
+    r.showDesktop === false && 'D',
+  ].filter(Boolean);
 
   return (
     <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-xl transition-all overflow-hidden ${isSelected ? 'border-[#d4a017] shadow-lg' : 'border-transparent hover:border-[#1b5e20]/30'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
@@ -1015,6 +1165,16 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
             <GripVertical className="w-3.5 h-3.5" />
           </button>
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${btype?.color || 'bg-gray-100 text-gray-600'}`}>{btype?.label}</span>
+          {/* Device hidden badges */}
+          {hiddenOn.length > 0 && (
+            <span className="flex gap-0.5">
+              {hiddenOn.map(d => (
+                <span key={d} className="text-[9px] bg-red-100 text-red-500 px-1 rounded font-bold" title={`Tersembunyi di ${d === 'M' ? 'Mobile' : d === 'T' ? 'Tablet' : 'Desktop'}`}>
+                  {d === 'M' ? '📵' : d === 'T' ? '💻✕' : '🖥️✕'}
+                </span>
+              ))}
+            </span>
+          )}
           <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1b5e20] p-0.5">
             <Settings2 className="w-3.5 h-3.5" />
           </button>
@@ -1093,6 +1253,7 @@ export default function PageBuilderAdmin() {
   const [creating, setCreating] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [templateCategory, setTemplateCategory] = useState('Semua');
+  const [devicePreview, setDevicePreview] = useState('desktop'); // 'mobile' | 'tablet' | 'desktop'
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : '';
   const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
@@ -1453,6 +1614,21 @@ export default function PageBuilderAdmin() {
             <Redo2 className="w-3.5 h-3.5" />
           </button>
         </div>
+        {/* ── Device Preview Switcher ── */}
+        <div className="flex items-center gap-0.5 border border-gray-200 rounded-lg p-0.5 bg-gray-50">
+          {[
+            { key: 'mobile',  Icon: Smartphone, label: '375px'  },
+            { key: 'tablet',  Icon: Tablet,     label: '768px'  },
+            { key: 'desktop', Icon: Monitor,    label: 'Full'   },
+          ].map(({ key, Icon, label }) => (
+            <button key={key} onClick={() => setDevicePreview(key)}
+              title={`Preview ${label}`}
+              className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${devicePreview === key ? 'bg-white shadow-sm text-[#1b5e20]' : 'text-gray-400 hover:text-gray-600'}`}>
+              <Icon className="w-3.5 h-3.5" />
+              <span className="text-[10px] hidden sm:inline">{label}</span>
+            </button>
+          ))}
+        </div>
         <Button variant="outline" size="sm" onClick={() => setPreview(!preview)}>
           <Eye className="w-4 h-4 mr-1" /> {preview ? 'Edit' : 'Preview'}
         </Button>
@@ -1497,42 +1673,81 @@ export default function PageBuilderAdmin() {
 
         {/* Canvas - CENTER */}
         <div className="flex-1 overflow-y-auto bg-gray-100 p-4">
-          <div className="max-w-3xl mx-auto space-y-3">
-            {blocks.length === 0 ? (
-              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-16 text-center bg-white">
-                <Layers className="w-12 h-12 mx-auto mb-3 text-gray-200" />
-                <p className="font-medium text-gray-500">Halaman Kosong</p>
-                <p className="text-sm text-gray-400 mt-1">Klik blok di panel kiri untuk menambahkan konten</p>
+          {/* Device frame indicator pill */}
+          {devicePreview !== 'desktop' && (
+            <div className="flex justify-center mb-3">
+              <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold shadow-sm ${devicePreview === 'mobile' ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white'}`}>
+                {devicePreview === 'mobile' ? <Smartphone className="w-3.5 h-3.5" /> : <Tablet className="w-3.5 h-3.5" />}
+                {devicePreview === 'mobile' ? 'Preview Mobile — 375px' : 'Preview Tablet — 768px'}
+              </div>
+            </div>
+          )}
+          {/* Device frame wrapper */}
+          <div className={`mx-auto transition-all duration-300 ${devicePreview === 'mobile' ? 'max-w-[375px]' : devicePreview === 'tablet' ? 'max-w-[768px]' : 'max-w-3xl'}`}>
+            {devicePreview !== 'desktop' ? (
+              <div className={`border-2 rounded-2xl overflow-hidden shadow-xl ${devicePreview === 'mobile' ? 'border-blue-300' : 'border-purple-300'}`}>
+                {/* browser-like top bar */}
+                <div className={`flex items-center gap-1.5 px-3 py-2 ${devicePreview === 'mobile' ? 'bg-blue-50 border-b-2 border-blue-200' : 'bg-purple-50 border-b-2 border-purple-200'}`}>
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-red-400" />
+                    <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                    <div className="w-2 h-2 rounded-full bg-green-400" />
+                  </div>
+                  <div className={`flex-1 text-center text-[10px] font-bold ${devicePreview === 'mobile' ? 'text-blue-500' : 'text-purple-500'}`}>
+                    {devicePreview === 'mobile' ? '📱 Mobile View' : '💻 Tablet View'}
+                  </div>
+                </div>
+                {/* blocks inside frame */}
+                {blocks.length === 0 ? (
+                  <div className="border-2 border-dashed border-gray-300 p-16 text-center bg-white">
+                    <Layers className="w-12 h-12 mx-auto mb-3 text-gray-200" />
+                    <p className="font-medium text-gray-500">Halaman Kosong</p>
+                  </div>
+                ) : preview ? (
+                  <div className="space-y-0 bg-white overflow-hidden">
+                    {blocks.map(block => <BlockRenderer key={block.id} block={block} />)}
+                  </div>
+                ) : (
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                    <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                      <div className="space-y-4 p-3 bg-gray-50 min-h-[200px]">
+                        {blocks.map(block => (
+                          <SortableBlock key={block.id} block={block} isSelected={selectedBlockId === block.id} onSelect={setSelectedBlockId} onDelete={deleteBlock}>
+                            <BlockRenderer block={block} />
+                          </SortableBlock>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
               </div>
             ) : (
-              preview ? (
-                <div className="space-y-0 bg-white rounded-2xl overflow-hidden shadow-sm">
-                  {blocks.map(block => <BlockRenderer key={block.id} block={block} />)}
-                </div>
-              ) : (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-6 pt-6">
-                      {blocks.map(block => (
-                        <SortableBlock
-                          key={block.id}
-                          block={block}
-                          isSelected={selectedBlockId === block.id}
-                          onSelect={setSelectedBlockId}
-                          onDelete={deleteBlock}
-                        >
-                          <BlockRenderer block={block} />
-                        </SortableBlock>
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              )
+              /* Desktop view — original layout */
+              <div className="space-y-3">
+                {blocks.length === 0 ? (
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-16 text-center bg-white">
+                    <Layers className="w-12 h-12 mx-auto mb-3 text-gray-200" />
+                    <p className="font-medium text-gray-500">Halaman Kosong</p>
+                    <p className="text-sm text-gray-400 mt-1">Klik blok di panel kiri untuk menambahkan konten</p>
+                  </div>
+                ) : preview ? (
+                  <div className="space-y-0 bg-white rounded-2xl overflow-hidden shadow-sm">
+                    {blocks.map(block => <BlockRenderer key={block.id} block={block} />)}
+                  </div>
+                ) : (
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                    <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                      <div className="space-y-6 pt-6">
+                        {blocks.map(block => (
+                          <SortableBlock key={block.id} block={block} isSelected={selectedBlockId === block.id} onSelect={setSelectedBlockId} onDelete={deleteBlock}>
+                            <BlockRenderer block={block} />
+                          </SortableBlock>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
             )}
           </div>
         </div>

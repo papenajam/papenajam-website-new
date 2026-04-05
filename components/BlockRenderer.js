@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
    Used by: Page Builder canvas (live preview), /halaman/[slug], DynamicHomepage
    ───────────────────────────────────────────────────────────────────────────── */
 
-/* ── Style resolver — reads block.settings.style and produces inline style objects ── */
+/* ── Padding map ── */
 const PAD_MAP = {
   none: { padding: '0' },
   xs:   { padding: '16px' },
@@ -16,35 +16,93 @@ const PAD_MAP = {
   xl:   { padding: '96px 48px' },
 };
 
-function resolveStyle(s) {
+/* ── Breakpoint detection hook ── */
+function useBreakpoint() {
+  const [bp, setBp] = useState(() => {
+    if (typeof window === 'undefined') return 'desktop';
+    const w = window.innerWidth;
+    return w < 768 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop';
+  });
+  useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      setBp(w < 768 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop');
+    }
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return bp;
+}
+
+/* ── Style resolver — reads block.settings.style + responsive overrides ── */
+function resolveStyle(s, breakpoint = 'desktop') {
   const st = s?.style || {};
+  const r  = st.responsive || {};
+
+  // Pick breakpoint-specific overrides (fall back to desktop style)
+  const titleSize = (breakpoint === 'mobile' && r.mobileTitleSize) ? r.mobileTitleSize
+    : (breakpoint === 'tablet' && r.tabletTitleSize) ? r.tabletTitleSize
+    : st.titleSize;
+
+  const bodySize = (breakpoint === 'mobile' && r.mobileBodySize) ? r.mobileBodySize
+    : (breakpoint === 'tablet' && r.tabletBodySize) ? r.tabletBodySize
+    : st.bodySize;
+
+  const padding = (breakpoint === 'mobile' && r.mobilePadding) ? r.mobilePadding
+    : (breakpoint === 'tablet' && r.tabletPadding) ? r.tabletPadding
+    : st.padding;
+
   const sectionStyle = {
     ...(st.bgColor   ? { background: st.bgColor } : {}),
     ...(st.textColor ? { color: st.textColor }     : {}),
-    ...(st.padding && PAD_MAP[st.padding] ? PAD_MAP[st.padding] : {}),
+    ...(padding && PAD_MAP[padding] ? PAD_MAP[padding] : {}),
     ...(st.textAlign ? { textAlign: st.textAlign } : {}),
   };
   const titleStyle = {
-    ...(st.titleSize   ? { fontSize:   st.titleSize   } : {}),
+    ...(titleSize      ? { fontSize:   titleSize      } : {}),
     ...(st.titleWeight ? { fontWeight: st.titleWeight } : {}),
     ...(st.titleColor  ? { color:      st.titleColor  } : {}),
   };
   const bodyStyle = {
-    ...(st.bodySize   ? { fontSize:   st.bodySize   } : {}),
-    ...(st.bodyWeight ? { fontWeight: st.bodyWeight } : {}),
+    ...(bodySize       ? { fontSize:   bodySize       } : {}),
+    ...(st.bodyWeight  ? { fontWeight: st.bodyWeight  } : {}),
   };
   return { sectionStyle, titleStyle, bodyStyle };
 }
 
-/* ── Helpers ── */
+/* ── Merge style objects safely ── */
 function mergeStyle(...objs) {
   return Object.assign({}, ...objs.filter(Boolean));
 }
 
+/* ── Responsive visibility wrapper ──
+   All class strings are listed explicitly so Tailwind JIT picks them up.      */
+const VISIBILITY_CLASSES = {
+  'ttt': '',
+  'ttf': 'lg:hidden',
+  'tft': 'md:hidden lg:block',
+  'tff': 'md:hidden',
+  'ftt': 'hidden md:block',
+  'ftf': 'hidden md:block lg:hidden',
+  'fft': 'hidden lg:block',
+  'fff': 'hidden',
+};
+
+function ResponsiveWrapper({ settings, children }) {
+  const r    = settings?.style?.responsive || {};
+  const showM = r.showMobile  !== false;
+  const showT = r.showTablet  !== false;
+  const showD = r.showDesktop !== false;
+  const key  = `${showM?'t':'f'}${showT?'t':'f'}${showD?'t':'f'}`;
+  const cls  = VISIBILITY_CLASSES[key] || '';
+  if (!cls) return <>{children}</>;
+  return <div className={cls}>{children}</div>;
+}
+
 /* ────────────────────────── BLOCK COMPONENTS ────────────────────────────────*/
 
-function HeroBlock({ settings: s }) {
-  const { sectionStyle, titleStyle } = resolveStyle(s);
+function HeroBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle } = resolveStyle(s, breakpoint);
   const defaultBg = s.backgroundImage
     ? `linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(${s.backgroundImage}) center/cover no-repeat`
     : 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 60%, #388e3c 100%)';
@@ -84,16 +142,13 @@ function HeroBlock({ settings: s }) {
   );
 }
 
-function TextBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function TextBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   return (
     <section className="py-12 bg-white" style={sectionStyle}>
       <div className="container mx-auto px-4 max-w-3xl">
         {s.title && (
-          <h2
-            className="text-2xl md:text-3xl font-bold text-[#1b5e20] mb-5"
-            style={titleStyle}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1b5e20] mb-5" style={titleStyle}>
             {s.title}
           </h2>
         )}
@@ -107,8 +162,8 @@ function TextBlock({ settings: s }) {
   );
 }
 
-function ImageBlock({ settings: s }) {
-  const { sectionStyle } = resolveStyle(s);
+function ImageBlock({ settings: s, breakpoint }) {
+  const { sectionStyle } = resolveStyle(s, breakpoint);
   const align = s.alignment === 'left' ? 'items-start' : s.alignment === 'right' ? 'items-end' : 'items-center';
   return (
     <section className="py-10 bg-white" style={sectionStyle}>
@@ -125,17 +180,14 @@ function ImageBlock({ settings: s }) {
   );
 }
 
-function CardGridBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function CardGridBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const cols = { 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' }[s.columns || 3] || 'sm:grid-cols-2 lg:grid-cols-3';
   return (
     <section className="py-14 bg-gray-50" style={sectionStyle}>
       <div className="container mx-auto px-4">
         {s.title && (
-          <h2
-            className="text-2xl md:text-3xl font-bold text-[#1b5e20] text-center mb-10"
-            style={titleStyle}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1b5e20] text-center mb-10" style={titleStyle}>
             {s.title}
           </h2>
         )}
@@ -158,10 +210,9 @@ function CardGridBlock({ settings: s }) {
   );
 }
 
-function StatsBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function StatsBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const count = Math.min((s.items || []).length || 4, 4);
-  // bgColor from style wins, then s.bgColor (old), then default green
   const bgOverride = s?.style?.bgColor || s.bgColor;
   return (
     <section
@@ -188,8 +239,8 @@ function StatsBlock({ settings: s }) {
   );
 }
 
-function CtaBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function CtaBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const bgOverride = s?.style?.bgColor || s.bgColor;
   return (
     <section
@@ -214,8 +265,8 @@ function CtaBlock({ settings: s }) {
   );
 }
 
-function GalleryBlock({ settings: s }) {
-  const { sectionStyle, titleStyle } = resolveStyle(s);
+function GalleryBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle } = resolveStyle(s, breakpoint);
   const cols = { 2: 'grid-cols-2', 3: 'grid-cols-2 md:grid-cols-3', 4: 'grid-cols-2 md:grid-cols-4' }[s.columns] || 'grid-cols-2 md:grid-cols-3';
   return (
     <section className="py-10 bg-white" style={sectionStyle}>
@@ -236,8 +287,8 @@ function GalleryBlock({ settings: s }) {
   );
 }
 
-function AccordionBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function AccordionBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const [openIdx, setOpenIdx] = useState(null);
   return (
     <section className="py-14 bg-white" style={sectionStyle}>
@@ -275,8 +326,8 @@ function AccordionBlock({ settings: s }) {
   );
 }
 
-function TabsBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function TabsBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const [activeTab, setActiveTab] = useState(0);
   const tabs = s.tabs || [];
   return (
@@ -310,8 +361,8 @@ function TabsBlock({ settings: s }) {
   );
 }
 
-function MapBlock({ settings: s }) {
-  const { sectionStyle, titleStyle } = resolveStyle(s);
+function MapBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle } = resolveStyle(s, breakpoint);
   return (
     <section className="py-10 bg-white" style={sectionStyle}>
       <div className="container mx-auto px-4">
@@ -335,8 +386,8 @@ function MapBlock({ settings: s }) {
   );
 }
 
-function CountdownBlock({ settings: s }) {
-  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s);
+function CountdownBlock({ settings: s, breakpoint }) {
+  const { sectionStyle, titleStyle, bodyStyle } = resolveStyle(s, breakpoint);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
 
   useEffect(() => {
@@ -360,7 +411,6 @@ function CountdownBlock({ settings: s }) {
     return () => clearInterval(iv);
   }, [s.targetDate]);
 
-  // bgColor: style.bgColor wins > s.bgColor > default green
   const bgOverride = s?.style?.bgColor || s.bgColor;
   const units = [
     s.showDays    !== false && { label: 'Hari',  value: timeLeft.days },
@@ -400,23 +450,32 @@ function CountdownBlock({ settings: s }) {
   );
 }
 
-// ─── Main exported renderer ───────────────────────────────────────────────────
+/* ── BLOCK MAP ── */
+const BLOCK_MAP = {
+  hero:      HeroBlock,
+  text:      TextBlock,
+  image:     ImageBlock,
+  cardgrid:  CardGridBlock,
+  stats:     StatsBlock,
+  cta:       CtaBlock,
+  gallery:   GalleryBlock,
+  accordion: AccordionBlock,
+  tabs:      TabsBlock,
+  map:       MapBlock,
+  countdown: CountdownBlock,
+};
+
+/* ── Main exported renderer ── */
 export default function BlockRenderer({ block }) {
+  const breakpoint = useBreakpoint();
   const s = block?.settings || {};
-  switch (block?.type) {
-    case 'hero':      return <HeroBlock settings={s} />;
-    case 'text':      return <TextBlock settings={s} />;
-    case 'image':     return <ImageBlock settings={s} />;
-    case 'cardgrid':  return <CardGridBlock settings={s} />;
-    case 'stats':     return <StatsBlock settings={s} />;
-    case 'cta':       return <CtaBlock settings={s} />;
-    case 'gallery':   return <GalleryBlock settings={s} />;
-    case 'accordion': return <AccordionBlock settings={s} />;
-    case 'tabs':      return <TabsBlock settings={s} />;
-    case 'map':       return <MapBlock settings={s} />;
-    case 'countdown': return <CountdownBlock settings={s} />;
-    default:          return null;
-  }
+  const Component = BLOCK_MAP[block?.type];
+  if (!Component) return null;
+  return (
+    <ResponsiveWrapper settings={s}>
+      <Component settings={s} breakpoint={breakpoint} />
+    </ResponsiveWrapper>
+  );
 }
 
 export {
