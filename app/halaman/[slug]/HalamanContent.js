@@ -102,9 +102,137 @@ function BlockRenderer({ block }) {
           </div>
         </section>
       );
+    case 'accordion':
+      return <AccordionBlock key={block.id} settings={s} />;
+    case 'tabs':
+      return <TabsBlock key={block.id} settings={s} />;
+    case 'map':
+      return <MapBlock key={block.id} settings={s} />;
+    case 'countdown':
+      return <CountdownBlock key={block.id} settings={s} />;
     default:
       return null;
   }
+}
+
+// ─── Accordion ──────────────────────────────────────────────────────────────
+function AccordionBlock({ settings: s }) {
+  const [openIdx, setOpenIdx] = useState(null);
+  const items = s.items || [];
+  return (
+    <section className="py-14 bg-white">
+      <div className="container mx-auto px-4 max-w-3xl">
+        {s.title && <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b5e20] text-center mb-8">{s.title}</h2>}
+        <div className="space-y-2">
+          {items.map((item, i) => (
+            <div key={item.id || i} className={`border rounded-2xl overflow-hidden transition-all ${openIdx === i ? 'border-[#1b5e20]/40 shadow-sm' : 'border-gray-200'}`}>
+              <button
+                onClick={() => setOpenIdx(openIdx === i ? null : i)}
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors ${openIdx === i ? 'bg-[#1b5e20]/5' : 'bg-white hover:bg-gray-50'}`}
+              >
+                <span className={`font-semibold ${openIdx === i ? 'text-[#1b5e20]' : 'text-gray-800'}`}>{item.question}</span>
+                <span className={`ml-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-400'}`}>▼</span>
+              </button>
+              {openIdx === i && (
+                <div className="px-5 py-4 border-t border-[#1b5e20]/10 bg-white">
+                  {item.answer?.includes('<')
+                    ? <div className="prose prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    : <p className="text-gray-600 leading-relaxed">{item.answer}</p>}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+function TabsBlock({ settings: s }) {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = s.tabs || [];
+  return (
+    <section className="py-14 bg-white">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="flex gap-1 border-b-2 border-gray-200 overflow-x-auto">
+          {tabs.map((tab, i) => (
+            <button key={tab.id || i} onClick={() => setActiveTab(i)}
+              className={`px-5 py-3 text-sm font-semibold whitespace-nowrap transition-all border-b-2 -mb-0.5 ${i === activeTab ? 'border-[#1b5e20] text-[#1b5e20] bg-[#1b5e20]/5' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        {tabs[activeTab] && (
+          <div className="bg-white border border-t-0 border-gray-200 rounded-b-2xl p-6 min-h-[120px]">
+            {tabs[activeTab].content?.includes('<')
+              ? <div className="prose prose-lg max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: tabs[activeTab].content }} />
+              : <p className="text-gray-700 leading-relaxed">{tabs[activeTab].content}</p>}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ─── Map ─────────────────────────────────────────────────────────────────────
+function MapBlock({ settings: s }) {
+  if (!s.embedUrl) return null;
+  return (
+    <section className="py-10">
+      <div className="container mx-auto px-4">
+        {s.title && <h2 className="text-2xl font-bold text-[#1b5e20] text-center mb-5 flex items-center justify-center gap-2">📍 {s.title}</h2>}
+        <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200" style={{ height: `${s.height || 400}px` }}>
+          <iframe src={s.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" title={s.title || 'Peta'} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Countdown ───────────────────────────────────────────────────────────────
+function CountdownBlock({ settings: s }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
+  useEffect(() => {
+    if (!s.targetDate) return;
+    function calc() {
+      const diff = new Date(s.targetDate).getTime() - Date.now();
+      if (diff <= 0) { setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true }); return; }
+      setTimeLeft({ days: Math.floor(diff/86400000), hours: Math.floor((diff%86400000)/3600000), minutes: Math.floor((diff%3600000)/60000), seconds: Math.floor((diff%60000)/1000), expired: false });
+    }
+    calc(); const iv = setInterval(calc, 1000); return () => clearInterval(iv);
+  }, [s.targetDate]);
+
+  const bg = s.bgColor || '#1b5e20';
+  const units = [
+    s.showDays    !== false && { label: 'Hari',   value: timeLeft.days    },
+    s.showHours   !== false && { label: 'Jam',    value: timeLeft.hours   },
+    s.showMinutes !== false && { label: 'Menit',  value: timeLeft.minutes },
+    s.showSeconds !== false && { label: 'Detik',  value: timeLeft.seconds },
+  ].filter(Boolean);
+
+  return (
+    <section className="py-14" style={{ background: bg }}>
+      <div className="container mx-auto px-4 text-center text-white">
+        {s.title && <h2 className="text-2xl md:text-3xl font-extrabold mb-2">{s.title}</h2>}
+        {s.description && <p className="text-white/70 mb-8 max-w-xl mx-auto">{s.description}</p>}
+        {!s.targetDate ? (
+          <p className="text-white/40 text-sm">Tanggal target belum diatur</p>
+        ) : timeLeft.expired ? (
+          <div className="text-2xl font-bold text-[#d4a017]">🎉 Acara Telah Berlangsung!</div>
+        ) : (
+          <div className="flex justify-center gap-3 md:gap-6 flex-wrap">
+            {units.map(({ label, value }) => (
+              <div key={label} className="flex flex-col items-center bg-white/10 rounded-2xl px-5 md:px-8 py-4 md:py-6 min-w-[80px] md:min-w-[110px] border border-white/20">
+                <span className="text-4xl md:text-6xl font-extrabold text-[#d4a017] tabular-nums">{String(value).padStart(2, '0')}</span>
+                <span className="text-white/60 text-xs uppercase tracking-widest mt-2 font-semibold">{label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }
 
 export default function HalamanContent() {

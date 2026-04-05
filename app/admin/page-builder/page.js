@@ -16,7 +16,8 @@ import { CSS } from '@dnd-kit/utilities';
 import {
   Plus, Trash2, GripVertical, Eye, Save, ArrowLeft, Settings2,
   Type, Image, LayoutGrid, BarChart2, Zap, AlignLeft, X, Check,
-  ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon, FolderOpen
+  ChevronDown, ChevronUp, Layers, Globe, FileText, Upload, ImageIcon, FolderOpen,
+  List, LayoutPanelTop, MapPin, AlarmClock
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import MediaPickerModal from '@/components/MediaPickerModal';
@@ -131,13 +132,17 @@ function Toast({ msg, type }) {
 }
 
 const BLOCK_TYPES = [
-  { type: 'hero',     label: 'Hero',       icon: Layers,     desc: 'Banner hero dengan gambar latar',  color: 'bg-blue-50 text-blue-700'   },
-  { type: 'text',     label: 'Teks',       icon: Type,       desc: 'Blok teks bebas / rich content',   color: 'bg-gray-50 text-gray-700'   },
-  { type: 'image',    label: 'Gambar',     icon: Image,      desc: 'Gambar dengan keterangan',          color: 'bg-green-50 text-green-700' },
-  { type: 'cardgrid', label: 'Card Grid',  icon: LayoutGrid, desc: 'Grid kartu informasi',              color: 'bg-purple-50 text-purple-700'},
-  { type: 'stats',    label: 'Statistik',  icon: BarChart2,  desc: 'Angka statistik menarik',           color: 'bg-amber-50 text-amber-700' },
-  { type: 'cta',      label: 'CTA',        icon: Zap,        desc: 'Call-to-action button',             color: 'bg-red-50 text-red-700'     },
-  { type: 'gallery',  label: 'Galeri',     icon: Image,      desc: 'Grid galeri foto',                  color: 'bg-teal-50 text-teal-700'   },
+  { type: 'hero',      label: 'Hero',        icon: Layers,    desc: 'Banner hero dengan gambar latar',  color: 'bg-blue-50 text-blue-700'    },
+  { type: 'text',      label: 'Teks',        icon: Type,      desc: 'Blok teks bebas / rich content',   color: 'bg-gray-50 text-gray-700'    },
+  { type: 'image',     label: 'Gambar',      icon: Image,     desc: 'Gambar tunggal dengan keterangan', color: 'bg-green-50 text-green-700'  },
+  { type: 'cardgrid',  label: 'Card Grid',   icon: LayoutGrid,desc: 'Grid kartu informasi',              color: 'bg-purple-50 text-purple-700'},
+  { type: 'stats',     label: 'Statistik',   icon: BarChart2, desc: 'Angka statistik menarik',           color: 'bg-amber-50 text-amber-700'  },
+  { type: 'cta',       label: 'CTA',         icon: Zap,       desc: 'Call-to-action button',             color: 'bg-red-50 text-red-700'      },
+  { type: 'gallery',   label: 'Galeri',      icon: Image,     desc: 'Grid galeri foto',                  color: 'bg-teal-50 text-teal-700'    },
+  { type: 'accordion', label: 'Accordion',   icon: List,           desc: 'FAQ / konten lipat-buka',           color: 'bg-cyan-50 text-cyan-700'    },
+  { type: 'tabs',      label: 'Tab Panel',   icon: LayoutPanelTop, desc: 'Konten bertab horizontal',          color: 'bg-indigo-50 text-indigo-700'},
+  { type: 'map',       label: 'Peta',        icon: MapPin,         desc: 'Embed Google Maps',                 color: 'bg-lime-50 text-lime-700'    },
+  { type: 'countdown', label: 'Countdown',   icon: AlarmClock,     desc: 'Hitung mundur ke tanggal tertentu', color: 'bg-orange-50 text-orange-700'},
 ];
 
 // ─── Template Definitions ─────────────────────────────────────────────────────
@@ -367,6 +372,79 @@ function BlockPreview({ block }) {
           )}
         </div>
       );
+    case 'accordion':
+      return (
+        <div className="p-4 space-y-2">
+          {s.title && <h2 className="text-base font-bold text-[#1b5e20] mb-3">{s.title}</h2>}
+          {(s.items || []).length === 0 ? (
+            <div className="h-16 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 text-sm border-2 border-dashed">Tambahkan item accordion</div>
+          ) : (s.items || []).map((item, i) => (
+            <div key={item.id || i} className="border border-gray-200 rounded-xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
+                <span className="font-semibold text-[#1b5e20] text-sm">{item.question || 'Pertanyaan...'}</span>
+                <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              </div>
+              {i === 0 && item.answer && (
+                <div className="px-4 py-3 text-xs text-gray-600 border-t border-gray-100">{item.answer}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    case 'tabs':
+      return (
+        <div className="p-4">
+          {(s.tabs || []).length === 0 ? (
+            <div className="h-20 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 text-sm border-2 border-dashed">Tambahkan tab</div>
+          ) : (
+            <>
+              <div className="flex gap-1 border-b border-gray-200 mb-3 overflow-x-auto">
+                {(s.tabs || []).map((tab, i) => (
+                  <div key={tab.id || i} className={`px-4 py-2 text-xs font-semibold whitespace-nowrap cursor-default rounded-t-lg transition-colors ${i === 0 ? 'bg-[#1b5e20] text-white -mb-px' : 'text-gray-500 hover:text-gray-700'}`}>
+                    {tab.label || `Tab ${i+1}`}
+                  </div>
+                ))}
+              </div>
+              {s.tabs?.[0]?.content && (
+                <div className="prose prose-sm max-w-none text-xs text-gray-600 bg-white rounded-xl p-3 border border-gray-100 min-h-[40px]" dangerouslySetInnerHTML={{ __html: s.tabs[0].content }} />
+              )}
+            </>
+          )}
+        </div>
+      );
+    case 'map':
+      return (
+        <div className="p-4">
+          {s.title && <h2 className="text-base font-bold text-[#1b5e20] mb-2 flex items-center gap-2"><MapPin className="w-4 h-4" />{s.title}</h2>}
+          {s.embedUrl ? (
+            <div className="rounded-xl overflow-hidden border border-gray-200" style={{ height: `${s.height || 300}px` }}>
+              <iframe src={s.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            </div>
+          ) : (
+            <div className="bg-gray-100 rounded-xl flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300" style={{ height: `${s.height || 300}px` }}>
+              <MapPin className="w-10 h-10 text-gray-300" />
+              <p className="text-gray-400 text-sm font-medium">Paste URL Embed Google Maps</p>
+              <p className="text-gray-300 text-xs">Pengaturan → URL Embed</p>
+            </div>
+          )}
+        </div>
+      );
+    case 'countdown':
+      return (
+        <div className="p-6 rounded-xl text-center text-white" style={{ background: s.bgColor || '#1b5e20' }}>
+          {s.title && <h2 className="text-lg font-bold mb-3">{s.title}</h2>}
+          <div className="flex justify-center gap-3">
+            {['Hari','Jam','Menit','Detik'].map((unit, i) => (
+              <div key={i} className="bg-white/15 rounded-xl px-4 py-2 min-w-[60px]">
+                <div className="text-2xl font-extrabold text-[#d4a017]">{['00','00','00','00'][i]}</div>
+                <div className="text-white/70 text-[10px] uppercase tracking-wider mt-0.5">{unit}</div>
+              </div>
+            ))}
+          </div>
+          {s.description && <p className="text-white/70 text-sm mt-3">{s.description}</p>}
+          {!s.targetDate && <p className="text-white/40 text-xs mt-2">→ Atur tanggal di panel pengaturan</p>}
+        </div>
+      );
     default:
       return <div className="p-4 bg-gray-100 rounded-xl text-gray-500 text-sm text-center">Blok tidak dikenal</div>;
   }
@@ -560,6 +638,185 @@ function renderBlockSettings({ block, s, upd, updItem, addItem, removeItem, toke
           </div>
         </div>
       );
+    case 'accordion':
+      return (
+        <div className="space-y-3">
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Judul Section (Opsional)</Label>
+            <Input value={s.title || ''} onChange={e => upd('title', e.target.value)} placeholder="Pertanyaan Umum" className="text-xs" />
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <Label className="text-xs font-semibold">Item Accordion</Label>
+              <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1"
+                onClick={() => addItem('items', { question: 'Pertanyaan baru?', answer: 'Jawaban di sini...' })}>
+                <Plus className="w-3 h-3" /> Tambah Item
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+              {(s.items || []).length === 0 && (
+                <p className="text-xs text-gray-400 text-center py-3 border-2 border-dashed rounded-lg">Belum ada item. Klik "Tambah Item".</p>
+              )}
+              {(s.items || []).map((item, i) => (
+                <div key={item.id || i} className="bg-gray-50 rounded-xl p-3 space-y-2">
+                  <div className="flex gap-1.5 items-center">
+                    <span className="text-[10px] font-bold text-gray-400 w-4 flex-shrink-0">{i+1}.</span>
+                    <Input
+                      value={item.question || ''}
+                      onChange={e => updItem('items', i, 'question', e.target.value)}
+                      placeholder="Pertanyaan..."
+                      className="text-xs h-7 flex-1"
+                    />
+                    <button onClick={() => removeItem('items', i)} className="text-red-400 hover:text-red-600 flex-shrink-0">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <textarea
+                    value={item.answer || ''}
+                    onChange={e => updItem('items', i, 'answer', e.target.value)}
+                    placeholder="Jawaban (HTML diperbolehkan)..."
+                    className="w-full text-xs p-2 border border-gray-200 rounded-lg h-20 resize-none focus:outline-none focus:ring-1 focus:ring-[#1b5e20]/30"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'tabs':
+      return (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-semibold">Tab Panel</Label>
+            <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1"
+              onClick={() => addItem('tabs', { label: `Tab ${(s.tabs||[]).length + 1}`, content: '' })}>
+              <Plus className="w-3 h-3" /> Tambah Tab
+            </Button>
+          </div>
+          <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+            {(s.tabs || []).length === 0 && (
+              <p className="text-xs text-gray-400 text-center py-3 border-2 border-dashed rounded-lg">Belum ada tab. Klik "Tambah Tab".</p>
+            )}
+            {(s.tabs || []).map((tab, i) => (
+              <div key={tab.id || i} className="bg-gray-50 rounded-xl p-3 space-y-2">
+                <div className="flex gap-1.5 items-center">
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-bold flex-shrink-0 ${i === 0 ? 'bg-[#1b5e20] text-white' : 'bg-gray-200 text-gray-500'}`}>{i+1}</div>
+                  <Input
+                    value={tab.label || ''}
+                    onChange={e => updItem('tabs', i, 'label', e.target.value)}
+                    placeholder="Label tab..."
+                    className="text-xs h-7 flex-1"
+                  />
+                  <button onClick={() => removeItem('tabs', i)} className="text-red-400 hover:text-red-600 flex-shrink-0">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <textarea
+                  value={tab.content || ''}
+                  onChange={e => updItem('tabs', i, 'content', e.target.value)}
+                  placeholder="Konten tab (teks atau HTML)..."
+                  className="w-full text-xs p-2 border border-gray-200 rounded-lg h-24 resize-none focus:outline-none focus:ring-1 focus:ring-[#1b5e20]/30"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+    case 'map':
+      return (
+        <div className="space-y-3">
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Judul Peta (Opsional)</Label>
+            <Input value={s.title || ''} onChange={e => upd('title', e.target.value)} placeholder="Lokasi Pengadilan Agama Penajam" className="text-xs" />
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">URL Embed Google Maps</Label>
+            <textarea
+              value={s.embedUrl || ''}
+              onChange={e => upd('embedUrl', e.target.value)}
+              className="w-full p-2 border border-gray-200 rounded-lg text-xs h-20 resize-none focus:outline-none focus:ring-1 focus:ring-[#1b5e20]/30"
+              placeholder="Paste src dari Google Maps iframe embed..."
+            />
+            <div className="mt-1.5 p-2.5 bg-blue-50 rounded-lg text-[10px] text-blue-700 leading-relaxed">
+              <strong>Cara mendapatkan URL:</strong><br />
+              1. Buka <strong>Google Maps</strong> → cari lokasi<br />
+              2. Klik <strong>Bagikan</strong> → <strong>Sematkan peta</strong><br />
+              3. Salin nilai <code>src="..."</code> dari kode HTML
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Tinggi Peta</Label>
+            <div className="flex gap-2">
+              {[300, 400, 500].map(h => (
+                <button key={h} type="button" onClick={() => upd('height', h)}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-all ${(s.height||400) === h ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                  {h}px
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'countdown':
+      return (
+        <div className="space-y-3">
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Judul</Label>
+            <Input value={s.title || ''} onChange={e => upd('title', e.target.value)} placeholder="Hitung Mundur Menuju..." className="text-xs" />
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Tanggal & Waktu Target</Label>
+            <input
+              type="datetime-local"
+              className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1b5e20]/30"
+              value={s.targetDate || ''}
+              onChange={e => upd('targetDate', e.target.value)}
+            />
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-1 block">Deskripsi (Opsional)</Label>
+            <Input value={s.description || ''} onChange={e => upd('description', e.target.value)} placeholder="Pelantikan pejabat baru..." className="text-xs" />
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-2 block">Warna Latar</Label>
+            <div className="grid grid-cols-6 gap-1.5">
+              {['#1b5e20','#d4a017','#e07028','#1a237e','#b71c1c','#37474f','#4a148c','#006064','#1565c0','#558b2f','#e65100','#263238'].map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => upd('bgColor', c)}
+                  title={c}
+                  className={`h-7 rounded-lg border-2 transition-all ${s.bgColor === c ? 'border-white scale-90 shadow-md ring-2 ring-offset-1 ring-gray-400' : 'border-transparent hover:scale-105'}`}
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
+            {s.bgColor && (
+              <p className="text-[10px] text-gray-400 mt-1">Warna dipilih: <code>{s.bgColor}</code></p>
+            )}
+          </div>
+          <div>
+            <Label className="text-xs font-semibold mb-2 block">Tampilkan Unit</Label>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[['showDays','Hari'],['showHours','Jam'],['showMinutes','Menit'],['showSeconds','Detik']].map(([key, label]) => (
+                <label key={key} className="flex items-center gap-2 text-xs cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={s[key] !== false}
+                    onChange={e => upd(key, e.target.checked)}
+                    className="accent-[#1b5e20] w-3.5 h-3.5"
+                  />
+                  <span className="font-medium text-gray-700">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+
     default:
       return null;
   }
