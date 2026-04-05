@@ -58,7 +58,7 @@ function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' 
       />
       <label className="cursor-pointer flex items-center justify-center w-8 h-9 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex-shrink-0 relative">
         {uploading ? (
-          <div className="w-3.5 h-3.5 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-[#1b5e20] border-t-transparent rounded-full animate-spin" />
         ) : (
           <Upload className="w-3.5 h-3.5 text-gray-500" />
         )}
@@ -94,7 +94,7 @@ const defaultSettings = {
   image: { src: '', caption: '', alignment: 'center' },
   cardgrid: { title: 'Layanan Kami', items: [{ id: uuidv4(), icon: '⚖️', title: 'Layanan 1', description: 'Deskripsi layanan pertama.' },{ id: uuidv4(), icon: '📋', title: 'Layanan 2', description: 'Deskripsi layanan kedua.' },{ id: uuidv4(), icon: '🏛️', title: 'Layanan 3', description: 'Deskripsi layanan ketiga.' }] },
   stats: { items: [{ id: uuidv4(), number: '500+', label: 'Perkara' },{ id: uuidv4(), number: '20', label: 'Tahun' },{ id: uuidv4(), number: '100%', label: 'Komitmen' }] },
-  cta: { title: 'Hubungi Kami', subtitle: 'Kami siap membantu Anda.', buttonText: 'Hubungi Sekarang', buttonLink: '/kontak', bgColor: '#1e3a5f' },
+  cta: { title: 'Hubungi Kami', subtitle: 'Kami siap membantu Anda.', buttonText: 'Hubungi Sekarang', buttonLink: '/kontak', bgColor: '#1b5e20' },
   gallery: { images: [], columns: 3 },
 };
 
@@ -104,11 +104,11 @@ function BlockPreview({ block }) {
   switch (block.type) {
     case 'hero':
       return (
-        <div className="relative rounded-xl overflow-hidden min-h-[200px] flex items-center justify-center" style={{ background: s.backgroundImage ? `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(${s.backgroundImage}) center/cover` : '#1e3a5f' }}>
+        <div className="relative rounded-xl overflow-hidden min-h-[200px] flex items-center justify-center" style={{ background: s.backgroundImage ? `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(${s.backgroundImage}) center/cover` : '#1b5e20' }}>
           <div className="text-center text-white p-8">
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">{s.title || 'Judul'}</h1>
             <p className="text-white/80 mb-4">{s.subtitle}</p>
-            {s.buttonText && <span className="bg-[#c9a84c] text-white px-5 py-2 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
+            {s.buttonText && <span className="bg-[#d4a017] text-white px-5 py-2 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
           </div>
         </div>
       );
@@ -126,12 +126,12 @@ function BlockPreview({ block }) {
     case 'cardgrid':
       return (
         <div className="p-4 bg-gray-50 rounded-xl">
-          {s.title && <h2 className="text-lg font-bold text-[#1e3a5f] text-center mb-4">{s.title}</h2>}
+          {s.title && <h2 className="text-lg font-bold text-[#1b5e20] text-center mb-4">{s.title}</h2>}
           <div className="grid grid-cols-3 gap-3">
             {(s.items || []).map(item => (
               <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm text-center">
                 <div className="text-2xl mb-2">{item.icon}</div>
-                <h3 className="font-bold text-[#1e3a5f] text-sm mb-1">{item.title}</h3>
+                <h3 className="font-bold text-[#1b5e20] text-sm mb-1">{item.title}</h3>
                 <p className="text-gray-500 text-xs">{item.description}</p>
               </div>
             ))}
@@ -140,10 +140,10 @@ function BlockPreview({ block }) {
       );
     case 'stats':
       return (
-        <div className="grid grid-cols-3 gap-3 p-4 bg-[#1e3a5f] rounded-xl">
+        <div className="grid grid-cols-3 gap-3 p-4 bg-[#1b5e20] rounded-xl">
           {(s.items || []).map(item => (
             <div key={item.id} className="text-center">
-              <div className="text-2xl font-extrabold text-[#c9a84c]">{item.number}</div>
+              <div className="text-2xl font-extrabold text-[#d4a017]">{item.number}</div>
               <div className="text-white/70 text-xs">{item.label}</div>
             </div>
           ))}
@@ -151,10 +151,10 @@ function BlockPreview({ block }) {
       );
     case 'cta':
       return (
-        <div className="p-8 rounded-xl text-center text-white" style={{ background: s.bgColor || '#1e3a5f' }}>
+        <div className="p-8 rounded-xl text-center text-white" style={{ background: s.bgColor || '#1b5e20' }}>
           <h2 className="text-xl font-bold mb-2">{s.title}</h2>
           <p className="text-white/80 mb-4 text-sm">{s.subtitle}</p>
-          {s.buttonText && <span className="bg-[#c9a84c] text-white px-5 py-2 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
+          {s.buttonText && <span className="bg-[#d4a017] text-white px-5 py-2 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
         </div>
       );
     case 'gallery':
@@ -191,7 +191,7 @@ function BlockSettingsPanel({ block, onChange, token }) {
       return (
         <div className="space-y-3">
           <div><Label className="text-xs font-semibold mb-1 block">Judul</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
-          <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><textarea className="w-full p-2 border border-gray-200 rounded-lg text-sm h-20 resize-none focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20" value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><textarea className="w-full p-2 border border-gray-200 rounded-lg text-sm h-20 resize-none focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20" value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
           <div>
             <Label className="text-xs font-semibold mb-1 block">Gambar Latar <span className="font-normal text-gray-400">(URL atau Upload)</span></Label>
             <ImageUploadSmall value={s.backgroundImage || ''} onChange={v => upd('backgroundImage', v)} token={token} placeholder="https://... atau upload" />
@@ -208,7 +208,7 @@ function BlockSettingsPanel({ block, onChange, token }) {
         <div>
           <Label className="text-xs font-semibold mb-1 block">Konten HTML</Label>
           <textarea
-            className="w-full p-2 border border-gray-200 rounded-lg text-sm h-48 resize-none font-mono focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+            className="w-full p-2 border border-gray-200 rounded-lg text-sm h-48 resize-none font-mono focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20"
             value={s.content || ''}
             onChange={e => upd('content', e.target.value)}
             placeholder="<p>Konten HTML di sini...</p>"
@@ -229,7 +229,7 @@ function BlockSettingsPanel({ block, onChange, token }) {
             <Label className="text-xs font-semibold mb-1 block">Perataan</Label>
             <div className="flex gap-2">
               {['left','center','right'].map(a => (
-                <button key={a} onClick={() => upd('alignment', a)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.alignment === a ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{a}</button>
+                <button key={a} onClick={() => upd('alignment', a)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.alignment === a ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{a}</button>
               ))}
             </div>
           </div>
@@ -290,7 +290,7 @@ function BlockSettingsPanel({ block, onChange, token }) {
             <div><Label className="text-xs font-semibold mb-1 block">Teks Button</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
             <div><Label className="text-xs font-semibold mb-1 block">Link</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} /></div>
           </div>
-          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
         </div>
       );
     case 'gallery':
@@ -300,7 +300,7 @@ function BlockSettingsPanel({ block, onChange, token }) {
             <Label className="text-xs font-semibold mb-1 block">Jumlah Kolom</Label>
             <div className="flex gap-2">
               {[2,3,4].map(n => (
-                <button key={n} onClick={() => upd('columns', n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns === n ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]' : 'border-gray-200 text-gray-600'}`}>{n} Kolom</button>
+                <button key={n} onClick={() => upd('columns', n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns === n ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600'}`}>{n} Kolom</button>
               ))}
             </div>
           </div>
@@ -345,7 +345,7 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
   const btype = BLOCK_TYPES.find(t => t.type === block.type);
 
   return (
-    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-xl transition-all ${isSelected ? 'border-[#c9a84c] shadow-md' : 'border-transparent hover:border-gray-200'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
+    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-xl transition-all ${isSelected ? 'border-[#d4a017] shadow-md' : 'border-transparent hover:border-gray-200'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
       {/* Block toolbar */}
       <div className={`absolute -top-8 left-0 right-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${isSelected ? 'opacity-100 pointer-events-auto' : 'group-hover:pointer-events-auto'}`}>
         <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg shadow-sm px-2 py-1 pointer-events-auto">
@@ -353,7 +353,7 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
             <GripVertical className="w-3.5 h-3.5" />
           </button>
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${btype?.color || 'bg-gray-100 text-gray-600'}`}>{btype?.label}</span>
-          <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1e3a5f] p-0.5">
+          <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1b5e20] p-0.5">
             <Settings2 className="w-3.5 h-3.5" />
           </button>
           <button onClick={() => onDelete(block.id)} className="text-gray-400 hover:text-red-500 p-0.5">
@@ -476,10 +476,10 @@ export default function PageBuilderAdmin() {
         <Toast msg={toast.msg} type={toast.type} />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-[#1e3a5f]">Page Builder</h1>
+            <h1 className="text-2xl font-bold text-[#1b5e20]">Page Builder</h1>
             <p className="text-gray-500 text-sm mt-0.5">Kelola halaman statis website</p>
           </div>
-          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={createNewPage}>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={createNewPage}>
             <Plus className="w-4 h-4 mr-2" /> Halaman Baru
           </Button>
         </div>
@@ -493,7 +493,7 @@ export default function PageBuilderAdmin() {
             <Layers className="w-12 h-12 mx-auto mb-3 text-gray-200" />
             <p className="text-gray-500 font-medium">Belum ada halaman</p>
             <p className="text-gray-400 text-sm mb-4">Buat halaman pertama Anda dengan drag & drop builder</p>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={createNewPage}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={createNewPage}>
               <Plus className="w-4 h-4 mr-2" /> Buat Halaman
             </Button>
           </div>
@@ -502,18 +502,18 @@ export default function PageBuilderAdmin() {
             {pages.map(page => (
               <div key={page.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-xl flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-[#1e3a5f]" />
+                  <div className="w-10 h-10 bg-[#1b5e20]/10 rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-[#1b5e20]" />
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${page.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                     {page.status === 'published' ? 'Dipublikasi' : 'Draft'}
                   </span>
                 </div>
-                <h3 className="font-bold text-[#1e3a5f] mb-1">{page.title}</h3>
+                <h3 className="font-bold text-[#1b5e20] mb-1">{page.title}</h3>
                 <p className="text-gray-500 text-xs mb-1">/{page.slug}</p>
                 <p className="text-gray-400 text-xs mb-4">{(page.blocks || []).length} blok</p>
                 <div className="flex gap-2">
-                  <Button className="flex-1 bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white text-xs h-8" onClick={() => openBuilder(page)}>
+                  <Button className="flex-1 bg-[#1b5e20] hover:bg-[#2e7d32] text-white text-xs h-8" onClick={() => openBuilder(page)}>
                     <Settings2 className="w-3 h-3 mr-1" /> Edit
                   </Button>
                   {page.status === 'published' && (
@@ -561,7 +561,7 @@ export default function PageBuilderAdmin() {
         <Button variant="outline" size="sm" onClick={() => setPreview(!preview)}>
           <Eye className="w-4 h-4 mr-1" /> {preview ? 'Edit' : 'Preview'}
         </Button>
-        <Button size="sm" className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={savePage} disabled={saving}>
+        <Button size="sm" className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={savePage} disabled={saving}>
           <Save className="w-4 h-4 mr-1" /> {saving ? 'Simpan...' : 'Simpan'}
         </Button>
       </div>

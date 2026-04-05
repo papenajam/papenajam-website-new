@@ -79,10 +79,10 @@ export default function ServicesAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Layanan</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Layanan</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola layanan pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Layanan
         </Button>
       </div>
@@ -104,14 +104,14 @@ export default function ServicesAdmin() {
         ) : items.map(item => (
           <div key={item.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-3">
-              <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-xl flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-[#1e3a5f]" />
+              <div className="w-10 h-10 bg-[#1b5e20]/10 rounded-xl flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-[#1b5e20]" />
               </div>
               <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${item.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                 {item.isActive ? 'Aktif' : 'Nonaktif'}
               </span>
             </div>
-            <h3 className="font-bold text-[#1e3a5f] text-sm mb-1">{item.title}</h3>
+            <h3 className="font-bold text-[#1b5e20] text-sm mb-1">{item.title}</h3>
             <p className="text-gray-500 text-xs line-clamp-2 mb-4">{item.description}</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="flex-1 text-xs" onClick={() => openEdit(item)}>
@@ -136,7 +136,7 @@ export default function ServicesAdmin() {
             <div>
               <Label className="text-sm font-medium mb-1.5 block">Deskripsi <span className="text-red-500">*</span></Label>
               <textarea
-                className="w-full min-h-[80px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                className="w-full min-h-[80px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none"
                 placeholder="Deskripsi layanan..."
                 value={form.description}
                 onChange={e => setForm(f => ({...f, description: e.target.value}))}
@@ -155,13 +155,13 @@ export default function ServicesAdmin() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="svcActive" checked={form.isActive} onChange={e => setForm(f => ({...f, isActive: e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
+              <input type="checkbox" id="svcActive" checked={form.isActive} onChange={e => setForm(f => ({...f, isActive: e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]" />
               <Label htmlFor="svcActive" className="text-sm cursor-pointer">Aktifkan layanan</Label>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

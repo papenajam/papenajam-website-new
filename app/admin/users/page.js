@@ -86,10 +86,10 @@ export default function UsersAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Pengguna</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Pengguna</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola akun admin pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Pengguna
         </Button>
       </div>
@@ -123,11 +123,11 @@ export default function UsersAdmin() {
               <tr key={item.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-[#1e3a5f] font-bold text-sm">{item.name?.[0]?.toUpperCase()}</span>
+                    <div className="w-10 h-10 rounded-full bg-[#1b5e20]/10 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[#1b5e20] font-bold text-sm">{item.name?.[0]?.toUpperCase()}</span>
                     </div>
                     <div>
-                      <p className="font-semibold text-[#1e3a5f] text-sm">{item.name}</p>
+                      <p className="font-semibold text-[#1b5e20] text-sm">{item.name}</p>
                       <p className="text-gray-400 text-xs">{item.email}</p>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export default function UsersAdmin() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

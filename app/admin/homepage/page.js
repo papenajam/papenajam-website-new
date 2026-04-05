@@ -44,7 +44,7 @@ function ImageUploadSmall({ value, onChange, token, placeholder = 'https://...' 
     <div className="flex gap-1.5">
       <Input placeholder={placeholder} value={value || ''} onChange={e => onChange(e.target.value)} className="flex-1 text-xs" />
       <label className="cursor-pointer flex items-center justify-center w-8 h-9 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex-shrink-0 relative">
-        {uploading ? <div className="w-3.5 h-3.5 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-gray-500" />}
+        {uploading ? <div className="w-3.5 h-3.5 border-2 border-[#1b5e20] border-t-transparent rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-gray-500" />}
         <input ref={fileRef} type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={handleFile} disabled={uploading} />
       </label>
     </div>
@@ -93,8 +93,8 @@ const defaultSettings = {
   services_grid:  { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' },
   gallery_grid:   { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan kami', category: '', limit: 8, columns: 4, showViewAll: true },
   faq_section:    { title: 'Tanya Jawab (FAQ)', subtitle: 'Pertanyaan yang sering diajukan masyarakat', category: '', limit: 6, bgColor: '#f9fafb' },
-  complaint_cta:  { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1e3a5f', showPhone: true },
-  visitor_stats:  { title: 'Website Statistik', days: 30, showChart: true, bgColor: '#1e3a5f' },
+  complaint_cta:  { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1b5e20', showPhone: true },
+  visitor_stats:  { title: 'Website Statistik', days: 30, showChart: true, bgColor: '#1b5e20' },
   banner_slider:  { autoPlay: true, showArrows: true, showDots: true },
   document_list:  { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi Pengadilan Agama Penajam', category: '', limit: 6, showViewAll: true },
   case_search:    { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' },
@@ -105,7 +105,7 @@ const defaultSettings = {
   text:           { content: '<p>Tulis konten Anda di sini.</p>' },
   image:          { src: '', caption: '', alignment: 'center' },
   cardgrid:       { title: 'Layanan Kami', items: [{ id: uuidv4(), icon: '⚖️', title: 'Kartu 1', description: 'Deskripsi.' }, { id: uuidv4(), icon: '📋', title: 'Kartu 2', description: 'Deskripsi.' }, { id: uuidv4(), icon: '🏛️', title: 'Kartu 3', description: 'Deskripsi.' }] },
-  cta:            { title: 'Hubungi Kami', subtitle: 'Kami siap membantu.', buttonText: 'Hubungi', buttonLink: '#kontak', bgColor: '#1e3a5f' },
+  cta:            { title: 'Hubungi Kami', subtitle: 'Kami siap membantu.', buttonText: 'Hubungi', buttonLink: '#kontak', bgColor: '#1b5e20' },
   gallery:        { images: [], columns: 3 },
 };
 
@@ -151,11 +151,11 @@ function BlockPreview({ block }) {
   switch (block.type) {
     case 'hero':
       return (
-        <div className="relative rounded-xl overflow-hidden min-h-[160px] flex items-center justify-center" style={{ background: s.backgroundImage ? `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(${s.backgroundImage}) center/cover` : '#1e3a5f' }}>
+        <div className="relative rounded-xl overflow-hidden min-h-[160px] flex items-center justify-center" style={{ background: s.backgroundImage ? `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(${s.backgroundImage}) center/cover` : '#1b5e20' }}>
           <div className="text-center text-white p-6">
             <h1 className="text-xl md:text-2xl font-extrabold mb-2">{s.title || 'Judul'}</h1>
             <p className="text-white/80 text-sm mb-3">{s.subtitle}</p>
-            {s.buttonText && <span className="bg-[#c9a84c] text-white px-4 py-1.5 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
+            {s.buttonText && <span className="bg-[#d4a017] text-white px-4 py-1.5 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
           </div>
         </div>
       );
@@ -171,12 +171,12 @@ function BlockPreview({ block }) {
     case 'cardgrid':
       return (
         <div className="p-4 bg-gray-50 rounded-xl">
-          {s.title && <h2 className="text-base font-bold text-[#1e3a5f] text-center mb-3">{s.title}</h2>}
+          {s.title && <h2 className="text-base font-bold text-[#1b5e20] text-center mb-3">{s.title}</h2>}
           <div className="grid grid-cols-3 gap-3">
             {(s.items || []).map(item => (
               <div key={item.id} className="bg-white p-3 rounded-xl shadow-sm text-center">
                 <div className="text-xl mb-1">{item.icon}</div>
-                <h3 className="font-bold text-[#1e3a5f] text-xs mb-0.5">{item.title}</h3>
+                <h3 className="font-bold text-[#1b5e20] text-xs mb-0.5">{item.title}</h3>
                 <p className="text-gray-500 text-xs">{item.description}</p>
               </div>
             ))}
@@ -185,10 +185,10 @@ function BlockPreview({ block }) {
       );
     case 'stats':
       return (
-        <div className="grid grid-cols-3 gap-3 p-4 bg-[#1e3a5f] rounded-xl">
+        <div className="grid grid-cols-3 gap-3 p-4 bg-[#1b5e20] rounded-xl">
           {(s.items || []).map(item => (
             <div key={item.id} className="text-center">
-              <div className="text-xl font-extrabold text-[#c9a84c]">{item.number}</div>
+              <div className="text-xl font-extrabold text-[#d4a017]">{item.number}</div>
               <div className="text-white/70 text-xs">{item.label}</div>
             </div>
           ))}
@@ -196,10 +196,10 @@ function BlockPreview({ block }) {
       );
     case 'cta':
       return (
-        <div className="p-8 rounded-xl text-center text-white" style={{ background: s.bgColor || '#1e3a5f' }}>
+        <div className="p-8 rounded-xl text-center text-white" style={{ background: s.bgColor || '#1b5e20' }}>
           <h2 className="text-lg font-bold mb-2">{s.title}</h2>
           <p className="text-white/80 mb-3 text-sm">{s.subtitle}</p>
-          {s.buttonText && <span className="bg-[#c9a84c] text-white px-4 py-1.5 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
+          {s.buttonText && <span className="bg-[#d4a017] text-white px-4 py-1.5 rounded-lg text-sm font-bold inline-block">{s.buttonText}</span>}
         </div>
       );
     case 'gallery':
@@ -250,7 +250,7 @@ function SettingsPanel({ block, onChange, token }) {
           <div><Label className="text-xs font-semibold mb-1 block">Link Tombol 2</Label><Input value={s.button2Link || ''} onChange={e => upd('button2Link', e.target.value)} /></div>
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showStats !== false} onChange={e => upd('showStats', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showStats !== false} onChange={e => upd('showStats', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan Statistik Perkara (Live)</span>
         </label>
       </div>
@@ -304,10 +304,10 @@ function SettingsPanel({ block, onChange, token }) {
         </div>
         <div>
           <Label className="text-xs font-semibold mb-1 block">Kolom</Label>
-          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('columns',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns===n?'bg-[#1e3a5f] text-white border-[#1e3a5f]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
+          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('columns',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan tombol "Lihat Semua Galeri"</span>
         </label>
         <p className="text-xs text-pink-600 bg-pink-50 rounded-lg p-2">✅ Foto dari menu Galeri di admin, diurutkan berdasarkan urutan yang diatur.</p>
@@ -333,9 +333,9 @@ function SettingsPanel({ block, onChange, token }) {
           <div><Label className="text-xs font-semibold mb-1 block">Teks Tombol</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
           <div><Label className="text-xs font-semibold mb-1 block">Link Tombol</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} /></div>
         </div>
-        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showPhone !== false} onChange={e => upd('showPhone', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showPhone !== false} onChange={e => upd('showPhone', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan nomor telepon dari pengaturan</span>
         </label>
       </div>
@@ -345,11 +345,11 @@ function SettingsPanel({ block, onChange, token }) {
         <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
         <div>
           <Label className="text-xs font-semibold mb-1 block">Periode Data (hari)</Label>
-          <div className="flex gap-2">{[7,14,30,90].map(n=><button key={n} onClick={()=>upd('days',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.days===n?'bg-[#1e3a5f] text-white border-[#1e3a5f]':'border-gray-200 text-gray-600'}`}>{n} Hari</button>)}</div>
+          <div className="flex gap-2">{[7,14,30,90].map(n=><button key={n} onClick={()=>upd('days',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.days===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Hari</button>)}</div>
         </div>
-        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showChart !== false} onChange={e => upd('showChart', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showChart !== false} onChange={e => upd('showChart', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan grafik kunjungan</span>
         </label>
         <p className="text-xs text-lime-600 bg-lime-50 rounded-lg p-2">✅ Data dari sistem analitik website. Otomatis tercatat setiap ada kunjungan.</p>
@@ -358,15 +358,15 @@ function SettingsPanel({ block, onChange, token }) {
     case 'banner_slider': return (
       <div className="space-y-3">
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.autoPlay !== false} onChange={e => upd('autoPlay', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.autoPlay !== false} onChange={e => upd('autoPlay', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Auto-play slider (5 detik)</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showArrows !== false} onChange={e => upd('showArrows', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showArrows !== false} onChange={e => upd('showArrows', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan tombol navigasi</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showDots !== false} onChange={e => upd('showDots', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showDots !== false} onChange={e => upd('showDots', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan indikator titik</span>
         </label>
         <p className="text-xs text-fuchsia-600 bg-fuchsia-50 rounded-lg p-2">✅ Banner dari menu "Banner & Slider" di admin. Tambah banner baru di sana.</p>
@@ -381,7 +381,7 @@ function SettingsPanel({ block, onChange, token }) {
           <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={3} max={12} value={s.limit || 6} onChange={e => upd('limit', +e.target.value)} /></div>
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs font-semibold">Tampilkan tombol "Lihat Semua Dokumen"</span>
         </label>
         <p className="text-xs text-yellow-600 bg-yellow-50 rounded-lg p-2">✅ Dokumen dari menu "Dokumen Publik" di admin.</p>
@@ -425,7 +425,7 @@ function SettingsPanel({ block, onChange, token }) {
             <Label className="text-xs font-semibold mb-1 block">Perataan</Label>
             <div className="flex gap-2">
               {['left','center','right'].map(a => (
-                <button key={a} onClick={() => upd('alignment', a)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.alignment === a ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]' : 'border-gray-200 text-gray-600'}`}>{a}</button>
+                <button key={a} onClick={() => upd('alignment', a)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.alignment === a ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600'}`}>{a}</button>
               ))}
             </div>
           </div>
@@ -486,7 +486,7 @@ function SettingsPanel({ block, onChange, token }) {
             <div><Label className="text-xs font-semibold mb-1 block">Teks Tombol</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
             <div><Label className="text-xs font-semibold mb-1 block">Link</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} /></div>
           </div>
-          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1e3a5f'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
         </div>
       );
     case 'gallery':
@@ -495,7 +495,7 @@ function SettingsPanel({ block, onChange, token }) {
           <div>
             <Label className="text-xs font-semibold mb-1 block">Jumlah Kolom</Label>
             <div className="flex gap-2">{[2,3,4].map(n => (
-              <button key={n} onClick={() => upd('columns', n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns === n ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]' : 'border-gray-200 text-gray-600'}`}>{n} Kolom</button>
+              <button key={n} onClick={() => upd('columns', n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns === n ? 'bg-[#1b5e20] text-white border-[#1b5e20]' : 'border-gray-200 text-gray-600'}`}>{n} Kolom</button>
             ))}</div>
           </div>
           <div>
@@ -527,13 +527,13 @@ function SortableBlock({ block, isSelected, onSelect, onDelete, children }) {
   const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
   const bt = BLOCK_TYPES.find(t => t.type === block.type);
   return (
-    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-2xl transition-all ${isSelected ? 'border-[#c9a84c] shadow-md' : 'border-transparent hover:border-gray-200'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
+    <div ref={setNodeRef} style={style} className={`group relative border-2 rounded-2xl transition-all ${isSelected ? 'border-[#d4a017] shadow-md' : 'border-transparent hover:border-gray-200'} ${isDragging ? 'bg-white shadow-xl' : ''}`}>
       <div className={`absolute -top-8 left-0 right-0 flex items-center gap-1 z-10 ${ isSelected ? 'opacity-100 pointer-events-auto' : 'opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto'} transition-opacity`}>
         <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg shadow-sm px-2 py-1">
           <button {...attributes} {...listeners} className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing p-0.5"><GripVertical className="w-3.5 h-3.5" /></button>
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${bt?.color || 'bg-gray-100 text-gray-600'}`}>{bt?.label}</span>
           {bt?.dynamic && <span className="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">LIVE</span>}
-          <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1e3a5f] p-0.5"><Settings2 className="w-3.5 h-3.5" /></button>
+          <button onClick={() => onSelect(block.id)} className="text-gray-400 hover:text-[#1b5e20] p-0.5"><Settings2 className="w-3.5 h-3.5" /></button>
           <button onClick={() => onDelete(block.id)} className="text-gray-400 hover:text-red-500 p-0.5"><Trash2 className="w-3.5 h-3.5" /></button>
         </div>
       </div>
@@ -638,7 +638,7 @@ export default function HomepageBuilderAdmin() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-center"><div className="w-10 h-10 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mx-auto mb-3" /><p className="text-gray-500">Memuat homepage builder...</p></div>
+        <div className="text-center"><div className="w-10 h-10 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin mx-auto mb-3" /><p className="text-gray-500">Memuat homepage builder...</p></div>
       </div>
     );
   }
@@ -649,16 +649,16 @@ export default function HomepageBuilderAdmin() {
       <div>
         <Toast msg={toast.msg} type={toast.type} />
         <div className="max-w-2xl mx-auto mt-16 text-center">
-          <div className="w-20 h-20 bg-[#1e3a5f]/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <Home className="w-10 h-10 text-[#1e3a5f]" />
+          <div className="w-20 h-20 bg-[#1b5e20]/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <Home className="w-10 h-10 text-[#1b5e20]" />
           </div>
-          <h1 className="text-3xl font-extrabold text-[#1e3a5f] mb-3">Homepage Builder</h1>
+          <h1 className="text-3xl font-extrabold text-[#1b5e20] mb-3">Homepage Builder</h1>
           <p className="text-gray-500 mb-2">Halaman beranda belum dikonfigurasi.</p>
           <p className="text-gray-400 text-sm mb-8">Klik tombol di bawah untuk membuat beranda dengan layout default yang sudah disertakan blok Hero, Layanan, Berita, Pencarian Perkara, dan Kontak.</p>
-          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white px-8 py-3 text-base rounded-xl" onClick={initHomepage}>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white px-8 py-3 text-base rounded-xl" onClick={initHomepage}>
             <Plus className="w-5 h-5 mr-2" /> Buat Homepage dengan Layout Default
           </Button>
-          <p className="text-gray-400 text-xs mt-4">Atau kunjungi halaman beranda saat ini <a href="/" target="_blank" className="text-[#c9a84c] underline">di sini →</a></p>
+          <p className="text-gray-400 text-xs mt-4">Atau kunjungi halaman beranda saat ini <a href="/" target="_blank" className="text-[#d4a017] underline">di sini →</a></p>
         </div>
       </div>
     );
@@ -671,11 +671,11 @@ export default function HomepageBuilderAdmin() {
       {/* Toolbar */}
       <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center gap-3 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-            <Home className="w-3.5 h-3.5 text-[#c9a84c]" />
+          <div className="w-7 h-7 bg-[#1b5e20] rounded-lg flex items-center justify-center">
+            <Home className="w-3.5 h-3.5 text-[#d4a017]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1e3a5f] leading-none">Homepage Builder</p>
+            <p className="text-sm font-bold text-[#1b5e20] leading-none">Homepage Builder</p>
             <p className="text-[10px] text-gray-400 leading-none mt-0.5">/ (beranda utama)</p>
           </div>
         </div>
@@ -687,7 +687,7 @@ export default function HomepageBuilderAdmin() {
         <Button size="sm" variant="outline" onClick={() => window.open('/', '_blank')}>
           <Globe className="w-4 h-4 mr-1" /> Lihat
         </Button>
-        <Button size="sm" className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={savePage} disabled={saving}>
+        <Button size="sm" className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={savePage} disabled={saving}>
           <Save className="w-4 h-4 mr-1" /> {saving ? 'Menyimpan...' : 'Simpan'}
         </Button>
       </div>

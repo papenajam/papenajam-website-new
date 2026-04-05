@@ -72,7 +72,7 @@ export default function FAQAdmin() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b">
-              <h2 className="font-bold text-[#1e3a5f]">{modal==='add'?'Tambah FAQ':'Edit FAQ'}</h2>
+              <h2 className="font-bold text-[#1b5e20]">{modal==='add'?'Tambah FAQ':'Edit FAQ'}</h2>
               <button onClick={()=>setModal(null)}><X className="w-5 h-5 text-gray-400"/></button>
             </div>
             <div className="p-5 space-y-4">
@@ -89,23 +89,23 @@ export default function FAQAdmin() {
                 <div><Label className="text-xs font-semibold mb-1 block">Urutan</Label><Input type="number" value={form.order||0} onChange={e=>setForm(p=>({...p,order:+e.target.value}))}/></div>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.isActive!==false} onChange={e=>setForm(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]"/>
+                <input type="checkbox" checked={form.isActive!==false} onChange={e=>setForm(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]"/>
                 <span className="text-sm">Tampilkan di publik</span>
               </label>
             </div>
             <div className="p-5 border-t flex gap-3 justify-end">
               <Button variant="outline" onClick={()=>setModal(null)}>Batal</Button>
-              <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={handleSave} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan'}</Button>
+              <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={handleSave} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan'}</Button>
             </div>
           </div>
         </div>
       )}
 
       <div className="flex items-center justify-between mb-6">
-        <div><h1 className="text-2xl font-extrabold text-[#1e3a5f]">FAQ</h1><p className="text-gray-500 text-sm mt-1">{items.length} pertanyaan</p></div>
+        <div><h1 className="text-2xl font-extrabold text-[#1b5e20]">FAQ</h1><p className="text-gray-500 text-sm mt-1">{items.length} pertanyaan</p></div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={()=>window.open('/faq','_blank')}>Lihat Publik</Button>
-          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openAdd}><Plus className="w-4 h-4 mr-1"/>Tambah FAQ</Button>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openAdd}><Plus className="w-4 h-4 mr-1"/>Tambah FAQ</Button>
         </div>
       </div>
 
@@ -116,16 +116,16 @@ export default function FAQAdmin() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 bg-[#1e3a5f]/10 text-[#1e3a5f] text-xs rounded-full font-medium">{item.category}</span>
+                    <span className="px-2 py-0.5 bg-[#1b5e20]/10 text-[#1b5e20] text-xs rounded-full font-medium">{item.category}</span>
                     {!item.isActive&&<span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded-full">Tersembunyi</span>}
                   </div>
-                  <p className="font-semibold text-[#1e3a5f] text-sm">{item.question}</p>
+                  <p className="font-semibold text-[#1b5e20] text-sm">{item.question}</p>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">{item.answer}</p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={()=>move(item,'up')} disabled={idx===0} className="p-1.5 text-gray-300 hover:text-gray-600 disabled:opacity-30"><ChevronUp className="w-4 h-4"/></button>
                   <button onClick={()=>move(item,'down')} disabled={idx===sorted.length-1} className="p-1.5 text-gray-300 hover:text-gray-600 disabled:opacity-30"><ChevronDown className="w-4 h-4"/></button>
-                  <button onClick={()=>openEdit(item)} className="p-1.5 text-gray-400 hover:text-[#1e3a5f]"><Edit2 className="w-4 h-4"/></button>
+                  <button onClick={()=>openEdit(item)} className="p-1.5 text-gray-400 hover:text-[#1b5e20]"><Edit2 className="w-4 h-4"/></button>
                   <button onClick={()=>handleDelete(item.id)} className="p-1.5 text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4"/></button>
                 </div>
               </div>

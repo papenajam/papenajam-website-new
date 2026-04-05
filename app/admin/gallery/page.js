@@ -31,7 +31,7 @@ function ImageUpload({ value, onChange, token }) {
       <div className="flex gap-2">
         <Input value={value||''} onChange={e=>onChange(e.target.value)} placeholder="URL gambar atau upload..." className="flex-1" />
         <label className="cursor-pointer flex items-center justify-center w-10 h-9 border rounded-lg hover:bg-gray-50 relative flex-shrink-0">
-          {uploading ? <div className="w-4 h-4 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" /> : <Upload className="w-4 h-4 text-gray-500" />}
+          {uploading ? <div className="w-4 h-4 border-2 border-[#1b5e20] border-t-transparent rounded-full animate-spin" /> : <Upload className="w-4 h-4 text-gray-500" />}
           <input ref={ref} type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFile} disabled={uploading} />
         </label>
       </div>
@@ -108,7 +108,7 @@ export default function GalleryAdmin() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b">
-              <h2 className="font-bold text-[#1e3a5f]">{modal==='add'?'Tambah Foto':'Edit Foto'}</h2>
+              <h2 className="font-bold text-[#1b5e20]">{modal==='add'?'Tambah Foto':'Edit Foto'}</h2>
               <button onClick={()=>setModal(null)}><X className="w-5 h-5 text-gray-400" /></button>
             </div>
             <div className="p-5 space-y-4">
@@ -123,13 +123,13 @@ export default function GalleryAdmin() {
                 <div><Label className="text-xs font-semibold mb-1 block">Urutan</Label><Input type="number" value={form.order||0} onChange={e=>setForm(p=>({...p,order:+e.target.value}))} /></div>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.isActive!==false} onChange={e=>setForm(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
+                <input type="checkbox" checked={form.isActive!==false} onChange={e=>setForm(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]" />
                 <span className="text-sm">Tampilkan di publik</span>
               </label>
             </div>
             <div className="p-5 border-t flex gap-3 justify-end">
               <Button variant="outline" onClick={()=>setModal(null)}>Batal</Button>
-              <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={handleSave} disabled={saving}>
+              <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={handleSave} disabled={saving}>
                 <Save className="w-4 h-4 mr-1" />{saving?'Menyimpan...':'Simpan'}
               </Button>
             </div>
@@ -139,19 +139,19 @@ export default function GalleryAdmin() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1e3a5f]">Galeri Foto</h1>
+          <h1 className="text-2xl font-extrabold text-[#1b5e20]">Galeri Foto</h1>
           <p className="text-gray-500 text-sm mt-1">{items.length} foto</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={()=>window.open('/galeri','_blank')}><Eye className="w-4 h-4 mr-1" />Lihat Publik</Button>
-          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openAdd}><Plus className="w-4 h-4 mr-1" />Tambah Foto</Button>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openAdd}><Plus className="w-4 h-4 mr-1" />Tambah Foto</Button>
         </div>
       </div>
 
       {/* Filter */}
       <div className="flex gap-2 mb-4 flex-wrap">
-        <button onClick={()=>setFilterCat('')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!filterCat?'bg-[#1e3a5f] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Semua</button>
-        {categories.map(c=><button key={c} onClick={()=>setFilterCat(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filterCat===c?'bg-[#1e3a5f] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{c}</button>)}
+        <button onClick={()=>setFilterCat('')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!filterCat?'bg-[#1b5e20] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Semua</button>
+        {categories.map(c=><button key={c} onClick={()=>setFilterCat(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filterCat===c?'bg-[#1b5e20] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{c}</button>)}
       </div>
 
       {loading ? <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[...Array(8)].map((_,i)=><div key={i} className="aspect-square bg-gray-100 rounded-xl animate-pulse" />)}</div> : (

@@ -63,7 +63,7 @@ export default function SettingsAdmin() {
     <div>
       <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
       {type === 'textarea' ? (
-        <textarea className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none" value={settings[k] || ''} onChange={e => upd(k, e.target.value)} placeholder={placeholder} />
+        <textarea className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none" value={settings[k] || ''} onChange={e => upd(k, e.target.value)} placeholder={placeholder} />
       ) : (
         <Input type={type} value={settings[k] || ''} onChange={e => upd(k, e.target.value)} placeholder={placeholder} />
       )}
@@ -122,16 +122,16 @@ export default function SettingsAdmin() {
         <Field k="footer_description" label="Deskripsi Footer" type="textarea" placeholder="Pengadilan Agama Penajam adalah lembaga..." />
         <Field k="footer_copyright" label="Teks Copyright" placeholder="Pengadilan Agama Penajam. Hak Cipta Dilindungi." />
         <div className="space-y-3 pt-2 border-t border-gray-100">
-          <Label className="text-sm font-semibold text-[#1e3a5f]">Pengaturan Fitur</Label>
+          <Label className="text-sm font-semibold text-[#1b5e20]">Pengaturan Fitur</Label>
           <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl hover:bg-gray-100">
-            <input type="checkbox" checked={settings.analytics_enabled === 'true'} onChange={e => upd('analytics_enabled', e.target.checked ? 'true' : 'false')} className="w-4 h-4 accent-[#1e3a5f]" />
+            <input type="checkbox" checked={settings.analytics_enabled === 'true'} onChange={e => upd('analytics_enabled', e.target.checked ? 'true' : 'false')} className="w-4 h-4 accent-[#1b5e20]" />
             <div>
               <p className="font-medium text-sm">Aktifkan Pelacakan Analitik</p>
               <p className="text-xs text-gray-500">Lacak kunjungan halaman website untuk statistik</p>
             </div>
           </label>
           <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl hover:bg-gray-100">
-            <input type="checkbox" checked={settings.survey_popup_enabled === 'true'} onChange={e => upd('survey_popup_enabled', e.target.checked ? 'true' : 'false')} className="w-4 h-4 accent-[#1e3a5f]" />
+            <input type="checkbox" checked={settings.survey_popup_enabled === 'true'} onChange={e => upd('survey_popup_enabled', e.target.checked ? 'true' : 'false')} className="w-4 h-4 accent-[#1b5e20]" />
             <div>
               <p className="font-medium text-sm">Widget Survei Kepuasan</p>
               <p className="text-xs text-gray-500">Tampilkan widget survei di semua halaman publik</p>
@@ -147,7 +147,7 @@ export default function SettingsAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Pengaturan Website</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Pengaturan Website</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola semua konfigurasi website dari sini</p>
         </div>
       </div>
@@ -157,7 +157,7 @@ export default function SettingsAdmin() {
         {TABS.map(t => {
           const Icon = t.icon;
           return (
-            <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${ tab === t.id ? 'bg-white text-[#1e3a5f] shadow-sm' : 'text-gray-500 hover:text-gray-700' }`}>
+            <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${ tab === t.id ? 'bg-white text-[#1b5e20] shadow-sm' : 'text-gray-500 hover:text-gray-700' }`}>
               <Icon className="w-4 h-4" /> {t.label}
             </button>
           );
@@ -172,7 +172,7 @@ export default function SettingsAdmin() {
             {tabContent[tab]}
           </div>
           <div className="flex justify-end mt-4">
-            <Button type="submit" className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white px-8" disabled={saving}>
+            <Button type="submit" className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white px-8" disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
               {saving ? 'Menyimpan...' : 'Simpan Pengaturan'}
             </Button>

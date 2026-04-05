@@ -59,7 +59,7 @@ function CalendarView({ items, onEdit }) {
         <button onClick={() => setCurrentMonth(new Date(year, month-1))} className="p-2 hover:bg-gray-100 rounded-lg">
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <h3 className="font-bold text-[#1e3a5f]">
+        <h3 className="font-bold text-[#1b5e20]">
           {currentMonth.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
         </h3>
         <button onClick={() => setCurrentMonth(new Date(year, month+1))} className="p-2 hover:bg-gray-100 rounded-lg">
@@ -79,11 +79,11 @@ function CalendarView({ items, onEdit }) {
             return (
               <div
                 key={i}
-                className={`min-h-[60px] p-1 rounded-lg text-xs ${d ? 'hover:bg-gray-50 cursor-pointer' : ''} ${isToday(d) ? 'bg-[#1e3a5f]/5 ring-1 ring-[#1e3a5f]/30' : ''}`}
+                className={`min-h-[60px] p-1 rounded-lg text-xs ${d ? 'hover:bg-gray-50 cursor-pointer' : ''} ${isToday(d) ? 'bg-[#1b5e20]/5 ring-1 ring-[#1b5e20]/30' : ''}`}
               >
                 {d && (
                   <>
-                    <span className={`font-semibold ${isToday(d) ? 'text-[#1e3a5f]' : 'text-gray-600'}`}>{d}</span>
+                    <span className={`font-semibold ${isToday(d) ? 'text-[#1b5e20]' : 'text-gray-600'}`}>{d}</span>
                     {hasAgenda && (
                       <div className="mt-0.5 space-y-0.5">
                         {agendaByDate[dateStr].slice(0,2).map(a => (
@@ -203,19 +203,19 @@ export default function AgendaSidangAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Agenda Sidang</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Agenda Sidang</h1>
           <p className="text-gray-500 text-sm mt-0.5">Kelola jadwal persidangan</p>
         </div>
         <div className="flex gap-2">
           <div className="flex bg-gray-100 rounded-lg p-0.5">
-            <button onClick={() => setViewMode('table')} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'table' ? 'bg-white shadow text-[#1e3a5f]' : 'text-gray-500'}`}>
+            <button onClick={() => setViewMode('table')} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'table' ? 'bg-white shadow text-[#1b5e20]' : 'text-gray-500'}`}>
               <List className="w-4 h-4" />
             </button>
-            <button onClick={() => setViewMode('calendar')} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'calendar' ? 'bg-white shadow text-[#1e3a5f]' : 'text-gray-500'}`}>
+            <button onClick={() => setViewMode('calendar')} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'calendar' ? 'bg-white shadow text-[#1b5e20]' : 'text-gray-500'}`}>
               <Calendar className="w-4 h-4" />
             </button>
           </div>
-          <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
             <Plus className="w-4 h-4 mr-2" /> Tambah Agenda
           </Button>
         </div>
@@ -268,7 +268,7 @@ export default function AgendaSidangAdmin() {
                 ) : items.map(item => (
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-4 py-4">
-                      <p className="font-semibold text-[#1e3a5f] text-sm">{item.nomorPerkara}</p>
+                      <p className="font-semibold text-[#1b5e20] text-sm">{item.nomorPerkara}</p>
                       <p className="text-gray-400 text-xs">{item.jenisPerkara}</p>
                     </td>
                     <td className="px-4 py-4 hidden md:table-cell">
@@ -359,12 +359,12 @@ export default function AgendaSidangAdmin() {
             </div>
             <div>
               <Label className="text-sm font-medium mb-1.5 block">Keterangan</Label>
-              <textarea className="w-full min-h-[70px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none" value={form.keterangan} onChange={e => setForm(f => ({...f, keterangan: e.target.value}))} />
+              <textarea className="w-full min-h-[70px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none" value={form.keterangan} onChange={e => setForm(f => ({...f, keterangan: e.target.value}))} />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

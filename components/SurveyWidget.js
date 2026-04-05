@@ -42,13 +42,13 @@ export default function SurveyWidget() {
   return (
     <div className="fixed bottom-6 right-20 z-[9998]">
       {!open ? (
-        <button onClick={() => setOpen(true)} className="bg-[#c9a84c] hover:bg-[#b8962f] text-white rounded-2xl px-4 py-2.5 shadow-lg flex items-center gap-2 text-sm font-semibold transition-all hover:shadow-xl">
+        <button onClick={() => setOpen(true)} className="bg-[#e07028] hover:bg-[#c05018] text-white rounded-2xl px-4 py-2.5 shadow-lg flex items-center gap-2 text-sm font-semibold transition-all hover:shadow-xl">
           <Star className="w-4 h-4" />
           {lang==='id'?'Beri Penilaian':'Rate Us'}
         </button>
       ) : (
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-72 overflow-hidden">
-          <div className="bg-[#1e3a5f] px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#1b5e20] px-4 py-3 flex items-center justify-between">
             <div>
               <p className="font-bold text-white text-sm">{config.title}</p>
               <p className="text-white/60 text-xs">{config.subtitle}</p>
@@ -59,7 +59,7 @@ export default function SurveyWidget() {
             {done ? (
               <div className="text-center py-4">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2"><Check className="w-6 h-6 text-green-600" /></div>
-                <p className="font-semibold text-[#1e3a5f]">{config.thankYouMessage || 'Terima kasih!'}</p>
+                <p className="font-semibold text-[#1b5e20]">{config.thankYouMessage || 'Terima kasih!'}</p>
               </div>
             ) : (
               <>
@@ -68,14 +68,14 @@ export default function SurveyWidget() {
                   {[1,2,3,4,5].map(s => (
                     <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)}
                       className="transition-transform hover:scale-110">
-                      <Star className={`w-8 h-8 transition-colors ${ (hover||rating) >= s ? 'fill-[#c9a84c] text-[#c9a84c]' : 'text-gray-300' }`} />
+                      <Star className={`w-8 h-8 transition-colors ${ (hover||rating) >= s ? 'fill-[#d4a017] text-[#d4a017]' : 'text-gray-300' }`} />
                     </button>
                   ))}
                 </div>
                 {rating > 0 && (
-                  <textarea value={comment} onChange={e=>setComment(e.target.value)} placeholder={lang==='id'?'Komentar (opsional)...':'Comment (optional)...'} className="w-full p-2 border border-gray-200 rounded-lg text-xs h-16 resize-none mb-3 focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]/30" />
+                  <textarea value={comment} onChange={e=>setComment(e.target.value)} placeholder={lang==='id'?'Komentar (opsional)...':'Comment (optional)...'} className="w-full p-2 border border-gray-200 rounded-lg text-xs h-16 resize-none mb-3 focus:outline-none focus:ring-1 focus:ring-[#1b5e20]/30" />
                 )}
-                <button onClick={handleSubmit} disabled={!rating||loading} className="w-full bg-[#c9a84c] hover:bg-[#b8962f] disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-2 transition-colors">
+                <button onClick={handleSubmit} disabled={!rating||loading} className="w-full bg-[#e07028] hover:bg-[#c05018] disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-2 transition-colors">
                   {loading?<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>:<Send className="w-4 h-4"/>}
                   {loading?(lang==='id'?'Mengirim...':'Sending...'):(lang==='id'?'Kirim Penilaian':'Submit Rating')}
                 </button>

@@ -100,10 +100,10 @@ export default function CasesAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Perkara</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Perkara</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola data perkara pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Perkara
         </Button>
       </div>
@@ -146,7 +146,7 @@ export default function CasesAdmin() {
               ) : items.map(item => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-4">
-                    <p className="font-semibold text-[#1e3a5f] text-sm">{item.nomorPerkara}</p>
+                    <p className="font-semibold text-[#1b5e20] text-sm">{item.nomorPerkara}</p>
                     <p className="text-gray-400 text-xs">{item.tahun}</p>
                   </td>
                   <td className="px-4 py-4 hidden lg:table-cell text-sm text-gray-600">{item.jenisPerkara}</td>
@@ -233,7 +233,7 @@ export default function CasesAdmin() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

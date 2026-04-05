@@ -37,8 +37,8 @@ function MegaDropdown({ item, children, scrolled, activeNav }) {
         aria-expanded={open}
         className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-all min-h-[44px] ${
           isActive
-            ? 'text-[#c9a84c] bg-[#c9a84c]/10'
-            : scrolled ? 'text-[#1e3a5f] hover:text-[#c9a84c]' : 'text-white/90 hover:text-white'
+            ? 'text-[#d4a017] bg-[#d4a017]/10'
+            : scrolled ? 'text-[#1b5e20] hover:text-[#d4a017]' : 'text-white/90 hover:text-white'
         }`}
       >
         {label}
@@ -55,7 +55,7 @@ function MegaDropdown({ item, children, scrolled, activeNav }) {
           <div className="w-3 h-3 bg-white border-l border-t border-gray-100 rotate-45 absolute -top-1.5 left-1/2 -translate-x-1/2 shadow-sm" />
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden pt-2">
             {/* Header mega menu */}
-            <div className="px-4 py-3 bg-[#1e3a5f] mx-3 mt-1 rounded-xl mb-3">
+            <div className="px-4 py-3 bg-[#1b5e20] mx-3 mt-1 rounded-xl mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{item.icon}</span>
                 <div>
@@ -82,11 +82,11 @@ function MegaDropdown({ item, children, scrolled, activeNav }) {
                     href={href}
                     target={child.target === '_blank' ? '_blank' : undefined}
                     rel={isExt ? 'noopener noreferrer' : undefined}
-                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#1e3a5f]/5 transition-colors group"
+                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#1b5e20]/5 transition-colors group"
                   >
                     <span className="text-xl mt-0.5 flex-shrink-0">{child.icon}</span>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#1e3a5f] group-hover:text-[#c9a84c] transition-colors flex items-center gap-1">
+                      <p className="text-sm font-semibold text-[#1b5e20] group-hover:text-[#d4a017] transition-colors flex items-center gap-1">
                         {childLabel}
                         {isExt && <ExternalLink className="w-3 h-3 flex-shrink-0" />}
                       </p>
@@ -129,8 +129,8 @@ function NavItem({ item, scrolled, activeNav, onScrollTo }) {
       aria-current={isActive ? 'location' : undefined}
       className={`inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-all min-h-[44px] cursor-pointer ${
         isActive
-          ? 'text-[#c9a84c] bg-[#c9a84c]/10'
-          : scrolled ? 'text-[#1e3a5f] hover:text-[#c9a84c]' : 'text-white/90 hover:text-white'
+          ? 'text-[#d4a017] bg-[#d4a017]/10'
+          : scrolled ? 'text-[#1b5e20] hover:text-[#d4a017]' : 'text-white/90 hover:text-white'
       }`}
     >
       {label}
@@ -162,7 +162,7 @@ function MobileMenuItem({ item, children, onClose, onScrollTo }) {
     <div>
       <button
         onClick={handleItemClick}
-        className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-[#1e3a5f] hover:bg-gray-50 rounded-xl min-h-[44px]"
+        className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-[#1b5e20] hover:bg-gray-50 rounded-xl min-h-[44px]"
       >
         <span className="flex items-center gap-2">
           <span>{item.icon}</span> {label}
@@ -170,7 +170,7 @@ function MobileMenuItem({ item, children, onClose, onScrollTo }) {
         {hasChildren && <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />}
       </button>
       {hasChildren && open && (
-        <div className="ml-6 mb-1 space-y-0.5 border-l-2 border-[#c9a84c]/30 pl-3">
+        <div className="ml-6 mb-1 space-y-0.5 border-l-2 border-[#d4a017]/30 pl-3">
           {children.map(child => {
             const childLabel = lang === 'en' && child.labelEn ? child.labelEn : child.label;
             const href = resolveUrl(child);
@@ -182,7 +182,7 @@ function MobileMenuItem({ item, children, onClose, onScrollTo }) {
                 target={isExt && child.target === '_blank' ? '_blank' : undefined}
                 rel={isExt ? 'noopener noreferrer' : undefined}
                 onClick={() => { if (child.type === 'section') { onScrollTo(child.url?.replace('#', '') || ''); onClose(); } else onClose(); }}
-                className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-600 hover:text-[#1e3a5f] hover:bg-gray-50 rounded-lg min-h-[44px]"
+                className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-600 hover:text-[#1b5e20] hover:bg-gray-50 rounded-lg min-h-[44px]"
               >
                 <span>{child.icon}</span>
                 <div>
@@ -243,7 +243,7 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
         })}
         <div className="ml-2"><LanguageSwitcher scrolled={scrolled} /></div>
         <button
-          className={`ml-2 px-4 py-2 text-sm font-semibold rounded-lg min-h-[44px] bg-[#c9a84c] hover:bg-[#b8962f] text-white transition-colors`}
+          className={`ml-2 px-4 py-2 text-sm font-semibold rounded-lg min-h-[44px] bg-[#e07028] hover:bg-[#c05018] text-white transition-colors`}
           onClick={() => window.location.href = '/admin/login'}
         >
           Admin
@@ -252,7 +252,7 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
 
       {/* Mobile toggle */}
       <button
-        className={`lg:hidden p-2 min-h-[44px] min-w-[44px] rounded-lg ${ scrolled ? 'text-[#1e3a5f]' : 'text-white'}`}
+        className={`lg:hidden p-2 min-h-[44px] min-w-[44px] rounded-lg ${ scrolled ? 'text-[#1b5e20]' : 'text-white'}`}
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-expanded={mobileMenuOpen}
         aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
@@ -276,7 +276,7 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
             <div className="border-t border-gray-100 pt-3 flex items-center justify-between px-4">
               <LanguageSwitcher scrolled={true} />
               <button
-                className="px-4 py-2 bg-[#c9a84c] text-white rounded-lg text-sm font-semibold min-h-[44px]"
+                className="px-4 py-2 bg-[#d4a017] text-white rounded-lg text-sm font-semibold min-h-[44px]"
                 onClick={() => window.location.href = '/admin/login'}
               >
                 Admin

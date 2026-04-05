@@ -1167,9 +1167,9 @@ async function seedDatabase() {
   const swCount = await sidebarWidgetsCol.countDocuments();
   if (swCount === 0) {
     await sidebarWidgetsCol.insertMany([
-      { id: uuidv4(), type: 'faq', label: 'FAQ', labelEn: 'FAQ', icon: '❓', color: '#1e3a5f', isActive: true, order: 0, settings: { limit: 4, title: 'Pertanyaan Umum', showAll: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: uuidv4(), type: 'stats', label: 'Statistik', labelEn: 'Stats', icon: '📊', color: '#c9a84c', isActive: true, order: 1, settings: { title: 'Statistik', showCases: true, showVisitors: true, days: 30 }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: uuidv4(), type: 'contact', label: 'Kontak', labelEn: 'Contact', icon: '📞', color: '#2d5a8e', isActive: true, order: 2, settings: { title: 'Hubungi Kami', showPhone: true, showEmail: true, showHours: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: uuidv4(), type: 'faq', label: 'FAQ', labelEn: 'FAQ', icon: '❓', color: '#1b5e20', isActive: true, order: 0, settings: { limit: 4, title: 'Pertanyaan Umum', showAll: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: uuidv4(), type: 'stats', label: 'Statistik', labelEn: 'Stats', icon: '📊', color: '#d4a017', isActive: true, order: 1, settings: { title: 'Statistik', showCases: true, showVisitors: true, days: 30 }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: uuidv4(), type: 'contact', label: 'Kontak', labelEn: 'Contact', icon: '📞', color: '#2e7d32', isActive: true, order: 2, settings: { title: 'Hubungi Kami', showPhone: true, showEmail: true, showHours: true }, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
     ]);
   }
 
@@ -1257,8 +1257,8 @@ async function seedDatabase() {
   const bannersCount = await bannersCol.countDocuments();
   if (bannersCount === 0) {
     await bannersCol.insertMany([
-      { id: uuidv4(), title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', buttonText: 'Lihat Layanan', buttonUrl: '#layanan', imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80', bgColor: '#1e3a5f', textColor: '#ffffff', isActive: true, order: 0, startDate: '', endDate: '', createdAt: new Date().toISOString() },
-      { id: uuidv4(), title: 'Layanan e-Court Tersedia', subtitle: 'Daftarkan perkara Anda secara online, kapan saja dan di mana saja', buttonText: 'Daftar e-Court', buttonUrl: 'https://ecourt.mahkamahagung.go.id', imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80', bgColor: '#c9a84c', textColor: '#ffffff', isActive: true, order: 1, startDate: '', endDate: '', createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', buttonText: 'Lihat Layanan', buttonUrl: '#layanan', imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80', bgColor: '#1b5e20', textColor: '#ffffff', isActive: true, order: 0, startDate: '', endDate: '', createdAt: new Date().toISOString() },
+      { id: uuidv4(), title: 'Layanan e-Court Tersedia', subtitle: 'Daftarkan perkara Anda secara online, kapan saja dan di mana saja', buttonText: 'Daftar e-Court', buttonUrl: 'https://ecourt.mahkamahagung.go.id', imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80', bgColor: '#d4a017', textColor: '#ffffff', isActive: true, order: 1, startDate: '', endDate: '', createdAt: new Date().toISOString() },
     ]);
   }
 

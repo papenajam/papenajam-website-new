@@ -31,9 +31,9 @@ function Toast({ msg, type }) {
 }
 
 const WIDGET_TYPES = [
-  { type: 'faq',        label: 'FAQ Cepat',          icon: '❓', color: '#1e3a5f',  desc: 'Tampilkan FAQ accordion dari database' },
-  { type: 'stats',      label: 'Statistik',           icon: '📊', color: '#c9a84c',  desc: 'Statistik perkara & pengunjung' },
-  { type: 'contact',    label: 'Kontak',              icon: '📞', color: '#2d5a8e',  desc: 'Nomor telepon, email, jam operasional' },
+  { type: 'faq',        label: 'FAQ Cepat',          icon: '❓', color: '#1b5e20',  desc: 'Tampilkan FAQ accordion dari database' },
+  { type: 'stats',      label: 'Statistik',           icon: '📊', color: '#d4a017',  desc: 'Statistik perkara & pengunjung' },
+  { type: 'contact',    label: 'Kontak',              icon: '📞', color: '#2e7d32',  desc: 'Nomor telepon, email, jam operasional' },
   { type: 'quicklinks', label: 'Tautan Cepat',        icon: '🔗', color: '#7c3aed',  desc: 'Daftar tautan kustom' },
   { type: 'complaint',  label: 'Pengaduan',           icon: '📩', color: '#dc2626',  desc: 'Tombol & info pengaduan' },
   { type: 'social',     label: 'Media Sosial',        icon: '🌐', color: '#0891b2',  desc: 'Ikon media sosial dari pengaturan' },
@@ -72,7 +72,7 @@ function WidgetSettingsPanel({ widget, onChange }) {
         </div>
         <div><Label className="text-xs font-semibold mb-1 block">Jumlah FAQ ditampilkan</Label><Input type="number" min={1} max={10} value={s.limit || 4} onChange={e => upd('limit', +e.target.value)} /></div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showAll !== false} onChange={e => upd('showAll', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showAll !== false} onChange={e => upd('showAll', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs">Tampilkan link "Lihat Semua FAQ"</span>
         </label>
         <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded-lg">✅ Data dari menu FAQ di admin</p>
@@ -87,15 +87,15 @@ function WidgetSettingsPanel({ widget, onChange }) {
         <div>
           <Label className="text-xs font-semibold mb-1 block">Periode statistik pengunjung</Label>
           <div className="flex gap-2">{[7,14,30,90].map(n=>
-            <button key={n} onClick={()=>upd('days',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.days===n?'bg-[#1e3a5f] text-white border-[#1e3a5f]':'border-gray-200 text-gray-600'}`}>{n}H</button>
+            <button key={n} onClick={()=>upd('days',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.days===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n}H</button>
           )}</div>
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showVisitors !== false} onChange={e => upd('showVisitors', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showVisitors !== false} onChange={e => upd('showVisitors', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs">Tampilkan statistik pengunjung</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={s.showCases !== false} onChange={e => upd('showCases', e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+          <input type="checkbox" checked={s.showCases !== false} onChange={e => upd('showCases', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
           <span className="text-xs">Tampilkan statistik perkara</span>
         </label>
       </div>
@@ -108,7 +108,7 @@ function WidgetSettingsPanel({ widget, onChange }) {
         </div>
         {[{k:'showPhone',l:'Tampilkan Telepon'},{k:'showEmail',l:'Tampilkan Email'},{k:'showHours',l:'Tampilkan Jam Operasional'},{k:'showAddress',l:'Tampilkan Alamat'}].map(({k,l})=>(
           <label key={k} className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={s[k] !== false} onChange={e => upd(k, e.target.checked)} className="w-4 h-4 accent-[#1e3a5f]" />
+            <input type="checkbox" checked={s[k] !== false} onChange={e => upd(k, e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
             <span className="text-xs">{l}</span>
           </label>
         ))}
@@ -125,7 +125,7 @@ function WidgetSettingsPanel({ widget, onChange }) {
           <div className="flex items-center justify-between mb-2">
             <Label className="text-xs font-semibold">Tautan</Label>
             <button onClick={() => upd('links', [...(s.links||[]), {id:uuidv4(),label:'Tautan Baru',labelEn:'New Link',url:'#',icon:'🔗',external:false}])}
-              className="text-xs text-[#1e3a5f] font-semibold hover:underline">+ Tambah</button>
+              className="text-xs text-[#1b5e20] font-semibold hover:underline">+ Tambah</button>
           </div>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {(s.links||[]).map((link,i) => (
@@ -190,24 +190,24 @@ function SortableWidget({ widget, isSelected, onSelect, onToggle, onDelete }) {
   return (
     <div ref={setNodeRef} style={style}
       className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all bg-white mb-2 ${
-        isSelected ? 'border-[#c9a84c] shadow-md' : 'border-gray-100 hover:border-gray-200 shadow-sm'
+        isSelected ? 'border-[#d4a017] shadow-md' : 'border-gray-100 hover:border-gray-200 shadow-sm'
       } ${isDragging ? 'shadow-xl' : ''}`}
     >
       <button {...attributes} {...listeners} className="text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 flex-shrink-0">
         <GripVertical className="w-4 h-4" />
       </button>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: (widget.color || '#1e3a5f') + '20' }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: (widget.color || '#1b5e20') + '20' }}>
         {widget.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`font-semibold text-sm ${!widget.isActive ? 'text-gray-400' : 'text-[#1e3a5f]'}`}>{widget.label}</p>
+        <p className={`font-semibold text-sm ${!widget.isActive ? 'text-gray-400' : 'text-[#1b5e20]'}`}>{widget.label}</p>
         <p className="text-xs text-gray-400">{wt?.desc}</p>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
-        <button onClick={() => onToggle(widget.id)} className="p-1.5 text-gray-400 hover:text-[#1e3a5f] rounded-lg transition-colors">
+        <button onClick={() => onToggle(widget.id)} className="p-1.5 text-gray-400 hover:text-[#1b5e20] rounded-lg transition-colors">
           {widget.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
         </button>
-        <button onClick={() => onSelect(widget.id)} className={`p-1.5 rounded-lg transition-colors ${ isSelected ? 'bg-[#c9a84c] text-white' : 'text-gray-400 hover:text-[#1e3a5f]' }`}>
+        <button onClick={() => onSelect(widget.id)} className={`p-1.5 rounded-lg transition-colors ${ isSelected ? 'bg-[#d4a017] text-white' : 'text-gray-400 hover:text-[#1b5e20]' }`}>
           <Settings2 className="w-4 h-4" />
         </button>
         <button onClick={() => onDelete(widget.id)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors">
@@ -303,16 +303,16 @@ export default function SidebarAdmin() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
             <div className="flex items-center justify-between p-5 border-b">
-              <h2 className="font-bold text-[#1e3a5f] text-lg">Tambah Widget</h2>
+              <h2 className="font-bold text-[#1b5e20] text-lg">Tambah Widget</h2>
               <button onClick={() => setShowAddModal(false)}><X className="w-5 h-5 text-gray-400" /></button>
             </div>
             <div className="p-5 grid grid-cols-2 gap-3">
               {WIDGET_TYPES.map(wt => (
                 <button key={wt.type} onClick={() => addWidget(wt.type)}
-                  className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-[#c9a84c] hover:shadow-md transition-all text-left">
+                  className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-[#d4a017] hover:shadow-md transition-all text-left">
                   <span className="text-2xl w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0" style={{ background: wt.color + '20' }}>{wt.icon}</span>
                   <div>
-                    <p className="font-semibold text-[#1e3a5f] text-sm">{wt.label}</p>
+                    <p className="font-semibold text-[#1b5e20] text-sm">{wt.label}</p>
                     <p className="text-xs text-gray-400 leading-tight">{wt.desc}</p>
                   </div>
                 </button>
@@ -325,13 +325,13 @@ export default function SidebarAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1e3a5f]">Sidebar Melayang</h1>
+          <h1 className="text-2xl font-extrabold text-[#1b5e20]">Sidebar Melayang</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola widget tab melayang di sisi kanan halaman</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => window.open('/', '_blank')}><Eye className="w-4 h-4 mr-1" />Preview</Button>
           <Button variant="outline" onClick={() => setShowAddModal(true)}><Plus className="w-4 h-4 mr-1" />Tambah Widget</Button>
-          <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={saveAll} disabled={saving}>
+          <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={saveAll} disabled={saving}>
             <Save className="w-4 h-4 mr-1" />{saving ? 'Menyimpan...' : 'Simpan Semua'}
           </Button>
         </div>
@@ -359,7 +359,7 @@ export default function SidebarAdmin() {
 
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
-              <p className="font-bold text-[#1e3a5f] flex items-center gap-2">
+              <p className="font-bold text-[#1b5e20] flex items-center gap-2">
                 <LayoutDashboard className="w-4 h-4" /> Widget ({widgets.length})
               </p>
               <p className="text-xs text-gray-400">Geser untuk mengatur urutan</p>
@@ -398,7 +398,7 @@ export default function SidebarAdmin() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{selectedWidget.icon}</span>
                   <div>
-                    <p className="font-bold text-[#1e3a5f] text-sm">{selectedWidget.label}</p>
+                    <p className="font-bold text-[#1b5e20] text-sm">{selectedWidget.label}</p>
                     <p className="text-xs text-gray-400">{WIDGET_TYPES.find(t => t.type === selectedWidget.type)?.desc}</p>
                   </div>
                 </div>
@@ -423,7 +423,7 @@ export default function SidebarAdmin() {
                   </div>
                   <div>
                     <Label className="text-xs font-semibold mb-1 block">Warna</Label>
-                    <Input type="color" value={selectedWidget.color || '#1e3a5f'} onChange={e => updateWidget({ ...selectedWidget, color: e.target.value })} className="h-9 px-2" />
+                    <Input type="color" value={selectedWidget.color || '#1b5e20'} onChange={e => updateWidget({ ...selectedWidget, color: e.target.value })} className="h-9 px-2" />
                   </div>
                 </div>
               </div>
@@ -442,8 +442,8 @@ export default function SidebarAdmin() {
           )}
 
           {/* Panduan */}
-          <div className="mt-4 bg-[#1e3a5f] rounded-2xl p-4 text-white">
-            <h3 className="font-bold text-[#c9a84c] text-sm mb-2">💡 Cara Kerja</h3>
+          <div className="mt-4 bg-[#1b5e20] rounded-2xl p-4 text-white">
+            <h3 className="font-bold text-[#d4a017] text-sm mb-2">💡 Cara Kerja</h3>
             <ul className="space-y-1.5 text-xs text-white/70">
               <li>• Tab melayang tampil di kanan semua halaman</li>
               <li>• Klik tab untuk membuka panel widget</li>

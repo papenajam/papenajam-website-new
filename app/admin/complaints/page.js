@@ -63,7 +63,7 @@ export default function ComplaintsAdmin(){
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b">
-              <h2 className="font-bold text-[#1e3a5f]">Detail Pengaduan</h2>
+              <h2 className="font-bold text-[#1b5e20]">Detail Pengaduan</h2>
               <button onClick={()=>setDetail(null)}><X className="w-5 h-5 text-gray-400"/></button>
             </div>
             <div className="p-5 space-y-4">
@@ -76,7 +76,7 @@ export default function ComplaintsAdmin(){
                 </div>
                 <div><span className="text-gray-500 text-sm">Tanggal:</span> <span className="text-sm">{formatDate(detail.createdAt)}</span></div>
               </div>
-              {detail.subject&&<div><Label className="text-xs font-semibold mb-1 block">Subjek</Label><p className="font-semibold text-[#1e3a5f]">{detail.subject}</p></div>}
+              {detail.subject&&<div><Label className="text-xs font-semibold mb-1 block">Subjek</Label><p className="font-semibold text-[#1b5e20]">{detail.subject}</p></div>}
               <div><Label className="text-xs font-semibold mb-1 block">Pesan</Label><div className="bg-blue-50 rounded-xl p-4 text-sm text-gray-700 whitespace-pre-wrap">{detail.message}</div></div>
               <div>
                 <Label className="text-xs font-semibold mb-1 block">Status</Label>
@@ -88,7 +88,7 @@ export default function ComplaintsAdmin(){
             </div>
             <div className="p-5 border-t flex gap-3 justify-end">
               <Button variant="outline" onClick={()=>setDetail(null)}>Tutup</Button>
-              <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={saveDetail} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan'}</Button>
+              <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={saveDetail} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan'}</Button>
             </div>
           </div>
         </div>
@@ -96,15 +96,15 @@ export default function ComplaintsAdmin(){
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1e3a5f] flex items-center gap-2">Manajemen Pengaduan {newCount>0&&<span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">{newCount} Baru</span>}</h1>
+          <h1 className="text-2xl font-extrabold text-[#1b5e20] flex items-center gap-2">Manajemen Pengaduan {newCount>0&&<span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">{newCount} Baru</span>}</h1>
           <p className="text-gray-500 text-sm mt-1">{total} pengaduan</p>
         </div>
         <Button variant="outline" size="sm" onClick={()=>window.open('/pengaduan','_blank')}>Lihat Form Publik</Button>
       </div>
 
       <div className="flex gap-2 mb-4 flex-wrap">
-        <button onClick={()=>{setFilter('');setPage(1);}} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${!filter?'bg-[#1e3a5f] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Semua</button>
-        {STATUS_OPTS.map(s=><button key={s.v} onClick={()=>{setFilter(s.v);setPage(1);}} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filter===s.v?'bg-[#1e3a5f] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{s.l}</button>)}
+        <button onClick={()=>{setFilter('');setPage(1);}} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${!filter?'bg-[#1b5e20] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Semua</button>
+        {STATUS_OPTS.map(s=><button key={s.v} onClick={()=>{setFilter(s.v);setPage(1);}} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filter===s.v?'bg-[#1b5e20] text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{s.l}</button>)}
       </div>
 
       {loading?<div className="space-y-3">{[...Array(5)].map((_,i)=><div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse"/>)}</div>:(
@@ -126,7 +126,7 @@ export default function ComplaintsAdmin(){
                   return(
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
-                        <p className="font-semibold text-[#1e3a5f] text-sm">{item.name}</p>
+                        <p className="font-semibold text-[#1b5e20] text-sm">{item.name}</p>
                         <p className="text-xs text-gray-400">{item.email||item.phone||''}</p>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell">
@@ -137,7 +137,7 @@ export default function ComplaintsAdmin(){
                       <td className="px-4 py-3 text-center"><span className={`px-2 py-1 rounded-full text-xs font-semibold ${st.c}`}>{st.l}</span></td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={()=>openDetail(item)} className="p-1.5 text-gray-400 hover:text-[#1e3a5f] rounded-lg"><Eye className="w-4 h-4"/></button>
+                          <button onClick={()=>openDetail(item)} className="p-1.5 text-gray-400 hover:text-[#1b5e20] rounded-lg"><Eye className="w-4 h-4"/></button>
                           <button onClick={()=>handleDelete(item.id)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg"><Trash2 className="w-4 h-4"/></button>
                         </div>
                       </td>

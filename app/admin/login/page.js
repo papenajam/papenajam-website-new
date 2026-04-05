@@ -37,14 +37,14 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#1e3a5f] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#1b5e20] via-[#2e7d32] to-[#1b5e20] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1667849921481-9e13c239ee3d?w=1400&q=60')] bg-cover bg-center opacity-10" />
 
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 rounded-full bg-[#c9a84c]/20 border-2 border-[#c9a84c]/50 flex items-center justify-center mx-auto mb-4">
-            <Scale className="w-10 h-10 text-[#c9a84c]" />
+          <div className="w-20 h-20 rounded-full bg-[#d4a017]/20 border-2 border-[#d4a017]/50 flex items-center justify-center mx-auto mb-4">
+            <Scale className="w-10 h-10 text-[#d4a017]" />
           </div>
           <h1 className="text-2xl font-extrabold text-white">Pengadilan Agama Penajam</h1>
           <p className="text-white/60 text-sm mt-1">Panel Administrasi</p>
@@ -71,7 +71,7 @@ export default function AdminLogin() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:border-[#c9a84c] focus:ring-[#c9a84c]"
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:ring-[#d4a017]"
                 />
               </div>
             </div>
@@ -85,7 +85,7 @@ export default function AdminLogin() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:border-[#c9a84c] focus:ring-[#c9a84c]"
+                  className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:ring-[#d4a017]"
                 />
                 <button
                   type="button"
@@ -98,7 +98,7 @@ export default function AdminLogin() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold py-3 text-base mt-2"
+              className="w-full bg-[#d4a017] hover:bg-[#b88010] text-white font-bold py-3 text-base mt-2"
               disabled={loading}
             >
               {loading ? (

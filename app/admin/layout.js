@@ -102,13 +102,13 @@ export default function AdminLayout({ children }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-[#0f2340] text-white z-50 transform transition-transform duration-300 flex flex-col
+      <aside className={`fixed top-0 left-0 h-full w-64 bg-[#0d3812] text-white z-50 transform transition-transform duration-300 flex flex-col
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         {/* Logo */}
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#c9a84c]/20 flex items-center justify-center">
-              <Scale className="w-5 h-5 text-[#c9a84c]" />
+            <div className="w-9 h-9 rounded-xl bg-[#d4a017]/20 flex items-center justify-center">
+              <Scale className="w-5 h-5 text-[#d4a017]" />
             </div>
             <div>
               <p className="font-bold text-sm leading-tight">PA Penajam</p>
@@ -134,7 +134,7 @@ export default function AdminLayout({ children }) {
                       onClick={() => { router.push(item.path); setSidebarOpen(false); }}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-0.5 transition-all text-left group ${
                         active
-                          ? 'bg-[#c9a84c] text-[#0f2340] font-semibold'
+                          ? 'bg-[#d4a017] text-[#0d3812] font-semibold'
                           : 'text-white/60 hover:bg-white/8 hover:text-white'
                       }`}
                     >
@@ -153,8 +153,8 @@ export default function AdminLayout({ children }) {
         <div className="p-3 border-t border-white/10">
           {user && (
             <div className="flex items-center gap-2.5 mb-2.5 px-2">
-              <div className="w-8 h-8 rounded-full bg-[#c9a84c]/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-[#c9a84c] font-bold text-sm">{user.name?.[0]?.toUpperCase()}</span>
+              <div className="w-8 h-8 rounded-full bg-[#d4a017]/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-[#d4a017] font-bold text-sm">{user.name?.[0]?.toUpperCase()}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate text-white">{user.name}</p>
@@ -190,7 +190,7 @@ export default function AdminLayout({ children }) {
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div>
-              <p className="font-semibold text-[#1e3a5f] text-sm">{currentPage}</p>
+              <p className="font-semibold text-[#1b5e20] text-sm">{currentPage}</p>
               <div className="flex items-center gap-1 text-gray-400 text-xs">
                 <span>Admin</span>
                 <ChevronRight className="w-3 h-3" />
@@ -209,8 +209,8 @@ export default function AdminLayout({ children }) {
                   title={language.name}
                   className={`px-2 py-1 rounded text-xs font-bold transition-all min-h-[32px] ${
                     lang === language.code
-                      ? 'bg-[#c9a84c] text-[#1e3a5f]'
-                      : 'text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100'
+                      ? 'bg-[#d4a017] text-[#1b5e20]'
+                      : 'text-gray-500 hover:text-[#1b5e20] hover:bg-gray-100'
                   }`}
                 >
                   {language.label}

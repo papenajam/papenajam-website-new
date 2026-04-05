@@ -10,7 +10,7 @@ export default function AccessibilityPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-[#1e3a5f] text-white" role="banner">
+      <header className="bg-[#1b5e20] text-white" role="banner">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <Link
             href="/"
@@ -18,13 +18,13 @@ export default function AccessibilityPage() {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-              <Scale className="w-5 h-5 text-[#c9a84c]" aria-hidden="true" />
+              <Scale className="w-5 h-5 text-[#d4a017]" aria-hidden="true" />
             </div>
             <div>
               <p className="font-bold text-sm leading-tight">
                 {id ? 'Pengadilan Agama' : 'Religious Court'}
               </p>
-              <p className="font-extrabold text-[#c9a84c] leading-tight">Penajam</p>
+              <p className="font-extrabold text-[#d4a017] leading-tight">Penajam</p>
             </div>
           </Link>
         </div>
@@ -34,10 +34,10 @@ export default function AccessibilityPage() {
         {/* Page Title */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-[#1e3a5f]/10 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#1b5e20]/10 rounded-xl flex items-center justify-center">
               <span className="text-2xl" aria-hidden="true">♿</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-[#1e3a5f]">
+            <h1 className="text-3xl font-extrabold text-[#1b5e20]">
               {id ? 'Pernyataan Aksesibilitas' : 'Accessibility Statement'}
             </h1>
           </div>
@@ -56,7 +56,7 @@ export default function AccessibilityPage() {
 
           {/* Commitment */}
           <section aria-labelledby="commitment-heading">
-            <h2 id="commitment-heading" className="text-xl font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
+            <h2 id="commitment-heading" className="text-xl font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-green-500" aria-hidden="true" />
               {id ? 'Komitmen Aksesibilitas' : 'Accessibility Commitment'}
             </h2>
@@ -76,7 +76,7 @@ export default function AccessibilityPage() {
 
           {/* Supported Technologies */}
           <section aria-labelledby="tech-heading">
-            <h2 id="tech-heading" className="text-xl font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
+            <h2 id="tech-heading" className="text-xl font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
               <Monitor className="w-5 h-5 text-blue-500" aria-hidden="true" />
               {id ? 'Teknologi Asistif yang Didukung' : 'Supported Assistive Technologies'}
             </h2>
@@ -88,11 +88,11 @@ export default function AccessibilityPage() {
                 { icon: Brain, title: id ? 'Font Ramah Disleksia' : 'Dyslexia-Friendly Font', desc: id ? 'Tersedia di toolbar aksesibilitas' : 'Available in accessibility toolbar' },
               ].map((item, i) => (
                 <div key={i} className="bg-white border border-gray-100 rounded-xl p-5 flex gap-4">
-                  <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-[#1e3a5f]" aria-hidden="true" />
+                  <div className="w-10 h-10 bg-[#1b5e20]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-[#1b5e20]" aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#1e3a5f] text-sm">{item.title}</h3>
+                    <h3 className="font-semibold text-[#1b5e20] text-sm">{item.title}</h3>
                     <p className="text-gray-500 text-sm mt-0.5">{item.desc}</p>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function AccessibilityPage() {
 
           {/* Features */}
           <section aria-labelledby="features-heading">
-            <h2 id="features-heading" className="text-xl font-bold text-[#1e3a5f] mb-4">
+            <h2 id="features-heading" className="text-xl font-bold text-[#1b5e20] mb-4">
               {id ? 'Fitur Aksesibilitas yang Tersedia' : 'Available Accessibility Features'}
             </h2>
             <ul className="space-y-3" role="list">
@@ -145,7 +145,7 @@ export default function AccessibilityPage() {
 
           {/* WCAG Compliance */}
           <section aria-labelledby="wcag-heading">
-            <h2 id="wcag-heading" className="text-xl font-bold text-[#1e3a5f] mb-4">
+            <h2 id="wcag-heading" className="text-xl font-bold text-[#1b5e20] mb-4">
               {id ? 'Kepatuhan WCAG 2.1' : 'WCAG 2.1 Compliance'}
             </h2>
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 space-y-4">
@@ -164,7 +164,7 @@ export default function AccessibilityPage() {
                   { code: '2.5.5', desc: id ? 'Target klik minimal 44x44 piksel' : 'Minimum click target 44x44 pixels' },
                 ].map(({ code, desc }) => (
                   <div key={code} className="flex items-start gap-2">
-                    <span className="bg-[#1e3a5f] text-white text-xs font-bold px-2 py-0.5 rounded flex-shrink-0">{code}</span>
+                    <span className="bg-[#1b5e20] text-white text-xs font-bold px-2 py-0.5 rounded flex-shrink-0">{code}</span>
                     <span className="text-gray-600 text-sm">{desc}</span>
                   </div>
                 ))}
@@ -174,7 +174,7 @@ export default function AccessibilityPage() {
 
           {/* Known Limitations */}
           <section aria-labelledby="limits-heading">
-            <h2 id="limits-heading" className="text-xl font-bold text-[#1e3a5f] mb-4">
+            <h2 id="limits-heading" className="text-xl font-bold text-[#1b5e20] mb-4">
               {id ? 'Keterbatasan yang Diketahui' : 'Known Limitations'}
             </h2>
             <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-6">
@@ -188,11 +188,11 @@ export default function AccessibilityPage() {
 
           {/* Feedback / Contact */}
           <section aria-labelledby="contact-heading">
-            <h2 id="contact-heading" className="text-xl font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
-              <Phone className="w-5 h-5 text-[#c9a84c]" aria-hidden="true" />
+            <h2 id="contact-heading" className="text-xl font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
+              <Phone className="w-5 h-5 text-[#d4a017]" aria-hidden="true" />
               {id ? 'Hubungi Kami untuk Masukan Aksesibilitas' : 'Contact Us for Accessibility Feedback'}
             </h2>
-            <div className="bg-[#1e3a5f] text-white rounded-xl p-6 space-y-4">
+            <div className="bg-[#1b5e20] text-white rounded-xl p-6 space-y-4">
               <p className="text-white/80 text-sm">
                 {id
                   ? 'Jika Anda mengalami kesulitan mengakses konten di website ini atau ingin memberikan masukan terkait aksesibilitas, silakan hubungi kami melalui:'
@@ -200,25 +200,25 @@ export default function AccessibilityPage() {
               </p>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-[#c9a84c] flex-shrink-0" aria-hidden="true" />
+                  <Phone className="w-4 h-4 text-[#d4a017] flex-shrink-0" aria-hidden="true" />
                   <div>
                     <p className="text-xs text-white/60 uppercase tracking-wide">{id ? 'Telepon' : 'Phone'}</p>
-                    <a href="tel:+625433371012" className="text-white font-medium hover:text-[#c9a84c] transition-colors">
+                    <a href="tel:+625433371012" className="text-white font-medium hover:text-[#d4a017] transition-colors">
                       (0543) 337-1012
                     </a>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-[#c9a84c] flex-shrink-0" aria-hidden="true" />
+                  <Mail className="w-4 h-4 text-[#d4a017] flex-shrink-0" aria-hidden="true" />
                   <div>
                     <p className="text-xs text-white/60 uppercase tracking-wide">{id ? 'Email' : 'Email'}</p>
-                    <a href="mailto:pa.penajam@gmail.com" className="text-white font-medium hover:text-[#c9a84c] transition-colors">
+                    <a href="mailto:pa.penajam@gmail.com" className="text-white font-medium hover:text-[#d4a017] transition-colors">
                       pa.penajam@gmail.com
                     </a>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Globe className="w-4 h-4 text-[#c9a84c] flex-shrink-0" aria-hidden="true" />
+                  <Globe className="w-4 h-4 text-[#d4a017] flex-shrink-0" aria-hidden="true" />
                   <div>
                     <p className="text-xs text-white/60 uppercase tracking-wide">{id ? 'Alamat' : 'Address'}</p>
                     <p className="text-white font-medium">
@@ -247,13 +247,13 @@ export default function AccessibilityPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#1e3a5f] text-white py-6 mt-12" role="contentinfo">
+      <footer className="bg-[#1b5e20] text-white py-6 mt-12" role="contentinfo">
         <div className="container mx-auto px-4 text-center">
           <p className="text-white/60 text-sm">
             &copy; {new Date().getFullYear()} Pengadilan Agama Penajam.{' '}
             {id ? 'Seluruh hak cipta dilindungi.' : 'All rights reserved.'}
           </p>
-          <Link href="/" className="text-[#c9a84c] hover:underline text-sm mt-1 inline-block">
+          <Link href="/" className="text-[#d4a017] hover:underline text-sm mt-1 inline-block">
             {id ? '← Kembali ke Beranda' : '← Back to Home'}
           </Link>
         </div>

@@ -56,12 +56,12 @@ export default function SurveysAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1e3a5f]">Survei Kepuasan</h1>
+          <h1 className="text-2xl font-extrabold text-[#1b5e20]">Survei Kepuasan</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola survei kepuasan pelayanan</p>
         </div>
         <div className="flex gap-2">
-          <div className="bg-[#c9a84c]/10 rounded-2xl px-4 py-2 text-center">
-            <div className="flex items-center gap-1 text-[#c9a84c]">{'★'.repeat(Math.round(stats.averageRating))}<span className="font-extrabold text-lg ml-1">{stats.averageRating}</span></div>
+          <div className="bg-[#d4a017]/10 rounded-2xl px-4 py-2 text-center">
+            <div className="flex items-center gap-1 text-[#d4a017]">{'★'.repeat(Math.round(stats.averageRating))}<span className="font-extrabold text-lg ml-1">{stats.averageRating}</span></div>
             <p className="text-xs text-gray-500">{stats.totalResponses} respons</p>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function SurveysAdmin() {
       {/* Tabs */}
       <div className="flex gap-1 mb-6 bg-gray-100 rounded-xl p-1 w-fit">
         {[{v:'config',l:'Konfigurasi'},{v:'responses',l:`Respons (${stats.totalResponses})`},{v:'stats',l:'Statistik'}].map(t=>
-          <button key={t.v} onClick={()=>setTab(t.v)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab===t.v?'bg-white text-[#1e3a5f] shadow-sm':'text-gray-500 hover:text-gray-700'}`}>{t.l}</button>
+          <button key={t.v} onClick={()=>setTab(t.v)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab===t.v?'bg-white text-[#1b5e20] shadow-sm':'text-gray-500 hover:text-gray-700'}`}>{t.l}</button>
         )}
       </div>
 
@@ -83,10 +83,10 @@ export default function SurveysAdmin() {
                 <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={config.subtitle||''} onChange={e=>setConfig(p=>({...p,subtitle:e.target.value}))}/></div>
                 <div><Label className="text-xs font-semibold mb-1 block">Pesan Terima Kasih</Label><Input value={config.thankYouMessage||''} onChange={e=>setConfig(p=>({...p,thankYouMessage:e.target.value}))}/></div>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={config.isActive!==false} onChange={e=>setConfig(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]"/>
+                  <input type="checkbox" checked={config.isActive!==false} onChange={e=>setConfig(p=>({...p,isActive:e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]"/>
                   <span className="text-sm font-medium">Tampilkan widget survei di homepage</span>
                 </label>
-                <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white w-full" onClick={saveConfig} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan Konfigurasi'}</Button>
+                <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white w-full" onClick={saveConfig} disabled={saving}><Save className="w-4 h-4 mr-1"/>{saving?'Menyimpan...':'Simpan Konfigurasi'}</Button>
               </div>
             </div>
           )}
@@ -107,7 +107,7 @@ export default function SurveysAdmin() {
                       <tr key={r.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
-                            {[1,2,3,4,5].map(s=><Star key={s} className={`w-4 h-4 ${s<=r.rating?'fill-[#c9a84c] text-[#c9a84c]':'text-gray-200'}`}/>)}
+                            {[1,2,3,4,5].map(s=><Star key={s} className={`w-4 h-4 ${s<=r.rating?'fill-[#d4a017] text-[#d4a017]':'text-gray-200'}`}/>)}
                             <span className="ml-1 font-bold text-sm">{r.rating}/5</span>
                           </div>
                         </td>
@@ -124,21 +124,21 @@ export default function SurveysAdmin() {
           {tab==='stats'&&(
             <div className="space-y-4">
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h2 className="font-bold text-[#1e3a5f] mb-4 flex items-center gap-2"><BarChart2 className="w-5 h-5"/>Distribusi Rating</h2>
+                <h2 className="font-bold text-[#1b5e20] mb-4 flex items-center gap-2"><BarChart2 className="w-5 h-5"/>Distribusi Rating</h2>
                 {ratingCounts.reverse().map(({r,count})=>(
                   <div key={r} className="flex items-center gap-3 mb-3">
                     <div className="flex items-center gap-1 w-20 flex-shrink-0">
-                      {[...Array(r)].map((_,i)=><Star key={i} className="w-3.5 h-3.5 fill-[#c9a84c] text-[#c9a84c]"/>)}
+                      {[...Array(r)].map((_,i)=><Star key={i} className="w-3.5 h-3.5 fill-[#d4a017] text-[#d4a017]"/>)}
                     </div>
                     <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
-                      <div className="bg-[#c9a84c] h-full rounded-full transition-all" style={{ width: stats.totalResponses>0 ? `${(count/stats.totalResponses)*100}%` : '0%' }}/>
+                      <div className="bg-[#d4a017] h-full rounded-full transition-all" style={{ width: stats.totalResponses>0 ? `${(count/stats.totalResponses)*100}%` : '0%' }}/>
                     </div>
                     <span className="text-sm font-semibold text-gray-600 w-12 text-right">{count} ({stats.totalResponses>0?Math.round((count/stats.totalResponses)*100):0}%)</span>
                   </div>
                 ))}
                 <div className="mt-6 pt-4 border-t text-center">
-                  <p className="text-4xl font-extrabold text-[#c9a84c]">{stats.averageRating}</p>
-                  <div className="flex justify-center gap-1 my-2">{[1,2,3,4,5].map(s=><Star key={s} className={`w-5 h-5 ${s<=Math.round(stats.averageRating)?'fill-[#c9a84c] text-[#c9a84c]':'text-gray-200'}`}/>)}</div>
+                  <p className="text-4xl font-extrabold text-[#d4a017]">{stats.averageRating}</p>
+                  <div className="flex justify-center gap-1 my-2">{[1,2,3,4,5].map(s=><Star key={s} className={`w-5 h-5 ${s<=Math.round(stats.averageRating)?'fill-[#d4a017] text-[#d4a017]':'text-gray-200'}`}/>)}</div>
                   <p className="text-gray-500 text-sm">Dari {stats.totalResponses} respons</p>
                 </div>
               </div>

@@ -45,18 +45,18 @@ export default function PengaduanPage() {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Check className="w-8 h-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#1e3a5f] mb-2">{lang === 'id' ? 'Pengaduan Terkirim!' : 'Complaint Sent!'}</h2>
+                <h2 className="text-2xl font-bold text-[#1b5e20] mb-2">{lang === 'id' ? 'Pengaduan Terkirim!' : 'Complaint Sent!'}</h2>
                 <p className="text-gray-500 mb-6">{lang === 'id' ? 'Terima kasih. Kami akan menindaklanjuti pengaduan Anda dalam 3x24 jam kerja.' : 'Thank you. We will follow up on your complaint within 3 working days.'}</p>
                 <button
                   onClick={() => { setSuccess(false); setForm({ name: '', email: '', phone: '', category: 'Pelayanan', subject: '', message: '' }); }}
-                  className="text-[#c9a84c] font-semibold hover:underline"
+                  className="text-[#d4a017] font-semibold hover:underline"
                 >
                   {lang === 'id' ? 'Kirim pengaduan lain' : 'Send another complaint'}
                 </button>
               </div>
             ) : (
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h2 className="font-bold text-[#1e3a5f] text-lg mb-6">
+                <h2 className="font-bold text-[#1b5e20] text-lg mb-6">
                   {lang === 'id' ? '📝 Form Pengaduan' : '📝 Complaint Form'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +79,7 @@ export default function PengaduanPage() {
                     <select
                       value={form.category}
                       onChange={e => upd('category', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20"
                     >
                       {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
@@ -94,14 +94,14 @@ export default function PengaduanPage() {
                       value={form.message}
                       onChange={e => upd('message', e.target.value)}
                       placeholder={lang === 'id' ? 'Tuliskan pengaduan atau pertanyaan Anda di sini...' : 'Write your complaint or question here...'}
-                      className="w-full p-3 border border-gray-200 rounded-lg text-sm h-36 resize-none focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                      className="w-full p-3 border border-gray-200 rounded-lg text-sm h-36 resize-none focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20"
                       required
                     />
                   </div>
                   {error && (
                     <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-sm">{error}</div>
                   )}
-                  <Button type="submit" className="w-full bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white py-3" disabled={loading}>
+                  <Button type="submit" className="w-full bg-[#1b5e20] hover:bg-[#2e7d32] text-white py-3" disabled={loading}>
                     <Send className="w-4 h-4 mr-2" />
                     {loading ? (lang === 'id' ? 'Mengirim...' : 'Sending...') : (lang === 'id' ? 'Kirim Pengaduan' : 'Send Complaint')}
                   </Button>
@@ -112,7 +112,7 @@ export default function PengaduanPage() {
 
           {/* Info Kontak */}
           <div className="space-y-4">
-            <div className="bg-[#1e3a5f] rounded-2xl p-5 text-white">
+            <div className="bg-[#1b5e20] rounded-2xl p-5 text-white">
               <h3 className="font-bold mb-4 flex items-center gap-2">📞 {lang === 'id' ? 'Informasi Kontak' : 'Contact Information'}</h3>
               <div className="space-y-3 text-sm">
                 {[
@@ -122,7 +122,7 @@ export default function PengaduanPage() {
                   { icon: Clock, label: lang === 'id' ? 'Sen-Kam: 08:00–16:00 WITA\nJum: 08:00–11:00 WITA' : 'Mon–Thu: 08:00–16:00\nFri: 08:00–11:00' },
                 ].map(({ icon: Icon, label }) => (
                   <div key={label} className="flex items-start gap-3">
-                    <Icon className="w-4 h-4 text-[#c9a84c] flex-shrink-0 mt-0.5" />
+                    <Icon className="w-4 h-4 text-[#d4a017] flex-shrink-0 mt-0.5" />
                     <span className="text-white/80 whitespace-pre-line">{label}</span>
                   </div>
                 ))}
@@ -143,7 +143,7 @@ export default function PengaduanPage() {
               className="block bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow text-center"
             >
               <p className="text-2xl mb-1">❓</p>
-              <p className="font-semibold text-[#1e3a5f] text-sm">{lang === 'id' ? 'Cek FAQ terlebih dahulu' : 'Check FAQ first'}</p>
+              <p className="font-semibold text-[#1b5e20] text-sm">{lang === 'id' ? 'Cek FAQ terlebih dahulu' : 'Check FAQ first'}</p>
               <p className="text-xs text-gray-400 mt-1">{lang === 'id' ? 'Mungkin pertanyaan Anda sudah terjawab' : 'Your question might already be answered'}</p>
             </a>
           </div>

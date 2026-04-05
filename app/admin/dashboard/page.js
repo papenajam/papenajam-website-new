@@ -12,7 +12,7 @@ import {
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 
-const PIE_COLORS = ['#1e3a5f','#c9a84c','#2d5a8e','#e8b84b','#3b6fa0','#d4a843'];
+const PIE_COLORS = ['#1b5e20','#d4a017','#2e7d32','#e8b84b','#3b6fa0','#d4a843'];
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -67,12 +67,12 @@ export default function AdminDashboard() {
       {/* Welcome */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Dashboard</h1>
           <p className="text-gray-500 text-sm mt-0.5">
             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={() => router.push('/admin/agenda-sidang')}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={() => router.push('/admin/agenda-sidang')}>
           <CalendarDays className="w-4 h-4 mr-2" /> Tambah Agenda
         </Button>
       </div>
@@ -106,8 +106,8 @@ export default function AdminDashboard() {
       <div className="grid md:grid-cols-2 gap-4">
         {/* Bar Chart */}
         <div className="bg-white rounded-xl border border-gray-100 p-5">
-          <h3 className="font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#c9a84c]" /> Perkara per Bulan
+          <h3 className="font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#d4a017]" /> Perkara per Bulan
           </h3>
           {loading || !stats.monthlyData ? (
             <div className="h-40 bg-gray-50 rounded-lg animate-pulse flex items-center justify-center">
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
                   contentStyle={{ fontSize: 12, borderRadius: 8 }}
                   formatter={(v) => [v, 'Perkara']}
                 />
-                <Bar dataKey="count" fill="#1e3a5f" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" fill="#1b5e20" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -131,8 +131,8 @@ export default function AdminDashboard() {
 
         {/* Pie Chart */}
         <div className="bg-white rounded-xl border border-gray-100 p-5">
-          <h3 className="font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
-            <Scale className="w-4 h-4 text-[#c9a84c]" /> Perkara berdasarkan Jenis
+          <h3 className="font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
+            <Scale className="w-4 h-4 text-[#d4a017]" /> Perkara berdasarkan Jenis
           </h3>
           {loading || !stats.caseTypes || stats.caseTypes.length === 0 ? (
             <div className="h-40 bg-gray-50 rounded-lg animate-pulse flex items-center justify-center">
@@ -167,8 +167,8 @@ export default function AdminDashboard() {
         {/* Today's Agenda */}
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-gray-50">
-            <h3 className="font-bold text-[#1e3a5f] flex items-center gap-2">
-              <CalendarDays className="w-4 h-4 text-[#c9a84c]" /> Jadwal Sidang Hari Ini
+            <h3 className="font-bold text-[#1b5e20] flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-[#d4a017]" /> Jadwal Sidang Hari Ini
             </h3>
             <Button variant="outline" size="sm" className="text-xs" onClick={() => router.push('/admin/agenda-sidang')}>
               Semua Agenda
@@ -189,11 +189,11 @@ export default function AdminDashboard() {
               </div>
             ) : todayAgenda.map(item => (
               <div key={item.id} className="p-4 flex items-start gap-3">
-                <div className="w-12 h-12 bg-[#1e3a5f]/5 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
-                  <span className="text-[#1e3a5f] font-bold text-sm">{item.waktuSidang?.slice(0,5)}</span>
+                <div className="w-12 h-12 bg-[#1b5e20]/5 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                  <span className="text-[#1b5e20] font-bold text-sm">{item.waktuSidang?.slice(0,5)}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#1e3a5f] text-sm line-clamp-1">{item.nomorPerkara}</p>
+                  <p className="font-semibold text-[#1b5e20] text-sm line-clamp-1">{item.nomorPerkara}</p>
                   <p className="text-gray-500 text-xs">{item.jenisPerkara} &bull; {item.ruangSidang}</p>
                 </div>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColor(item.status)}`}>
@@ -207,8 +207,8 @@ export default function AdminDashboard() {
         {/* Recent News */}
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-gray-50">
-            <h3 className="font-bold text-[#1e3a5f] flex items-center gap-2">
-              <Newspaper className="w-4 h-4 text-[#c9a84c]" /> Berita Terbaru
+            <h3 className="font-bold text-[#1b5e20] flex items-center gap-2">
+              <Newspaper className="w-4 h-4 text-[#d4a017]" /> Berita Terbaru
             </h3>
             <Button variant="outline" size="sm" className="text-xs" onClick={() => router.push('/admin/news')}>
               Kelola Berita
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
                   alt={item.title} className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#1e3a5f] text-sm line-clamp-1">{item.title}</p>
+                  <p className="font-semibold text-[#1b5e20] text-sm line-clamp-1">{item.title}</p>
                   <p className="text-gray-400 text-xs mt-0.5">{formatDate(item.publishDate || item.createdAt)}</p>
                 </div>
                 <span className={`self-start px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>

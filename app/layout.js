@@ -16,7 +16,7 @@ export const metadata = {
     type: 'website',
   },
   other: {
-    'theme-color': '#1e3a5f',
+    'theme-color': '#1b5e20',
   },
 };
 

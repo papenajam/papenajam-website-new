@@ -24,7 +24,7 @@ export default function BannerSlider({ settings }) {
   const banner = banners[current];
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: 400, background: banner.bgColor||'#1e3a5f' }}>
+    <section className="relative overflow-hidden" style={{ minHeight: 400, background: banner.bgColor||'#1b5e20' }}>
       {banner.imageUrl && (
         <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage:`url(${banner.imageUrl})` }} />
       )}
@@ -35,7 +35,7 @@ export default function BannerSlider({ settings }) {
           {banner.subtitle && <p className="text-lg mb-8 opacity-80" style={{ color: banner.textColor||'#ffffff' }}>{banner.subtitle}</p>}
           {banner.buttonText && (
             <a href={banner.buttonUrl||'#'} target={banner.buttonUrl?.startsWith('http')?'_blank':undefined} rel={banner.buttonUrl?.startsWith('http')?'noopener':undefined}
-              className="inline-flex items-center bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors">
+              className="inline-flex items-center bg-[#d4a017] hover:bg-[#b88010] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors">
               {banner.buttonText}
             </a>
           )}

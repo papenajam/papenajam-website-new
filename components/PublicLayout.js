@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import MegaMenuNavbar from '@/components/MegaMenu';
 
-export default function PublicLayout({ children, title, subtitle, bgHeader = '#1e3a5f' }) {
+export default function PublicLayout({ children, title, subtitle, bgHeader = '#1b5e20' }) {
   const { lang } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,7 +56,7 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
         role="navigation"
         aria-label={lang === 'id' ? 'Menu utama' : 'Main navigation'}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white shadow-md' : 'bg-[#1e3a5f]'
+          scrolled ? 'bg-white shadow-md' : 'bg-[#1b5e20]'
         }`}
       >
         <div className="container mx-auto px-4">
@@ -65,16 +65,16 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
             <a
               href="/"
               aria-label={lang === 'id' ? 'Kembali ke Beranda' : 'Back to Homepage'}
-              className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 rounded-lg flex-shrink-0"
+              className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#d4a017] focus:ring-offset-2 rounded-lg flex-shrink-0"
             >
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center shadow-md border-2 border-[#c9a84c]/30">
-                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-[#c9a84c]" aria-hidden="true" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-[#1b5e20] to-[#2e7d32] flex items-center justify-center shadow-md border-2 border-[#d4a017]/30">
+                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-[#d4a017]" aria-hidden="true" />
               </div>
               <div>
-                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`}>
+                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1b5e20]' : 'text-white'}`}>
                   {lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}
                 </p>
-                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#c9a84c]">Penajam</p>
+                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#d4a017]">Penajam</p>
               </div>
             </a>
 
@@ -114,18 +114,18 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
       </main>
 
       {/* ── FOOTER ── */}
-      <footer role="contentinfo" className="bg-[#1e3a5f] text-white py-12 mt-auto">
+      <footer role="contentinfo" className="bg-[#1b5e20] text-white py-12 mt-auto">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <Scale className="w-5 h-5 text-[#c9a84c]" aria-hidden="true" />
+                  <Scale className="w-5 h-5 text-[#d4a017]" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="font-bold text-sm">{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
-                  <p className="font-extrabold text-[#c9a84c]">Penajam</p>
+                  <p className="font-extrabold text-[#d4a017]">Penajam</p>
                 </div>
               </div>
               <p className="text-white/60 text-sm leading-relaxed">
@@ -149,7 +149,7 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
 
             {/* Quick Links */}
             <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
-              <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">
+              <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">
                 {lang === 'id' ? 'Tautan Cepat' : 'Quick Links'}
               </h3>
               <ul className="list-none p-0 grid grid-cols-2 gap-x-4 gap-y-1.5">
@@ -166,7 +166,7 @@ export default function PublicLayout({ children, title, subtitle, bgHeader = '#1
 
             {/* Contact */}
             <div>
-              <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">
+              <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">
                 {lang === 'id' ? 'Kontak Kami' : 'Contact Us'}
               </h3>
               <div className="space-y-2 text-sm text-white/60">

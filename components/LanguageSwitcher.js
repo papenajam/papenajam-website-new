@@ -22,10 +22,10 @@ export default function LanguageSwitcher({ variant = 'default', scrolled = true 
             aria-pressed={isActive}
             className={`px-2.5 py-1 rounded text-xs font-bold transition-all ${
               isActive
-                ? 'bg-[#c9a84c] text-[#1e3a5f]'
+                ? 'bg-[#d4a017] text-[#1b5e20]'
                 : variant === 'dark' || !scrolled
                   ? 'text-white/70 hover:text-white hover:bg-white/10'
-                  : 'text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100'
+                  : 'text-gray-500 hover:text-[#1b5e20] hover:bg-gray-100'
             }`}
           >
             {language.label}

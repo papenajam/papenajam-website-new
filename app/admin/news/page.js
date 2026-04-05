@@ -77,8 +77,8 @@ function ImageUploadInput({ value, onChange, token, label = 'Gambar' }) {
           <p className="text-xs text-gray-400 mt-1 truncate">{value}</p>
         </div>
       ) : (
-        <div className="border-2 border-dashed border-gray-200 rounded-xl hover:border-[#1e3a5f]/30 transition-colors">
-          <label className="cursor-pointer flex flex-col items-center gap-1.5 p-4 text-gray-400 hover:text-[#1e3a5f] transition-colors">
+        <div className="border-2 border-dashed border-gray-200 rounded-xl hover:border-[#1b5e20]/30 transition-colors">
+          <label className="cursor-pointer flex flex-col items-center gap-1.5 p-4 text-gray-400 hover:text-[#1b5e20] transition-colors">
             <ImageIcon className="w-7 h-7" />
             <span className="text-sm font-medium">{uploading ? 'Mengupload...' : 'Upload gambar'}</span>
             <span className="text-xs">JPG, PNG, GIF, WebP — Maks 5MB</span>
@@ -197,10 +197,10 @@ export default function NewsAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Berita</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Berita</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola artikel berita pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Berita
         </Button>
       </div>
@@ -260,7 +260,7 @@ export default function NewsAdmin() {
                           className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
                         />
                         <div>
-                          <p className="font-semibold text-[#1e3a5f] text-sm line-clamp-1">{item.title}</p>
+                          <p className="font-semibold text-[#1b5e20] text-sm line-clamp-1">{item.title}</p>
                           <p className="text-gray-400 text-xs line-clamp-1">{item.content?.substring(0,60)}...</p>
                         </div>
                       </div>
@@ -324,7 +324,7 @@ export default function NewsAdmin() {
               aria-selected={langTab === 'id'}
               aria-controls="tab-id"
               onClick={() => setLangTab('id')}
-              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'id' ? 'bg-white text-[#1e3a5f] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'id' ? 'bg-white text-[#1b5e20] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
               🇮🇩 Bahasa Indonesia
             </button>
@@ -333,7 +333,7 @@ export default function NewsAdmin() {
               aria-selected={langTab === 'en'}
               aria-controls="tab-en"
               onClick={() => setLangTab('en')}
-              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'en' ? 'bg-white text-[#1e3a5f] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all flex items-center justify-center gap-2 ${langTab === 'en' ? 'bg-white text-[#1b5e20] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
               🇬🇧 English
             </button>
@@ -363,7 +363,7 @@ export default function NewsAdmin() {
                   </Label>
                   <textarea
                     id="content-id"
-                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none"
                     placeholder="Isi berita dalam Bahasa Indonesia..."
                     value={form.content}
                     onChange={e => setForm(f => ({...f, content: e.target.value}))}
@@ -395,7 +395,7 @@ export default function NewsAdmin() {
                   </Label>
                   <textarea
                     id="content-en"
-                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                    className="w-full min-h-[120px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none"
                     placeholder="News content in English..."
                     value={form.contentEn || ''}
                     onChange={e => setForm(f => ({...f, contentEn: e.target.value}))}
@@ -476,7 +476,7 @@ export default function NewsAdmin() {
                 id="isPublished"
                 checked={form.isPublished}
                 onChange={e => setForm(f => ({...f, isPublished: e.target.checked}))}
-                className="w-4 h-4 accent-[#1e3a5f]"
+                className="w-4 h-4 accent-[#1b5e20]"
                 aria-describedby="publish-help"
               />
               <div>
@@ -487,7 +487,7 @@ export default function NewsAdmin() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

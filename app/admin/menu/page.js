@@ -61,7 +61,7 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b">
-          <h2 className="font-bold text-[#1e3a5f] text-lg">Edit Item Menu</h2>
+          <h2 className="font-bold text-[#1b5e20] text-lg">Edit Item Menu</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-5 space-y-4">
@@ -74,7 +74,7 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
                 return (
                   <button key={lt.value} onClick={() => upd('type', lt.value)}
                     className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 text-xs font-medium transition-all ${
-                      form.type === lt.value ? 'border-[#1e3a5f] bg-[#1e3a5f]/5 text-[#1e3a5f]' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                      form.type === lt.value ? 'border-[#1b5e20] bg-[#1b5e20]/5 text-[#1b5e20]' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}>
                     <Icon className="w-4 h-4" />
                     {lt.label}
@@ -101,13 +101,13 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
             <Label className="text-xs font-semibold mb-1 block">URL / Link</Label>
             {form.type === 'section' ? (
               <select value={form.url || ''} onChange={e => upd('url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20">
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20">
                 <option value="">-- Pilih section --</option>
                 {SECTION_IDS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             ) : form.type === 'page' ? (
               <select value={form.url || ''} onChange={e => upd('url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20">
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/20">
                 <option value="">-- Pilih halaman --</option>
                 <option value="/agenda-sidang">Agenda Sidang</option>
                 <option value="/putusan">Putusan</option>
@@ -124,7 +124,7 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
             {form.type === 'external' && (
               <label className="flex items-center gap-2 mt-2 cursor-pointer">
                 <input type="checkbox" checked={form.target === '_blank'} onChange={e => upd('target', e.target.checked ? '_blank' : '_self')}
-                  className="w-4 h-4 accent-[#1e3a5f]" />
+                  className="w-4 h-4 accent-[#1b5e20]" />
                 <span className="text-xs text-gray-600">Buka di tab baru</span>
               </label>
             )}
@@ -137,7 +137,7 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
               {ICON_OPTS.map(ico => (
                 <button key={ico} onClick={() => upd('icon', ico)}
                   className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg border-2 transition-all ${
-                    form.icon === ico ? 'border-[#1e3a5f] bg-[#1e3a5f]/5' : 'border-gray-200 hover:border-gray-300'
+                    form.icon === ico ? 'border-[#1b5e20] bg-[#1b5e20]/5' : 'border-gray-200 hover:border-gray-300'
                   }`}>{ico}</button>
               ))}
               <Input value={form.icon || ''} onChange={e => upd('icon', e.target.value)}
@@ -160,13 +160,13 @@ function ItemEditPanel({ item, pages, onSave, onClose }) {
           {/* Aktif */}
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.isActive !== false} onChange={e => upd('isActive', e.target.checked)}
-              className="w-4 h-4 accent-[#1e3a5f]" />
+              className="w-4 h-4 accent-[#1b5e20]" />
             <span className="text-sm font-medium">Tampilkan di menu</span>
           </label>
         </div>
         <div className="p-5 border-t flex gap-3 justify-end">
           <Button variant="outline" onClick={onClose}>Batal</Button>
-          <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={handleSave}>
+          <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={handleSave}>
             <Check className="w-4 h-4 mr-1" /> Simpan Item
           </Button>
         </div>
@@ -183,9 +183,9 @@ function SortableRow({ item, depth = 0, onEdit, onDelete, onToggle, onAddChild }
   const typeBg = { section: 'bg-blue-100 text-blue-700', page: 'bg-violet-100 text-violet-700', external: 'bg-amber-100 text-amber-700' };
 
   return (
-    <div ref={setNodeRef} style={style} className={`${depth > 0 ? 'ml-8 border-l-2 border-[#c9a84c]/30 pl-3' : ''}`}>
+    <div ref={setNodeRef} style={style} className={`${depth > 0 ? 'ml-8 border-l-2 border-[#d4a017]/30 pl-3' : ''}`}>
       <div className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
-        isDragging ? 'bg-white shadow-lg border-[#c9a84c]' : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
+        isDragging ? 'bg-white shadow-lg border-[#d4a017]' : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
       } mb-1.5`}>
         <button {...attributes} {...listeners} className="text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing p-1 flex-shrink-0">
           <GripVertical className="w-4 h-4" />
@@ -193,7 +193,7 @@ function SortableRow({ item, depth = 0, onEdit, onDelete, onToggle, onAddChild }
         <span className="text-xl w-7 text-center flex-shrink-0">{item.icon || '•'}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className={`font-semibold text-sm ${!item.isActive ? 'text-gray-400 line-through' : 'text-[#1e3a5f]'}`}>{item.label}</span>
+            <span className={`font-semibold text-sm ${!item.isActive ? 'text-gray-400 line-through' : 'text-[#1b5e20]'}`}>{item.label}</span>
             {item.labelEn && <span className="text-gray-400 text-xs">/ {item.labelEn}</span>}
             <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${typeBg[item.type] || 'bg-gray-100 text-gray-600'}`}>
               {typeIcon[item.type]} {item.type}
@@ -206,17 +206,17 @@ function SortableRow({ item, depth = 0, onEdit, onDelete, onToggle, onAddChild }
           {depth === 0 && (
             <button onClick={() => onAddChild(item.id)}
               title="Tambah sub-menu"
-              className="p-1.5 text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-lg transition-colors">
+              className="p-1.5 text-gray-400 hover:text-[#1b5e20] hover:bg-[#1b5e20]/5 rounded-lg transition-colors">
               <Plus className="w-3.5 h-3.5" />
             </button>
           )}
           <button onClick={() => onToggle(item.id)}
             title={item.isActive ? 'Sembunyikan' : 'Tampilkan'}
-            className="p-1.5 text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-lg transition-colors">
+            className="p-1.5 text-gray-400 hover:text-[#1b5e20] hover:bg-[#1b5e20]/5 rounded-lg transition-colors">
             {item.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
           </button>
           <button onClick={() => onEdit(item)}
-            className="p-1.5 text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 rounded-lg transition-colors">
+            className="p-1.5 text-gray-400 hover:text-[#1b5e20] hover:bg-[#1b5e20]/5 rounded-lg transition-colors">
             <Settings2 className="w-3.5 h-3.5" />
           </button>
           <button onClick={() => onDelete(item.id)}
@@ -349,7 +349,7 @@ export default function MenuAdmin() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-500">Memuat pengaturan menu...</p>
         </div>
       </div>
@@ -371,14 +371,14 @@ export default function MenuAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1e3a5f]">Pengaturan Menu Navigasi</h1>
+          <h1 className="text-2xl font-extrabold text-[#1b5e20]">Pengaturan Menu Navigasi</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola item menu, sub-menu, dan urutannya</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => window.open('/', '_blank')}>
             <Eye className="w-4 h-4 mr-1" /> Preview
           </Button>
-          <Button className="bg-[#c9a84c] hover:bg-[#b8962f] text-white" onClick={saveAll} disabled={saving}>
+          <Button className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={saveAll} disabled={saving}>
             <Save className="w-4 h-4 mr-1" /> {saving ? 'Menyimpan...' : 'Simpan Semua'}
           </Button>
         </div>
@@ -391,11 +391,11 @@ export default function MenuAdmin() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-                  <Menu className="w-4 h-4 text-[#c9a84c]" />
+                <div className="w-8 h-8 bg-[#1b5e20] rounded-lg flex items-center justify-center">
+                  <Menu className="w-4 h-4 text-[#d4a017]" />
                 </div>
                 <div>
-                  <p className="font-bold text-[#1e3a5f] text-sm">Menu Utama</p>
+                  <p className="font-bold text-[#1b5e20] text-sm">Menu Utama</p>
                   <p className="text-gray-400 text-xs">{topItems.length} item</p>
                 </div>
               </div>
@@ -446,7 +446,7 @@ export default function MenuAdmin() {
                         {/* Tombol tambah sub-menu langsung */}
                         <button
                           onClick={() => addChildItem(item.id)}
-                          className="ml-8 mb-2 flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#1e3a5f] transition-colors"
+                          className="ml-8 mb-2 flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#1b5e20] transition-colors"
                         >
                           <Plus className="w-3 h-3" /> Tambah sub-menu untuk "{item.label}"
                         </button>
@@ -461,20 +461,20 @@ export default function MenuAdmin() {
 
         {/* RIGHT: Panduan */}
         <div className="space-y-4">
-          <div className="bg-[#1e3a5f] rounded-2xl p-5 text-white">
-            <h3 className="font-bold text-sm mb-3 text-[#c9a84c]">📖 Panduan Mega Menu</h3>
+          <div className="bg-[#1b5e20] rounded-2xl p-5 text-white">
+            <h3 className="font-bold text-sm mb-3 text-[#d4a017]">📖 Panduan Mega Menu</h3>
             <ul className="space-y-2 text-xs text-white/80">
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">1.</span> Tambahkan item menu utama (level 1)</li>
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">2.</span> Klik <strong>+</strong> pada item utama untuk menambah sub-menu</li>
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">3.</span> Sub-menu tampil sebagai <strong>mega menu</strong> dropdown</li>
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">4.</span> Isi deskripsi sub-menu agar terlihat di mega menu</li>
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">5.</span> Geser (drag) untuk mengubah urutan</li>
-              <li className="flex gap-2"><span className="text-[#c9a84c] font-bold">6.</span> Klik <strong>Simpan Semua</strong> setelah selesai</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">1.</span> Tambahkan item menu utama (level 1)</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">2.</span> Klik <strong>+</strong> pada item utama untuk menambah sub-menu</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">3.</span> Sub-menu tampil sebagai <strong>mega menu</strong> dropdown</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">4.</span> Isi deskripsi sub-menu agar terlihat di mega menu</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">5.</span> Geser (drag) untuk mengubah urutan</li>
+              <li className="flex gap-2"><span className="text-[#d4a017] font-bold">6.</span> Klik <strong>Simpan Semua</strong> setelah selesai</li>
             </ul>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <h3 className="font-bold text-[#1e3a5f] text-sm mb-3">🔗 Tipe Link</h3>
+            <h3 className="font-bold text-[#1b5e20] text-sm mb-3">🔗 Tipe Link</h3>
             <div className="space-y-3">
               {LINK_TYPES.map(lt => {
                 const Icon = lt.icon;

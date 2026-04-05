@@ -44,7 +44,7 @@ export default function PencarianPage() {
               className="pl-11 h-12 text-base"
             />
           </div>
-          <Button type="submit" className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white h-12 px-6" disabled={loading}>
+          <Button type="submit" className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white h-12 px-6" disabled={loading}>
             {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Search className="w-5 h-5" />}
           </Button>
         </form>
@@ -53,11 +53,11 @@ export default function PencarianPage() {
           <>
             {types.length > 0 && (
               <div className="flex gap-2 mb-6 flex-wrap">
-                <button onClick={() => setFilter('')} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${!filter ? 'bg-[#1e3a5f] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+                <button onClick={() => setFilter('')} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${!filter ? 'bg-[#1b5e20] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
                   {lang === 'id' ? 'Semua' : 'All'} ({results.length})
                 </button>
                 {types.map(t => (
-                  <button key={t} onClick={() => setFilter(t)} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === t ? 'bg-[#1e3a5f] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+                  <button key={t} onClick={() => setFilter(t)} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === t ? 'bg-[#1b5e20] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
                     {TYPE_LABELS_ID[t] || t} ({results.filter(r => r.type === t).length})
                   </button>
                 ))}
@@ -77,7 +77,7 @@ export default function PencarianPage() {
                 {filtered.map(r => {
                   const Icon = TYPE_ICONS[r.type] || Globe;
                   return (
-                    <a key={r.id} href={r.url} className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-4 hover:shadow-md hover:border-[#c9a84c]/30 transition-all group">
+                    <a key={r.id} href={r.url} className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-4 hover:shadow-md hover:border-[#d4a017]/30 transition-all group">
                       <div className="flex items-start gap-3">
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${TYPE_COLORS[r.type] || 'bg-gray-100 text-gray-600'}`}>
                           <Icon className="w-4 h-4" />
@@ -86,7 +86,7 @@ export default function PencarianPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${TYPE_COLORS[r.type] || 'bg-gray-100 text-gray-600'}`}>{TYPE_LABELS_ID[r.type] || r.type}</span>
                           </div>
-                          <h3 className="font-semibold text-[#1e3a5f] text-sm group-hover:text-[#c9a84c] transition-colors line-clamp-1">{r.title}</h3>
+                          <h3 className="font-semibold text-[#1b5e20] text-sm group-hover:text-[#d4a017] transition-colors line-clamp-1">{r.title}</h3>
                           {r.excerpt && <p className="text-gray-500 text-xs mt-1 line-clamp-2">{r.excerpt}</p>}
                         </div>
                       </div>

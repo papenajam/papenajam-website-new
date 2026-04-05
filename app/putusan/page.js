@@ -32,21 +32,21 @@ export default function PutusanPublic() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-[#1e3a5f] text-white">
+      <div className="bg-[#1b5e20] text-white">
         <div className="container mx-auto px-4 py-8">
           <Link href="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-4 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-[#c9a84c]/20 rounded-xl flex items-center justify-center">
-              <FileText className="w-5 h-5 text-[#c9a84c]" />
+            <div className="w-10 h-10 bg-[#d4a017]/20 rounded-xl flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[#d4a017]" />
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold">Database Putusan</h1>
           </div>
           <p className="text-white/60">Kumpulan putusan Pengadilan Agama Penajam yang dapat diakses publik</p>
         </div>
       </div>
-      <div className="h-1 bg-gradient-to-r from-[#c9a84c] via-[#f5d98a] to-[#c9a84c]" />
+      <div className="h-1 bg-gradient-to-r from-[#d4a017] via-[#f5d98a] to-[#d4a017]" />
 
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
@@ -77,13 +77,13 @@ export default function PutusanPublic() {
             {items.map(item => (
               <div key={item.id} className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md transition-all">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-[#1e3a5f]/5 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Scale className="w-5 h-5 text-[#1e3a5f]" />
+                  <div className="w-10 h-10 bg-[#1b5e20]/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Scale className="w-5 h-5 text-[#1b5e20]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-bold text-[#1e3a5f] text-lg">{item.nomorPerkara}</p>
+                        <p className="font-bold text-[#1b5e20] text-lg">{item.nomorPerkara}</p>
                         <p className="text-gray-600 text-sm">{item.jenisPerkara}</p>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
@@ -92,7 +92,7 @@ export default function PutusanPublic() {
                             href={item.filePutusan}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
+                            className="flex items-center gap-1.5 bg-[#1b5e20] hover:bg-[#2e7d32] text-white px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
                           >
                             <Download className="w-3.5 h-3.5" /> Unduh PDF
                           </a>
@@ -124,7 +124,7 @@ export default function PutusanPublic() {
         )}
       </div>
 
-      <footer className="bg-[#1e3a5f] text-white/50 text-center py-6 text-sm mt-12">
+      <footer className="bg-[#1b5e20] text-white/50 text-center py-6 text-sm mt-12">
         © {new Date().getFullYear()} Pengadilan Agama Penajam — Mahkamah Agung RI
       </footer>
     </div>

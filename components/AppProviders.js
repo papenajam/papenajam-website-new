@@ -26,7 +26,7 @@ export default function AppProviders({ children }) {
       <AccessibilityProvider>
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:bg-[#c9a84c] focus:text-[#1e3a5f] focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:shadow-lg focus:text-base"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:bg-[#d4a017] focus:text-[#1b5e20] focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:shadow-lg focus:text-base"
           aria-label="Skip to main content"
         >
           Lewati ke konten utama / Skip to main content

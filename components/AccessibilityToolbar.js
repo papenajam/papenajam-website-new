@@ -38,8 +38,8 @@ export default function AccessibilityToolbar() {
       title={label}
       className={`flex flex-col items-center gap-1 p-2.5 rounded-xl text-xs font-medium transition-all min-w-[70px] border-2 ${
         active
-          ? 'bg-[#1e3a5f] text-white border-[#1e3a5f] shadow-inner'
-          : 'bg-white text-gray-700 border-gray-200 hover:border-[#1e3a5f] hover:bg-[#1e3a5f]/5'
+          ? 'bg-[#1b5e20] text-white border-[#1b5e20] shadow-inner'
+          : 'bg-white text-gray-700 border-gray-200 hover:border-[#1b5e20] hover:bg-[#1b5e20]/5'
       } ${className}`}
       aria-label={`${label}: ${active ? (lang === 'id' ? 'aktif' : 'on') : (lang === 'id' ? 'nonaktif' : 'off')}`}
     >
@@ -60,7 +60,7 @@ export default function AccessibilityToolbar() {
           aria-label={open ? t('accessibility.closeToolbar') : t('accessibility.openToolbar')}
           aria-expanded={open}
           aria-controls="a11y-toolbar"
-          className="bg-[#1e3a5f] text-white w-10 h-24 flex flex-col items-center justify-center gap-0.5 shadow-lg hover:bg-[#2d5a8e] transition-all rounded-r-2xl focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-1"
+          className="bg-[#1b5e20] text-white w-10 h-24 flex flex-col items-center justify-center gap-0.5 shadow-lg hover:bg-[#2e7d32] transition-all rounded-r-2xl focus:outline-none focus:ring-2 focus:ring-[#d4a017] focus:ring-offset-1"
           style={{ writingMode: 'vertical-rl', borderRadius: '0 12px 12px 0' }}
         >
           <span className="text-sm" aria-hidden="true">{open ? '✕' : '♿'}</span>
@@ -82,7 +82,7 @@ export default function AccessibilityToolbar() {
       >
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden w-[300px]">
           {/* Header */}
-          <div className="bg-[#1e3a5f] text-white px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#1b5e20] text-white px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-lg" aria-hidden="true">♿</span>
               <h2 className="text-sm font-bold">{t('accessibility.toolbar')}</h2>
@@ -109,8 +109,8 @@ export default function AccessibilityToolbar() {
                   aria-label={lang === 'id' ? 'Teks Normal' : 'Normal text'}
                   className={`flex-1 py-2 rounded-lg text-sm font-bold border-2 transition-all ${
                     settings.fontSize === 'normal' || !settings.fontSize
-                      ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]'
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1e3a5f]'
+                      ? 'bg-[#1b5e20] text-white border-[#1b5e20]'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1b5e20]'
                   }`}
                 >
                   A
@@ -121,8 +121,8 @@ export default function AccessibilityToolbar() {
                   aria-label={lang === 'id' ? 'Teks Besar' : 'Large text'}
                   className={`flex-1 py-2 rounded-lg font-bold border-2 transition-all ${
                     settings.fontSize === 'large'
-                      ? 'bg-[#1e3a5f] text-white border-[#1e3a5f] text-base'
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1e3a5f] text-base'
+                      ? 'bg-[#1b5e20] text-white border-[#1b5e20] text-base'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1b5e20] text-base'
                   }`}
                 >
                   A
@@ -133,8 +133,8 @@ export default function AccessibilityToolbar() {
                   aria-label={lang === 'id' ? 'Teks Sangat Besar' : 'Extra large text'}
                   className={`flex-1 py-2 rounded-lg font-bold border-2 transition-all ${
                     settings.fontSize === 'xlarge'
-                      ? 'bg-[#1e3a5f] text-white border-[#1e3a5f] text-xl'
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1e3a5f] text-xl'
+                      ? 'bg-[#1b5e20] text-white border-[#1b5e20] text-xl'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-[#1b5e20] text-xl'
                   }`}
                 >
                   A
@@ -199,7 +199,7 @@ export default function AccessibilityToolbar() {
                   className={`w-full py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
                     isSpeaking
                       ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-[#c9a84c] hover:bg-[#b8962f] text-white'
+                      : 'bg-[#d4a017] hover:bg-[#b88010] text-white'
                   }`}
                 >
                   <span aria-hidden="true">{isSpeaking ? '⏹️' : '🔊'}</span>
@@ -220,7 +220,7 @@ export default function AccessibilityToolbar() {
             {/* Link to statement */}
             <a
               href="/accessibility"
-              className="block text-center text-xs text-[#1e3a5f] hover:underline"
+              className="block text-center text-xs text-[#1b5e20] hover:underline"
             >
               {t('accessibility.statement')}
             </a>

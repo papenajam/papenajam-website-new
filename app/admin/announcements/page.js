@@ -84,10 +84,10 @@ export default function AnnouncementsAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Pengumuman</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Pengumuman</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola pengumuman pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Pengumuman
         </Button>
       </div>
@@ -127,7 +127,7 @@ export default function AnnouncementsAdmin() {
             ) : items.map(item => (
               <tr key={item.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4">
-                  <p className="font-semibold text-[#1e3a5f] text-sm line-clamp-1">{item.title}</p>
+                  <p className="font-semibold text-[#1b5e20] text-sm line-clamp-1">{item.title}</p>
                   <p className="text-gray-400 text-xs line-clamp-1 mt-0.5">{item.content?.substring(0,80)}...</p>
                 </td>
                 <td className="px-4 py-4 hidden md:table-cell text-sm text-gray-600">{formatDate(item.publishDate || item.createdAt)}</td>
@@ -168,7 +168,7 @@ export default function AnnouncementsAdmin() {
             <div>
               <Label className="text-sm font-medium mb-1.5 block">Konten <span className="text-red-500">*</span></Label>
               <textarea
-                className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none"
                 placeholder="Isi pengumuman..."
                 value={form.content}
                 onChange={e => setForm(f => ({...f, content: e.target.value}))}
@@ -179,13 +179,13 @@ export default function AnnouncementsAdmin() {
               <Input type="date" value={form.publishDate} onChange={e => setForm(f => ({...f, publishDate: e.target.value}))} />
             </div>
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="isActive" checked={form.isActive} onChange={e => setForm(f => ({...f, isActive: e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
+              <input type="checkbox" id="isActive" checked={form.isActive} onChange={e => setForm(f => ({...f, isActive: e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]" />
               <Label htmlFor="isActive" className="text-sm cursor-pointer">Aktifkan pengumuman</Label>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

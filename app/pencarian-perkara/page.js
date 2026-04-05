@@ -56,26 +56,26 @@ export default function PencarianPerkara() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-[#1e3a5f] text-white">
+      <div className="bg-[#1b5e20] text-white">
         <div className="container mx-auto px-4 py-8">
           <Link href="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-4 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-[#c9a84c]/20 rounded-xl flex items-center justify-center">
-              <Search className="w-5 h-5 text-[#c9a84c]" />
+            <div className="w-10 h-10 bg-[#d4a017]/20 rounded-xl flex items-center justify-center">
+              <Search className="w-5 h-5 text-[#d4a017]" />
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold">Pencarian Perkara</h1>
           </div>
           <p className="text-white/60">Cari informasi perkara di Pengadilan Agama Penajam</p>
         </div>
       </div>
-      <div className="h-1 bg-gradient-to-r from-[#c9a84c] via-[#f5d98a] to-[#c9a84c]" />
+      <div className="h-1 bg-gradient-to-r from-[#d4a017] via-[#f5d98a] to-[#d4a017]" />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Search Form */}
         <form onSubmit={handleSearch} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-          <h2 className="font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
+          <h2 className="font-bold text-[#1b5e20] mb-4 flex items-center gap-2">
             <Search className="w-5 h-5" /> Form Pencarian Perkara
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -111,7 +111,7 @@ export default function PencarianPerkara() {
               </select>
             </div>
           </div>
-          <Button type="submit" className="w-full bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white font-bold py-3" disabled={loading}>
+          <Button type="submit" className="w-full bg-[#1b5e20] hover:bg-[#2e7d32] text-white font-bold py-3" disabled={loading}>
             {loading ? (
               <span className="flex items-center gap-2 justify-center">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -149,7 +149,7 @@ export default function PencarianPerkara() {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <p className="font-bold text-[#1e3a5f] text-lg">{item.nomorPerkara}</p>
+                            <p className="font-bold text-[#1b5e20] text-lg">{item.nomorPerkara}</p>
                             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${statusColors[item.status] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
                               {item.status}
                             </span>
@@ -199,7 +199,7 @@ export default function PencarianPerkara() {
         )}
       </div>
 
-      <footer className="bg-[#1e3a5f] text-white/50 text-center py-6 text-sm mt-12">
+      <footer className="bg-[#1b5e20] text-white/50 text-center py-6 text-sm mt-12">
         © {new Date().getFullYear()} Pengadilan Agama Penajam — Mahkamah Agung RI
       </footer>
     </div>

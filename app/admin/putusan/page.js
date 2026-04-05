@@ -119,10 +119,10 @@ export default function PutusanAdmin() {
       <Toast msg={toast.msg} type={toast.type} />
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">Manajemen Putusan</h1>
+          <h1 className="text-2xl font-bold text-[#1b5e20]">Manajemen Putusan</h1>
           <p className="text-gray-500 text-sm mt-0.5">Upload dan kelola dokumen putusan pengadilan</p>
         </div>
-        <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={openCreate}>
+        <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={openCreate}>
           <Plus className="w-4 h-4 mr-2" /> Tambah Putusan
         </Button>
       </div>
@@ -162,7 +162,7 @@ export default function PutusanAdmin() {
               ) : items.map(item => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-4">
-                    <p className="font-semibold text-[#1e3a5f] text-sm">{item.nomorPerkara}</p>
+                    <p className="font-semibold text-[#1b5e20] text-sm">{item.nomorPerkara}</p>
                     <p className="text-gray-400 text-xs">{item.jenisPerkara}</p>
                     {item.ringkasanPutusan && (
                       <p className="text-gray-500 text-xs mt-0.5 line-clamp-1 max-w-[200px]">{item.ringkasanPutusan}</p>
@@ -178,7 +178,7 @@ export default function PutusanAdmin() {
                         href={item.filePutusan}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-[#1e3a5f] hover:text-[#c9a84c] text-xs font-medium transition-colors"
+                        className="flex items-center gap-1.5 text-[#1b5e20] hover:text-[#d4a017] text-xs font-medium transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
                         Unduh PDF
@@ -243,7 +243,7 @@ export default function PutusanAdmin() {
             <div>
               <Label className="text-sm font-medium mb-1.5 block">Ringkasan Putusan</Label>
               <textarea
-                className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30 resize-none"
+                className="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1b5e20]/30 resize-none"
                 placeholder="Isi ringkasan putusan..."
                 value={form.ringkasanPutusan}
                 onChange={e => setForm(f => ({...f, ringkasanPutusan: e.target.value}))}
@@ -253,12 +253,12 @@ export default function PutusanAdmin() {
             {/* PDF Upload */}
             <div>
               <Label className="text-sm font-medium mb-1.5 block">File Putusan (PDF)</Label>
-              <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1e3a5f]/30 transition-colors">
+              <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1b5e20]/30 transition-colors">
                 {form.filePutusan ? (
                   <div className="flex items-center gap-3">
-                    <FileText className="w-8 h-8 text-[#1e3a5f]" />
+                    <FileText className="w-8 h-8 text-[#1b5e20]" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#1e3a5f] truncate">{form.filePutusan.split('/').pop()}</p>
+                      <p className="text-sm font-medium text-[#1b5e20] truncate">{form.filePutusan.split('/').pop()}</p>
                       <a href={form.filePutusan} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">Lihat file</a>
                     </div>
                     <button onClick={() => setForm(f => ({...f, filePutusan: ''}))} className="text-red-400 hover:text-red-600">
@@ -266,7 +266,7 @@ export default function PutusanAdmin() {
                     </button>
                   </div>
                 ) : (
-                  <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-400 hover:text-[#1e3a5f] transition-colors">
+                  <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-400 hover:text-[#1b5e20] transition-colors">
                     <Upload className="w-8 h-8" />
                     <span className="text-sm font-medium">{uploading ? 'Mengupload...' : 'Klik untuk upload PDF'}</span>
                     <span className="text-xs">Maksimal 10MB</span>
@@ -282,13 +282,13 @@ export default function PutusanAdmin() {
             </div>
 
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="statusPublish" checked={form.statusPublish} onChange={e => setForm(f => ({...f, statusPublish: e.target.checked}))} className="w-4 h-4 accent-[#1e3a5f]" />
+              <input type="checkbox" id="statusPublish" checked={form.statusPublish} onChange={e => setForm(f => ({...f, statusPublish: e.target.checked}))} className="w-4 h-4 accent-[#1b5e20]" />
               <Label htmlFor="statusPublish" className="text-sm cursor-pointer">Publikasikan ke website</Label>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal(null)}>Batal</Button>
-            <Button className="bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={handleSave} disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

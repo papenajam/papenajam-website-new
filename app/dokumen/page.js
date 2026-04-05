@@ -47,11 +47,11 @@ export default function DokumenPage() {
         </div>
 
         <div className="flex gap-2 mb-8 flex-wrap">
-          <button onClick={() => setFilter('')} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${!filter ? 'bg-[#1e3a5f] text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>
+          <button onClick={() => setFilter('')} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${!filter ? 'bg-[#1b5e20] text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>
             {lang === 'id' ? 'Semua' : 'All'}
           </button>
           {categories.map(c => (
-            <button key={c} onClick={() => setFilter(c)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === c ? 'bg-[#1e3a5f] text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>{c}</button>
+            <button key={c} onClick={() => setFilter(c)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === c ? 'bg-[#1b5e20] text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>{c}</button>
           ))}
         </div>
 
@@ -65,17 +65,17 @@ export default function DokumenPage() {
               <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
                 <span className="text-3xl flex-shrink-0">{fileTypeIcon(item.fileType)}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-[#1e3a5f] text-sm leading-snug">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
+                  <h3 className="font-bold text-[#1b5e20] text-sm leading-snug">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
                   {item.description && <p className="text-gray-500 text-xs mt-1">{item.description}</p>}
                   <div className="flex items-center gap-3 mt-3">
-                    <span className="px-2 py-0.5 bg-[#1e3a5f]/10 text-[#1e3a5f] text-xs rounded-full font-medium">{item.category}</span>
+                    <span className="px-2 py-0.5 bg-[#1b5e20]/10 text-[#1b5e20] text-xs rounded-full font-medium">{item.category}</span>
                     <span className="text-xs text-gray-400 flex items-center gap-1"><Download className="w-3 h-3" />{item.downloadCount || 0}</span>
                   </div>
                 </div>
                 <button
                   onClick={() => handleDownload(item)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    item.fileUrl ? 'bg-[#1e3a5f] hover:bg-[#2d5a8e] text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    item.fileUrl ? 'bg-[#1b5e20] hover:bg-[#2e7d32] text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
                   disabled={!item.fileUrl}
                 >
