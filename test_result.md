@@ -134,6 +134,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "TESTED: GET /api/pages ✅ (1 page retrieved), POST /api/pages ✅ (created with blocks array), GET /api/pages/slug/tentang ✅ (public access without auth). All CRUD operations working correctly."
+      - working: true
+        agent: "testing"
+        comment: "HOMEPAGE BUILDER API TESTING COMPLETE ✅ All 9 tests passed (100% success rate). Verified: 1) GET /api/pages/slug/_homepage ✅ (returns homepage with blocks array containing hero_home, services_grid, news_ann, case_search, contact_info), 2) POST /api/pages ✅ (created test page with slug test-api-verify), 3) PUT /api/pages/{id} ✅ (updated homepage blocks and hero_home title), 4) GET /api/pages/slug/_homepage after update ✅ (verified title change saved), 5) Authentication protection ✅ (POST/PUT require JWT token, return 401 without auth). Homepage Builder API fully functional with proper CRUD operations, block management, and authentication."
 
   - task: "Agenda Sidang API"
     implemented: true
@@ -415,13 +418,15 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://court-builder-6.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
+    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://pengadilan-beranda.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
   - agent: "testing"
     message: "BACKEND API v2.0 TESTING COMPLETE ✅ Tested all 15 specified endpoints with 100% success rate (20/20 tests passed). Key findings: 1) All authentication working (admin/staff/editor roles), 2) Enhanced stats API returns required chart data (monthlyData, caseTypes, todayAgenda), 3) Pages API with blocks array creation working, 4) Agenda CRUD with date filtering operational, 5) Putusan public/private filtering working, 6) Cases name/jenis filters functional, 7) Role-based permissions implemented but not strictly enforced (staff can access pages). All endpoints responding correctly with proper data structures."
   - agent: "testing"
     message: "FILE UPLOAD API COMPREHENSIVE TESTING COMPLETE ✅ All 15 file upload tests passed (100% success rate). Verified: 1) Image upload (multipart/form-data → /uploads/images/ with UUID), 2) PDF upload (multipart/form-data → /uploads/pdfs/ with UUID), 3) Auth protection (401 without token), 4) File accessibility (GET requests to uploaded files work), 5) News integration (imageUrl field accepts uploaded image URL), 6) Putusan integration (filePutusan field accepts uploaded PDF URL), 7) Directory structure (/public/uploads/{images,pdfs} exist and writable). File upload system fully functional and integrated with content creation workflows."
   - agent: "testing"
     message: "BILINGUAL CONTENT SUPPORT TESTING COMPLETE ✅ All 8 requested tests passed (100% success rate). Verified: 1) Login API working (admin@pa-penajam.go.id), 2) News API accepts and stores bilingual fields (titleEn, contentEn, imageAlt, imageAltEn), 3) Accessibility statement page accessible at /accessibility, 4) Homepage loads correctly with language switcher (ID/EN buttons visible), 5) News public API returns items with bilingual fields, 6) Upload API functional for images, 7) Announcements API supports bilingual fields (titleEn, contentEn), 8) Test cleanup successful. Backend infrastructure for bilingual content fully operational. Frontend shows language switcher and accessibility toolbar."
+  - agent: "testing"
+    message: "HOMEPAGE BUILDER API TESTING COMPLETE ✅ All 9 specific tests passed (100% success rate). Verified requested endpoints: 1) GET /api/pages/slug/_homepage ✅ (returns homepage with blocks array: hero_home, services_grid, news_ann, case_search, contact_info), 2) POST /api/pages ✅ (created test page slug: test-api-verify, status: published), 3) PUT /api/pages/{id} ✅ (updated homepage blocks and changed hero_home title), 4) GET /api/pages/slug/_homepage after update ✅ (verified title change persisted: 'Pengadilan Agama Penajam - UPDATED TITLE'), 5) Authentication protection ✅ (POST/PUT require JWT token, return 401 without auth). Homepage Builder API fully operational with proper CRUD operations, block management, and authentication as requested."
 
 backend:
   - task: "JWT Authentication (login/verify)"
@@ -581,10 +586,34 @@ frontend:
         agent: "main"
         comment: "Stats cards and recent news. Auth protected."
 
+  - task: "Dynamic Homepage Builder - Admin UI"
+    implemented: true
+    working: true
+    file: "app/admin/homepage/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Admin Homepage Builder fully functional. Drag-and-drop blocks (Dynamic: Hero, Services, Berita&Pengumuman, CariPerkara, Profil, Kontak + Static: Hero, Statistik, Teks, Gambar, CardGrid, CTA, Galeri). Sidebar nav link 'Pengaturan Beranda' added. Screenshot confirmed."
+
+  - task: "Dynamic Homepage Builder - Public Renderer"
+    implemented: true
+    working: true
+    file: "components/DynamicHomepage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "DynamicHomepage renders configured blocks from /api/pages/slug/_homepage. Falls back to DEFAULT_BLOCKS if not configured. Page.js updated to use dynamic import (ssr:false) to avoid hydration error. Fixed AccessibilityToolbar hydration error by adding mounted check. Screenshot confirmed with Hero, stats, navbar."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
@@ -595,6 +624,8 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://court-builder-6.preview.emergentagent.com. Test high priority backend APIs."
+    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://pengadilan-beranda.preview.emergentagent.com. Test high priority backend APIs."
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE ✅ All 12 critical API endpoints tested successfully: Authentication (login/verify), Database seeding, News CRUD (with pagination/search), Announcements, Cases CRUD (with filtering), Services, Stats, Settings. Success rate: 100% (17/17 tests passed). All authentication flows, CRUD operations, pagination, search, and filtering working correctly."
+  - agent: "main"
+    message: "HOMEPAGE BUILDER COMPLETE. Implemented: 1) DynamicHomepage component wired to page.js via dynamic import (ssr:false), 2) DEFAULT_BLOCKS fallback when no homepage configured, 3) Admin sidebar nav link 'Pengaturan Beranda' added, 4) Fixed AccessibilityToolbar hydration error. Admin can now fully customize homepage from /admin/homepage."

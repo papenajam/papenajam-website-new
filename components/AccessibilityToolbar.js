@@ -6,8 +6,11 @@ import { TTS } from '@/lib/accessibility';
 
 export default function AccessibilityToolbar() {
   const [open, setOpen] = useState(false);
-  const { settings, updateSetting, resetAll, isSpeaking, setIsSpeaking } = useAccessibility();
+  const { settings, updateSetting, resetAll, isSpeaking, setIsSpeaking, mounted } = useAccessibility();
   const { t, lang } = useLanguage();
+
+  // Jangan render sampai client-side mounted untuk menghindari hydration error
+  if (!mounted) return null;
 
   function cycleFontSize() {
     const order = ['normal', 'large', 'xlarge'];

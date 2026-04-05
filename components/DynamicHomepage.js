@@ -1,0 +1,680 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import {
+  Scale, Phone, Mail, MapPin, Search, ChevronRight,
+  FileText, Calendar, DollarSign, Package, Shield, Monitor,
+  Users, Stamp, Building2, BookOpen, Award, CheckCircle,
+  Clock, ClipboardList, ArrowRight, ExternalLink, Globe, Newspaper
+} from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+
+const ICON_MAP = {
+  FileText, Calendar, DollarSign, Package, Shield, Monitor,
+  Users, Stamp, Scale, Building2, BookOpen, Globe, Award
+};
+
+const HERO_FALLBACK = 'https://images.unsplash.com/photo-1667849921481-9e13c239ee3d?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=1400';
+
+// Default blocks jika homepage belum dikonfigurasi admin
+const DEFAULT_BLOCKS = [
+  { id: 'default-hero',     type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true } },
+  { id: 'default-services', type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' } },
+  { id: 'default-news',     type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
+  { id: 'default-perkara',  type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' } },
+  { id: 'default-profile',  type: 'profile_cards', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat' } },
+  { id: 'default-contact',  type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' } },
+];
+
+// ============================================================
+// DYNAMIC BLOCK RENDERERS
+// ============================================================
+
+function HeroHomeBlock({ settings, stats }) {
+  const s = settings || {};
+  const { t, lang } = useLanguage();
+  return (
+    <header id="beranda" role="banner" className="relative min-h-screen flex items-center" style={{ scrollMarginTop: '80px' }}>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0d1f35] via-[#1e3a5f] to-[#2d5a8e]" aria-hidden="true" />
+      {s.backgroundImage && (
+        <div className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${s.backgroundImage}')` }} role="img" aria-label={lang === 'id' ? 'Gedung Pengadilan Agama Penajam' : 'Penajam Religious Court building'} />
+      )}
+      {!s.backgroundImage && (
+        <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{ backgroundImage: `url('${HERO_FALLBACK}')` }} aria-hidden="true" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0d1f35]/60" aria-hidden="true" />
+      <div className="container mx-auto px-4 relative z-10 pt-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/80 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-white/10">
+            <Globe className="w-4 h-4 text-[#c9a84c]" aria-hidden="true" />
+            {t('underMA')}
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
+            {s.title || t('siteName')}
+          </h1>
+          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
+            {s.subtitle || t('tagline')}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {s.buttonText && (
+              <a href={s.buttonLink || '#layanan'} className="inline-flex items-center justify-center bg-[#c9a84c] hover:bg-[#b8962f] text-white text-base font-bold px-8 py-4 rounded-xl shadow-lg min-h-[52px] transition-colors">
+                {s.buttonText} <ChevronRight className="ml-2 w-5 h-5" aria-hidden="true" />
+              </a>
+            )}
+            {s.button2Text && (
+              <a href={s.button2Link || '#kontak'} className="inline-flex items-center justify-center border-2 border-white/30 text-white hover:bg-white/10 text-base font-bold px-8 py-4 rounded-xl min-h-[52px] transition-colors">
+                {s.button2Text}
+              </a>
+            )}
+          </div>
+          {s.showStats !== false && (
+            <div className="mt-16 grid grid-cols-3 gap-4 max-w-2xl mx-auto" role="region" aria-label={lang === 'id' ? 'Statistik perkara' : 'Case statistics'}>
+              {[
+                { label: t('hero.caseThisYear'), val: stats?.casesThisYear ?? 0 },
+                { label: t('hero.caseDone'), val: stats?.casesDone ?? 0 },
+                { label: t('hero.caseOngoing'), val: stats?.casesOngoing ?? 0 },
+              ].map(({ label, val }) => (
+                <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                  <p className="text-3xl font-extrabold text-[#c9a84c]">{val}</p>
+                  <p className="text-white/70 text-xs mt-1">{label}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function NewsAnnBlock({ settings, news, announcements, formatDate }) {
+  const s = settings || {};
+  const { t, lang } = useLanguage();
+  return (
+    <section id="berita" aria-labelledby="news-ann-h" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 id="news-ann-h" className="text-3xl font-extrabold text-[#1e3a5f] mb-3">
+            {s.title || (lang === 'id' ? 'Berita & Pengumuman' : 'News & Announcements')}
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm">
+            {lang === 'id' ? 'Informasi terbaru dan pengumuman resmi' : 'Latest news and official announcements'}
+          </p>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* News Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 bg-[#1e3a5f]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><Newspaper className="w-4 h-4 text-[#c9a84c]" /></div>
+                <div>
+                  <h3 className="font-bold text-white text-sm">{t('news.title')}</h3>
+                  <p className="text-white/50 text-xs">{t('news.subtitle')}</p>
+                </div>
+              </div>
+              <a href="/berita" className="text-[#c9a84c] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
+                {t('news.allNews')} <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+            <div className="flex-1 divide-y divide-gray-50">
+              {!news.length ? (
+                <div className="p-10 text-center text-gray-400 text-sm">{t('news.noNews')}</div>
+              ) : (
+                <ul className="list-none p-0 m-0" role="list">
+                  {news.slice(0, s.newsCount || 4).map(item => (
+                    <li key={item.id}>
+                      <a href={`/berita/${item.id}`} aria-label={`${t('news.readMore')}: ${item.title}`} className="flex gap-3.5 px-5 py-4 hover:bg-gray-50 transition-colors group">
+                        {item.image ? (
+                          <div className="w-20 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src={item.image} alt={item.imageAlt || item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" width="80" height="64" />
+                          </div>
+                        ) : (
+                          <div className="w-20 h-16 rounded-xl bg-[#1e3a5f]/5 flex items-center justify-center flex-shrink-0">
+                            <Newspaper className="w-6 h-6 text-[#1e3a5f]/30" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          {item.category && <span className="inline-block text-[10px] font-semibold text-[#c9a84c] bg-[#c9a84c]/10 px-2 py-0.5 rounded-full mb-1">{item.category}</span>}
+                          <p className="text-sm font-semibold text-[#1e3a5f] line-clamp-2 leading-snug group-hover:text-[#c9a84c] transition-colors">{item.title}</p>
+                          <time dateTime={item.publishedAt || item.createdAt} className="text-xs text-gray-400 mt-1 block">{formatDate(item.publishedAt || item.createdAt)}</time>
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+          {/* Announcements Card */}
+          <div id="pengumuman" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style={{ scrollMarginTop: '80px' }}>
+            <div className="flex items-center justify-between px-6 py-4 bg-[#c9a84c]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"><ClipboardList className="w-4 h-4 text-white" /></div>
+                <div>
+                  <h3 className="font-bold text-white text-sm">{t('announcements.title')}</h3>
+                  <p className="text-white/70 text-xs">{t('announcements.subtitle')}</p>
+                </div>
+              </div>
+              <a href="/pengumuman" className="text-white/90 text-xs font-semibold hover:text-white hover:underline flex items-center gap-1 min-h-[44px]">
+                {t('announcements.allAnnouncements')} <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+            <div className="flex-1 divide-y divide-gray-50">
+              {!announcements.length ? (
+                <div className="p-10 text-center text-gray-400 text-sm">{t('announcements.noAnnouncements')}</div>
+              ) : (
+                <ul className="list-none p-0 m-0" role="list">
+                  {announcements.slice(0, s.annCount || 5).map((ann, idx) => (
+                    <li key={ann.id}>
+                      <div className="flex items-start gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+                        <div className="w-8 h-8 rounded-full bg-[#c9a84c]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[#c9a84c] text-xs font-extrabold">{String(idx + 1).padStart(2, '0')}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-[#1e3a5f] text-sm leading-snug line-clamp-2">{ann.title}</h4>
+                          <p className="text-gray-500 text-xs mt-1 line-clamp-2">{ann.content?.replace(/<[^>]+>/g, '').substring(0, 100)}</p>
+                          <time dateTime={ann.publishedAt || ann.createdAt} className="text-xs text-gray-400 mt-1 block">{formatDate(ann.publishedAt || ann.createdAt)}</time>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServicesGridBlock({ settings, services }) {
+  const s = settings || {};
+  const { t } = useLanguage();
+  return (
+    <section id="layanan" aria-labelledby="services-h" className="py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 id="services-h" className="text-3xl font-extrabold text-[#1e3a5f] mb-4">{s.title || t('services.title')}</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">{s.subtitle || t('services.subtitle')}</p>
+        </div>
+        <ul className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto list-none p-0">
+          {services.map(svc => {
+            const Icon = ICON_MAP[svc.icon] || FileText;
+            return (
+              <li key={svc.id}>
+                <article className="bg-gradient-to-br from-[#1e3a5f]/5 to-[#2d5a8e]/5 rounded-2xl p-6 border border-[#1e3a5f]/10 hover:shadow-md transition-all h-full">
+                  <div className="w-12 h-12 bg-[#1e3a5f] rounded-xl flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-[#c9a84c]" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-bold text-[#1e3a5f] mb-2">{svc.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{svc.description}</p>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel }) {
+  const s = settings || {};
+  const { t, lang } = useLanguage();
+  return (
+    <section id="perkara" aria-labelledby="case-search-h" className="py-20 bg-[#1e3a5f]" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 id="case-search-h" className="text-3xl font-extrabold text-white mb-4">{s.title || t('caseSearch.title')}</h2>
+          <p className="text-white/70 max-w-2xl mx-auto">{s.subtitle || t('caseSearch.subtitle')}</p>
+        </div>
+        <div className="max-w-2xl mx-auto">
+          <form onSubmit={onSearch} role="search" className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 space-y-4">
+            <div>
+              <label htmlFor="hp-search" className="block text-white font-semibold mb-1.5 text-sm">{t('caseSearch.label')}</label>
+              <Input id="hp-search" type="search" placeholder={t('caseSearch.placeholder')} value={searchNomor} onChange={e => setSearchNomor(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white text-base" />
+            </div>
+            <div>
+              <label htmlFor="hp-tahun" className="block text-white font-semibold mb-1.5 text-sm">{t('caseSearch.yearLabel')}</label>
+              <Input id="hp-tahun" type="number" placeholder={t('caseSearch.yearPlaceholder')} value={searchTahun} onChange={e => setSearchTahun(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white text-base" min="2000" max="2099" />
+            </div>
+            <Button type="submit" className="w-full bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold text-base py-3 min-h-[52px]" disabled={searchLoading}>
+              <Search className="w-5 h-5 mr-2" aria-hidden="true" />
+              {searchLoading ? t('caseSearch.searching') : t('caseSearch.searchBtn')}
+            </Button>
+          </form>
+          {searchResult !== null && (
+            <div role="region" aria-live="polite" className="mt-4">
+              <h3 className="text-white font-bold mb-3">{t('caseSearch.resultTitle')} ({searchResult.length})</h3>
+              {searchResult.length === 0 ? (
+                <div className="bg-white/10 rounded-xl p-6 text-center" role="alert">
+                  <p className="text-white font-semibold">{t('caseSearch.noResult')}</p>
+                  <p className="text-white/60 text-sm mt-1">{t('caseSearch.noResultDesc')}</p>
+                </div>
+              ) : (
+                <ul className="space-y-3 list-none p-0">
+                  {searchResult.map(c => (
+                    <li key={c.id}>
+                      <article className="bg-white rounded-xl p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h4 className="font-bold text-[#1e3a5f] text-sm">{t('caseSearch.caseNumber')}: {c.nomorPerkara || c.caseNumber}</h4>
+                            <p className="text-gray-600 text-xs mt-1">{t('caseSearch.parties')}: {c.pihak || c.parties}</p>
+                          </div>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${statusColor(c.status)}`}>{statusLabel(c.status)}</span>
+                        </div>
+                      </article>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactInfoBlock({ settings, siteSettings }) {
+  const s = settings || {};
+  const { t, lang } = useLanguage();
+  const items = [
+    { icon: MapPin, title: t('contact.address'), content: siteSettings.address || 'Jl. Propinsi No. 01, Penajam, Kab. Penajam Paser Utara, Kaltim 76141', href: 'https://maps.google.com/?q=Pengadilan+Agama+Penajam', linkLabel: t('contact.mapLink') },
+    { icon: Phone, title: t('contact.phone'), content: siteSettings.phone || '(0543) 337-1012', href: `tel:${(siteSettings.phone || '05433371012').replace(/[^0-9+]/g, '')}`, linkLabel: lang === 'id' ? 'Hubungi via telepon' : 'Call us' },
+    { icon: Mail, title: t('contact.email'), content: siteSettings.email || 'pa.penajam@gmail.com', href: `mailto:${siteSettings.email || 'pa.penajam@gmail.com'}`, linkLabel: lang === 'id' ? 'Kirim email' : 'Send email' },
+    { icon: Clock, title: t('contact.operationalHours'), content: t('contact.hours'), href: null },
+  ];
+  return (
+    <section id="kontak" aria-labelledby="contact-h" className="py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 id="contact-h" className="text-3xl font-extrabold text-[#1e3a5f] mb-4">{s.title || t('contact.title')}</h2>
+          <p className="text-gray-600">{s.subtitle || t('contact.subtitle')}</p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          {items.map(({ icon: Icon, title, content, href, linkLabel }) => (
+            <article key={title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <div className="w-10 h-10 bg-[#1e3a5f] rounded-xl flex items-center justify-center mb-4"><Icon className="w-5 h-5 text-[#c9a84c]" aria-hidden="true" /></div>
+              <h3 className="font-bold text-[#1e3a5f] text-sm mb-1">{title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
+              {href && linkLabel && (
+                <a href={href} className="text-[#c9a84c] text-xs font-semibold hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                  {linkLabel} {href.startsWith('http') && <ExternalLink className="w-3 h-3" />}
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProfileCardsBlock({ settings }) {
+  const s = settings || {};
+  const { t, lang } = useLanguage();
+  const cards = [
+    { icon: Award, title: t('profile.vision'), content: lang === 'id' ? '"Terwujudnya Pengadilan Agama Penajam yang Agung"' : '"A Dignified Penajam Religious Court"' },
+    { icon: CheckCircle, title: t('profile.mission'), content: lang === 'id' ? 'Menjaga kemandirian, memberikan pelayanan hukum yang berkeadilan, berkualitas, dan terpercaya.' : 'Maintaining independence, providing just, quality, and trustworthy legal services.' },
+    { icon: Building2, title: t('profile.location'), content: lang === 'id' ? 'Jl. Propinsi No. 01, Penajam, Kab. Penajam Paser Utara, Kalimantan Timur 76141' : 'Jl. Propinsi No. 01, Penajam, Penajam Paser Utara, East Kalimantan 76141' },
+  ];
+  return (
+    <section id="profil" aria-labelledby="profile-h" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 id="profile-h" className="text-3xl font-extrabold text-[#1e3a5f] mb-4">{s.title || t('profile.title')}</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">{s.subtitle || t('profile.subtitle')}</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {cards.map(({ icon: Icon, title, content }) => (
+            <article key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="w-12 h-12 bg-[#1e3a5f]/10 rounded-xl flex items-center justify-center mb-4"><Icon className="w-6 h-6 text-[#1e3a5f]" aria-hidden="true" /></div>
+              <h3 className="font-bold text-[#1e3a5f] text-lg mb-2">{title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Static blocks
+function HeroStaticBlock({ settings }) {
+  const s = settings || {};
+  return (
+    <header id="beranda" role="banner" className="relative min-h-[70vh] flex items-center" style={{ scrollMarginTop: '80px' }}>
+      <div className="absolute inset-0" style={{ background: s.backgroundImage ? `linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(${s.backgroundImage}) center/cover` : '#1e3a5f' }} aria-hidden="true" />
+      <div className="container mx-auto px-4 relative z-10 text-center pt-20">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">{s.title}</h1>
+        <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">{s.subtitle}</p>
+        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText} <ChevronRight className="ml-2 w-5 h-5" /></a>}
+      </div>
+    </header>
+  );
+}
+
+function StatsBlock({ settings }) {
+  const s = settings || {};
+  return (
+    <section className="py-12 bg-[#1e3a5f]">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+          {(s.items || []).map(item => (
+            <div key={item.id} className="text-center">
+              <div className="text-3xl font-extrabold text-[#c9a84c]">{item.number}</div>
+              <div className="text-white/70 text-sm mt-1">{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TextBlock({ settings }) {
+  return <section className="py-12 bg-white"><div className="container mx-auto px-4 max-w-3xl prose prose-lg" dangerouslySetInnerHTML={{ __html: settings?.content || '' }} /></section>;
+}
+
+function ImageBlock({ settings }) {
+  const s = settings || {};
+  return (
+    <section className="py-8 bg-white">
+      <div className={`container mx-auto px-4 flex flex-col items-${s.alignment || 'center'} gap-3`}>
+        {s.src ? <img src={s.src} alt={s.caption || ''} className="max-w-3xl w-full rounded-2xl shadow-md" loading="lazy" /> : null}
+        {s.caption && <p className="text-gray-500 text-sm italic">{s.caption}</p>}
+      </div>
+    </section>
+  );
+}
+
+function CardGridBlock({ settings }) {
+  const s = settings || {};
+  return (
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        {s.title && <h2 className="text-3xl font-extrabold text-[#1e3a5f] text-center mb-10">{s.title}</h2>}
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {(s.items || []).map(item => (
+            <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+              <div className="text-4xl mb-4">{item.icon}</div>
+              <h3 className="font-bold text-[#1e3a5f] mb-2">{item.title}</h3>
+              <p className="text-gray-500 text-sm">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaBlock({ settings }) {
+  const s = settings || {};
+  return (
+    <section className="py-20" style={{ background: s.bgColor || '#1e3a5f' }}>
+      <div className="container mx-auto px-4 text-center">
+        <h2 className="text-3xl font-extrabold text-white mb-4">{s.title}</h2>
+        <p className="text-white/80 mb-8 max-w-xl mx-auto">{s.subtitle}</p>
+        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-[#c9a84c] hover:bg-[#b8962f] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText}</a>}
+      </div>
+    </section>
+  );
+}
+
+function GalleryBlock({ settings }) {
+  const s = settings || {};
+  if (!(s.images || []).length) return null;
+  return (
+    <section className="py-12 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${s.columns || 3}, 1fr)` }}>
+          {s.images.map((img, i) => <img key={i} src={img} alt="" className="w-full aspect-video object-cover rounded-xl" loading="lazy" />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// BLOCK RENDERER SWITCH
+// ============================================================
+function renderBlock(block, ctx) {
+  const { stats, news, announcements, siteSettings, services,
+    onSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun,
+    searchLoading, searchResult, statusColor, statusLabel, formatDate } = ctx;
+  const s = block.settings || {};
+  switch (block.type) {
+    case 'hero_home':     return <HeroHomeBlock key={block.id} settings={s} stats={stats} />;
+    case 'news_ann':      return <NewsAnnBlock key={block.id} settings={s} news={news} announcements={announcements} formatDate={formatDate} />;
+    case 'services_grid': return <ServicesGridBlock key={block.id} settings={s} services={services} />;
+    case 'case_search':   return <CaseSearchBlock key={block.id} settings={s} onSearch={onSearch} searchNomor={searchNomor} setSearchNomor={setSearchNomor} searchTahun={searchTahun} setSearchTahun={setSearchTahun} searchLoading={searchLoading} searchResult={searchResult} statusColor={statusColor} statusLabel={statusLabel} />;
+    case 'contact_info':  return <ContactInfoBlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'profile_cards': return <ProfileCardsBlock key={block.id} settings={s} />;
+    case 'hero':          return <HeroStaticBlock key={block.id} settings={s} />;
+    case 'stats':         return <StatsBlock key={block.id} settings={s} />;
+    case 'text':          return <TextBlock key={block.id} settings={s} />;
+    case 'image':         return <ImageBlock key={block.id} settings={s} />;
+    case 'cardgrid':      return <CardGridBlock key={block.id} settings={s} />;
+    case 'cta':           return <CtaBlock key={block.id} settings={s} />;
+    case 'gallery':       return <GalleryBlock key={block.id} settings={s} />;
+    default:              return null;
+  }
+}
+
+// ============================================================
+// MAIN HOMEPAGE COMPONENT (Dynamic Renderer)
+// ============================================================
+export default function DynamicHomepage() {
+  const { t, lang } = useLanguage();
+  const [blocks, setBlocks] = useState(null);        // null = loading
+  const [news, setNews] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [services, setServices] = useState([]);
+  const [siteSettings, setSiteSettings] = useState({});
+  const [stats, setStats] = useState({ casesThisYear: 0, casesDone: 0, casesOngoing: 0 });
+  const [dataLoading, setDataLoading] = useState(true);
+  const [searchNomor, setSearchNomor] = useState('');
+  const [searchTahun, setSearchTahun] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState('beranda');
+
+  useEffect(() => {
+    loadAll();
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  async function loadAll() {
+    try {
+      await fetch('/api/seed', { method: 'POST' }).catch(() => {});
+      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes] = await Promise.all([
+        fetch('/api/pages/slug/_homepage'),
+        fetch('/api/news?public=true&limit=8'),
+        fetch('/api/announcements?public=true&limit=8'),
+        fetch('/api/services'),
+        fetch('/api/settings'),
+        fetch('/api/cases'),
+      ]);
+      // Homepage blocks
+      if (hpRes.ok) {
+        const hp = await hpRes.json();
+        setBlocks(hp.blocks && hp.blocks.length > 0 ? hp.blocks : DEFAULT_BLOCKS);
+      } else {
+        setBlocks(DEFAULT_BLOCKS); // fallback: tampilkan layout default jika belum dikonfigurasi
+      }
+      const [newsData, annData, svcData, settingsData, casesData] = await Promise.all([
+        newsRes.json(), annRes.json(), svcRes.json(), settingsRes.json(), casesRes.json()
+      ]);
+      setNews(newsData.items || []);
+      setAnnouncements(annData.items || []);
+      setServices(svcData.items || []);
+      setSiteSettings(settingsData || {});
+      const allCases = casesData.items || [];
+      const thisYear = String(new Date().getFullYear());
+      setStats({
+        casesThisYear: allCases.filter(c => c.tahun === thisYear).length,
+        casesDone: allCases.filter(c => c.status === 'selesai').length,
+        casesOngoing: allCases.filter(c => c.status === 'berjalan').length,
+      });
+    } catch (e) { console.error(e); setBlocks([]); }
+    finally { setDataLoading(false); }
+  }
+
+  async function handleSearch(e) {
+    e.preventDefault();
+    if (!searchNomor && !searchTahun) return;
+    setSearchLoading(true); setSearchResult(null);
+    try {
+      const p = new URLSearchParams();
+      if (searchNomor) p.set('search', searchNomor);
+      if (searchTahun) p.set('tahun', searchTahun);
+      const res = await fetch(`/api/cases?${p}`);
+      const data = await res.json();
+      setSearchResult(data.items || []);
+    } catch { setSearchResult([]); }
+    finally { setSearchLoading(false); }
+  }
+
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const statusColor = (s) => ({ selesai: 'bg-green-100 text-green-700', berjalan: 'bg-blue-100 text-blue-700', terdaftar: 'bg-yellow-100 text-yellow-700' }[s] || 'bg-gray-100 text-gray-700');
+  const statusLabel = (s) => ({ selesai: t('status.done'), berjalan: t('status.ongoing'), terdaftar: t('status.registered') }[s] || s);
+
+  const ctx = { stats, news, announcements, siteSettings, services, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
+
+  const navLinks = [
+    { id: 'beranda', label: t('nav.home') },
+    { id: 'profil', label: t('nav.profile') },
+    { id: 'layanan', label: t('nav.services') },
+    { id: 'perkara', label: t('nav.caseInfo') },
+    { id: 'berita', label: t('nav.news') },
+    { id: 'pengumuman', label: t('nav.announcements') },
+    { id: 'kontak', label: t('nav.contact') },
+  ];
+
+  const scrollTo = (id) => {
+    setActiveNav(id); setMobileMenuOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // Build nav links from blocks
+  const blockNavIds = blocks ? blocks.flatMap(b => {
+    const idMap = { hero_home: 'beranda', news_ann: 'berita', services_grid: 'layanan', case_search: 'perkara', contact_info: 'kontak', profile_cards: 'profil', hero: 'beranda' };
+    return idMap[b.type] ? [idMap[b.type]] : [];
+  }) : [];
+  const activeNavLinks = navLinks.filter(l => !blocks || blockNavIds.includes(l.id) || blocks.length === 0);
+
+  // Loading
+  if (blocks === null || dataLoading) {
+    return (
+      <div className="min-h-screen bg-[#1e3a5f] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-white/20 border-t-[#c9a84c] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-white/70 text-sm">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Tidak perlu tampilan kosong - DEFAULT_BLOCKS sudah menjadi fallback
+
+  return (
+    <div className="min-h-screen font-sans bg-white">
+      {/* NAVBAR */}
+      <nav role="navigation" aria-label={lang === 'id' ? 'Menu utama' : 'Main navigation'} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 rounded-lg">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center shadow-md">
+                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-[#c9a84c]" aria-hidden="true" />
+              </div>
+              <div>
+                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`}>{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
+                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#c9a84c]">Penajam</p>
+              </div>
+            </a>
+            {/* Desktop Nav */}
+            <div className="hidden lg:flex items-center gap-1">
+              {activeNavLinks.map(link => (
+                <button key={link.id} onClick={() => scrollTo(link.id)} aria-current={activeNav === link.id ? 'location' : undefined}
+                  className={`px-3 py-2 text-sm font-medium rounded-md transition-all min-h-[44px] ${activeNav === link.id ? 'text-[#c9a84c] bg-[#c9a84c]/10' : scrolled ? 'text-[#1e3a5f] hover:text-[#c9a84c]' : 'text-white/90 hover:text-white'}`}>
+                  {link.label}
+                </button>
+              ))}
+              <div className="ml-2"><LanguageSwitcher scrolled={scrolled} /></div>
+              <Button size="sm" className="ml-2 bg-[#c9a84c] hover:bg-[#b8962f] text-white text-sm font-semibold min-h-[44px]" onClick={() => window.location.href = '/admin/login'}>Admin</Button>
+            </div>
+            {/* Mobile */}
+            <button className={`lg:hidden p-2 min-h-[44px] min-w-[44px] rounded-lg ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}>
+              {mobileMenuOpen ? <span className="text-xl">&times;</span> : <span className="text-xl">&#9776;</span>}
+            </button>
+          </div>
+        </div>
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
+            <div className="container mx-auto px-4 py-4 space-y-1">
+              {activeNavLinks.map(link => (
+                <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left px-4 py-3 text-sm font-medium text-[#1e3a5f] hover:bg-gray-50 rounded-xl min-h-[44px]">{link.label}</button>
+              ))}
+              <div className="flex items-center justify-between px-4 pt-2">
+                <LanguageSwitcher scrolled={true} />
+                <button className="px-4 py-2 bg-[#c9a84c] text-white rounded-lg text-sm font-semibold min-h-[44px]" onClick={() => window.location.href = '/admin/login'}>Admin</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* RENDER BLOCKS */}
+      <main id="main-content" tabIndex={-1}>
+        {blocks.map(block => renderBlock(block, ctx))}
+      </main>
+
+      {/* FOOTER */}
+      <footer role="contentinfo" className="bg-[#1e3a5f] text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Scale className="w-5 h-5 text-[#c9a84c]" aria-hidden="true" /></div>
+                <div>
+                  <p className="font-bold text-sm">{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
+                  <p className="font-extrabold text-[#c9a84c]">Penajam</p>
+                </div>
+              </div>
+              <p className="text-white/60 text-sm leading-relaxed">{t('footer.description')}</p>
+            </div>
+            <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
+              <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
+              <ul className="space-y-2 list-none p-0">
+                {activeNavLinks.map(link => (
+                  <li key={link.id}><button onClick={() => scrollTo(link.id)} className="text-white/60 hover:text-white text-sm transition-colors text-left min-h-[44px]">{link.label}</button></li>
+                ))}
+              </ul>
+            </nav>
+            <nav aria-label={lang === 'id' ? 'Informasi' : 'Information'}>
+              <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">{t('footer.information')}</h3>
+              <ul className="space-y-2 list-none p-0">
+                {[{ href: '/agenda-sidang', label: t('nav.courtSchedule') }, { href: '/putusan', label: t('nav.decisions') }, { href: '/pencarian-perkara', label: t('nav.caseSearch') }, { href: '/accessibility', label: '♿ ' + t('footer.accessibility') }].map(l => (
+                  <li key={l.href}><a href={l.href} className="text-white/60 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a></li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+          <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-white/50 text-sm">&copy; {new Date().getFullYear()} {t('siteName')}. {t('footer.allRights')}</p>
+            <LanguageSwitcher variant="dark" scrolled={false} />
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

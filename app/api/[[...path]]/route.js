@@ -433,7 +433,12 @@ async function handleRequest(request, pathSegments, method) {
     }
     if (segment2) {
       if (segment2 === 'slug' && segment3 && method === 'GET') {
-        const item = await col.findOne({ slug: segment3, status: 'published' });
+        // For _homepage slug, also allow authenticated admins to fetch any status
+        const authUser = requireAuth(request);
+        const query = authUser
+          ? { slug: segment3 }
+          : { slug: segment3, status: 'published' };
+        const item = await col.findOne(query);
         if (!item) return NextResponse.json({ error: 'Halaman tidak ditemukan' }, { status: 404 });
         return NextResponse.json(item);
       }

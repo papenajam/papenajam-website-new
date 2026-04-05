@@ -19,6 +19,7 @@ const sidebarGroups = [
   {
     label: 'Konten',
     items: [
+      { id: 'homepage', label: 'Pengaturan Beranda', path: '/admin/homepage', icon: Home, roles: ['superadmin','admin'] },
       { id: 'news', label: 'Berita', path: '/admin/news', icon: Newspaper, roles: ['superadmin','admin','editor'] },
       { id: 'announcements', label: 'Pengumuman', path: '/admin/announcements', icon: Bell, roles: ['superadmin','admin','editor'] },
       { id: 'services', label: 'Layanan', path: '/admin/services', icon: Briefcase, roles: ['superadmin','admin','editor'] },
