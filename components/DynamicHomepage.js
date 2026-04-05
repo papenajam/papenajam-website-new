@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import MegaMenuNavbar from '@/components/MegaMenu';
 
 const ICON_MAP = {
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
@@ -550,27 +551,11 @@ export default function DynamicHomepage() {
 
   const ctx = { stats, news, announcements, siteSettings, services, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
 
-  const navLinks = [
-    { id: 'beranda', label: t('nav.home') },
-    { id: 'profil', label: t('nav.profile') },
-    { id: 'layanan', label: t('nav.services') },
-    { id: 'perkara', label: t('nav.caseInfo') },
-    { id: 'berita', label: t('nav.news') },
-    { id: 'pengumuman', label: t('nav.announcements') },
-    { id: 'kontak', label: t('nav.contact') },
-  ];
-
   const scrollTo = (id) => {
-    setActiveNav(id); setMobileMenuOpen(false);
+    setActiveNav(id);
+    setMobileMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
-  // Build nav links from blocks
-  const blockNavIds = blocks ? blocks.flatMap(b => {
-    const idMap = { hero_home: 'beranda', news_ann: 'berita', services_grid: 'layanan', case_search: 'perkara', contact_info: 'kontak', profile_cards: 'profil', hero: 'beranda' };
-    return idMap[b.type] ? [idMap[b.type]] : [];
-  }) : [];
-  const activeNavLinks = navLinks.filter(l => !blocks || blockNavIds.includes(l.id) || blocks.length === 0);
 
   // Loading
   if (blocks === null || dataLoading) {
@@ -589,48 +574,35 @@ export default function DynamicHomepage() {
   return (
     <div className="min-h-screen font-sans bg-white">
       {/* NAVBAR */}
-      <nav role="navigation" aria-label={lang === 'id' ? 'Menu utama' : 'Main navigation'} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+      <nav
+        role="navigation"
+        aria-label={lang === 'id' ? 'Menu utama' : 'Main navigation'}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}
+      >
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 rounded-lg">
+          <div className="flex items-center justify-between h-16 lg:h-20 relative">
+            {/* Logo */}
+            <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 rounded-lg flex-shrink-0">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center shadow-md">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-[#c9a84c]" aria-hidden="true" />
               </div>
               <div>
-                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`}>{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
+                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`}>
+                  {lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}
+                </p>
                 <p className="font-extrabold text-base lg:text-lg leading-tight text-[#c9a84c]">Penajam</p>
               </div>
             </a>
-            {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-1">
-              {activeNavLinks.map(link => (
-                <button key={link.id} onClick={() => scrollTo(link.id)} aria-current={activeNav === link.id ? 'location' : undefined}
-                  className={`px-3 py-2 text-sm font-medium rounded-md transition-all min-h-[44px] ${activeNav === link.id ? 'text-[#c9a84c] bg-[#c9a84c]/10' : scrolled ? 'text-[#1e3a5f] hover:text-[#c9a84c]' : 'text-white/90 hover:text-white'}`}>
-                  {link.label}
-                </button>
-              ))}
-              <div className="ml-2"><LanguageSwitcher scrolled={scrolled} /></div>
-              <Button size="sm" className="ml-2 bg-[#c9a84c] hover:bg-[#b8962f] text-white text-sm font-semibold min-h-[44px]" onClick={() => window.location.href = '/admin/login'}>Admin</Button>
-            </div>
-            {/* Mobile */}
-            <button className={`lg:hidden p-2 min-h-[44px] min-w-[44px] rounded-lg ${scrolled ? 'text-[#1e3a5f]' : 'text-white'}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}>
-              {mobileMenuOpen ? <span className="text-xl">&times;</span> : <span className="text-xl">&#9776;</span>}
-            </button>
+            {/* Dynamic Mega Menu */}
+            <MegaMenuNavbar
+              scrolled={scrolled}
+              activeNav={activeNav}
+              onScrollTo={scrollTo}
+              mobileMenuOpen={mobileMenuOpen}
+              setMobileMenuOpen={setMobileMenuOpen}
+            />
           </div>
         </div>
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
-            <div className="container mx-auto px-4 py-4 space-y-1">
-              {activeNavLinks.map(link => (
-                <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left px-4 py-3 text-sm font-medium text-[#1e3a5f] hover:bg-gray-50 rounded-xl min-h-[44px]">{link.label}</button>
-              ))}
-              <div className="flex items-center justify-between px-4 pt-2">
-                <LanguageSwitcher scrolled={true} />
-                <button className="px-4 py-2 bg-[#c9a84c] text-white rounded-lg text-sm font-semibold min-h-[44px]" onClick={() => window.location.href = '/admin/login'}>Admin</button>
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* RENDER BLOCKS */}
@@ -655,16 +627,34 @@ export default function DynamicHomepage() {
             <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
               <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
               <ul className="space-y-2 list-none p-0">
-                {activeNavLinks.map(link => (
-                  <li key={link.id}><button onClick={() => scrollTo(link.id)} className="text-white/60 hover:text-white text-sm transition-colors text-left min-h-[44px]">{link.label}</button></li>
+                {[
+                  { id: 'beranda', label: t('nav.home') },
+                  { id: 'layanan', label: t('nav.services') },
+                  { id: 'perkara', label: t('nav.caseInfo') },
+                  { id: 'berita', label: t('nav.news') },
+                  { id: 'kontak', label: t('nav.contact') },
+                ].map(link => (
+                  <li key={link.id}>
+                    <button
+                      onClick={() => scrollTo(link.id)}
+                      className="text-white/60 hover:text-white text-sm transition-colors text-left min-h-[44px]"
+                    >{link.label}</button>
+                  </li>
                 ))}
               </ul>
             </nav>
             <nav aria-label={lang === 'id' ? 'Informasi' : 'Information'}>
               <h3 className="font-bold text-[#c9a84c] mb-4 text-sm uppercase tracking-wide">{t('footer.information')}</h3>
               <ul className="space-y-2 list-none p-0">
-                {[{ href: '/agenda-sidang', label: t('nav.courtSchedule') }, { href: '/putusan', label: t('nav.decisions') }, { href: '/pencarian-perkara', label: t('nav.caseSearch') }, { href: '/accessibility', label: '♿ ' + t('footer.accessibility') }].map(l => (
-                  <li key={l.href}><a href={l.href} className="text-white/60 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a></li>
+                {[
+                  { href: '/agenda-sidang', label: t('nav.courtSchedule') },
+                  { href: '/putusan', label: t('nav.decisions') },
+                  { href: '/pencarian-perkara', label: t('nav.caseSearch') },
+                  { href: '/accessibility', label: '♿ ' + t('footer.accessibility') },
+                ].map(l => (
+                  <li key={l.href}>
+                    <a href={l.href} className="text-white/60 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a>
+                  </li>
                 ))}
               </ul>
             </nav>

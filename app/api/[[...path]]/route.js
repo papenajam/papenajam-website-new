@@ -574,6 +574,81 @@ async function handleRequest(request, pathSegments, method) {
     }
   }
 
+  // ==================== MENUS ====================
+  if (segment1 === 'menus') {
+    const col = await getCollection('menus');
+    if (!segment2) {
+      if (method === 'GET') {
+        // Public endpoint - kembalikan menu aktif yang sudah diurutkan
+        const items = await col.find({ isActive: true }).sort({ order: 1 }).toArray();
+        // Pisahkan item utama dan sub-items, lalu bangun tree
+        const topLevel = items.filter(i => !i.parentId).map(item => ({
+          ...item,
+          children: items.filter(c => c.parentId === item.id).sort((a, b) => a.order - b.order)
+        }));
+        return NextResponse.json({ items: topLevel });
+      }
+      if (method === 'POST') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        const item = {
+          id: uuidv4(), ...body,
+          isActive: body.isActive !== false,
+          order: body.order || 0,
+          createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+        };
+        await col.insertOne(item);
+        return NextResponse.json(item, { status: 201 });
+      }
+    }
+    if (segment2 === 'bulk' && method === 'PUT') {
+      // Bulk update untuk simpan seluruh struktur menu sekaligus
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const body = await request.json();
+      const { items } = body;
+      if (!Array.isArray(items)) return NextResponse.json({ error: 'items harus array' }, { status: 400 });
+      // Hapus semua menu lama, ganti dengan yang baru
+      await col.deleteMany({});
+      if (items.length > 0) {
+        const toInsert = items.map(item => ({
+          ...item,
+          id: item.id || uuidv4(),
+          updatedAt: new Date().toISOString(),
+          createdAt: item.createdAt || new Date().toISOString()
+        }));
+        await col.insertMany(toInsert);
+      }
+      return NextResponse.json({ message: 'Menu berhasil disimpan', count: items.length });
+    }
+    if (segment2 === 'all' && method === 'GET') {
+      // Admin endpoint - kembalikan SEMUA menu (aktif & non-aktif) dalam flat list
+      const auth = requireAuth(request);
+      if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const items = await col.find({}).sort({ order: 1 }).toArray();
+      return NextResponse.json({ items });
+    }
+    if (segment2) {
+      if (method === 'PUT') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const body = await request.json();
+        await col.updateOne({ id: segment2 }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+        const item = await col.findOne({ id: segment2 });
+        return NextResponse.json(item);
+      }
+      if (method === 'DELETE') {
+        const auth = requireAuth(request);
+        if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        // Hapus juga sub-menu milik item ini
+        await col.deleteMany({ parentId: segment2 });
+        await col.deleteOne({ id: segment2 });
+        return NextResponse.json({ message: 'Berhasil dihapus' });
+      }
+    }
+  }
+
   return NextResponse.json({ error: 'Route tidak ditemukan' }, { status: 404 });
 }
 
@@ -707,7 +782,7 @@ async function seedDatabase() {
 
   // Seed sample page
   const pagesCol = await getCollection('pages');
-  const pagesCount = await pagesCol.countDocuments();
+  const pagesCount = await pagesCol.countDocuments({ slug: { $ne: '_homepage' } });
   if (pagesCount === 0) {
     await pagesCol.insertOne({
       id: uuidv4(), title: 'Tentang Pengadilan', slug: 'tentang',
@@ -719,6 +794,31 @@ async function seedDatabase() {
       ],
       createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
     });
+  }
+
+  // Seed default navigation menu
+  const menusCol = await getCollection('menus');
+  const menusCount = await menusCol.countDocuments();
+  if (menusCount === 0) {
+    const menuItems = [
+      { id: uuidv4(), label: 'Beranda', labelEn: 'Home', url: '#beranda', type: 'section', icon: '🏠', order: 0, isActive: true, parentId: null, description: '', descriptionEn: '' },
+      { id: uuidv4(), label: 'Profil', labelEn: 'Profile', url: '#profil', type: 'section', icon: '🏛️', order: 1, isActive: true, parentId: null, description: 'Informasi Pengadilan', descriptionEn: 'Court Information' },
+      { id: uuidv4(), label: 'Layanan', labelEn: 'Services', url: '#layanan', type: 'section', icon: '⚖️', order: 2, isActive: true, parentId: null, description: 'Layanan Kepaniteraan', descriptionEn: 'Court Services' },
+      { id: uuidv4(), label: 'Informasi Perkara', labelEn: 'Case Info', url: '#perkara', type: 'section', icon: '🔍', order: 3, isActive: true, parentId: null, description: '', descriptionEn: '' },
+      { id: uuidv4(), label: 'Berita', labelEn: 'News', url: '#berita', type: 'section', icon: '📰', order: 4, isActive: true, parentId: null, description: '', descriptionEn: '' },
+      { id: uuidv4(), label: 'Kontak', labelEn: 'Contact', url: '#kontak', type: 'section', icon: '📞', order: 5, isActive: true, parentId: null, description: '', descriptionEn: '' },
+    ];
+    // Sub-items untuk "Layanan"
+    const layananId = menuItems[2].id;
+    const subLayanan = [
+      { id: uuidv4(), label: 'Pendaftaran Perkara', labelEn: 'Case Registration', url: '#layanan', type: 'section', icon: '📋', order: 0, isActive: true, parentId: layananId, description: 'Daftarkan perkara Anda', descriptionEn: 'Register your case' },
+      { id: uuidv4(), label: 'Agenda Sidang', labelEn: 'Court Schedule', url: '/agenda-sidang', type: 'page', icon: '📅', order: 1, isActive: true, parentId: layananId, description: 'Jadwal sidang terkini', descriptionEn: 'Latest court schedule' },
+      { id: uuidv4(), label: 'Informasi Biaya', labelEn: 'Fee Information', url: '#layanan', type: 'section', icon: '💰', order: 2, isActive: true, parentId: layananId, description: 'Biaya perkara transparan', descriptionEn: 'Transparent case fees' },
+      { id: uuidv4(), label: 'Putusan', labelEn: 'Court Decisions', url: '/putusan', type: 'page', icon: '📄', order: 3, isActive: true, parentId: layananId, description: 'Salinan putusan pengadilan', descriptionEn: 'Court decision copies' },
+      { id: uuidv4(), label: 'Pos Bantuan Hukum', labelEn: 'Legal Aid', url: '#layanan', type: 'section', icon: '🛡️', order: 4, isActive: true, parentId: layananId, description: 'Bantuan hukum gratis', descriptionEn: 'Free legal assistance' },
+      { id: uuidv4(), label: 'e-Court', labelEn: 'e-Court', url: 'https://ecourt.mahkamahagung.go.id', type: 'external', icon: '💻', order: 5, isActive: true, parentId: layananId, description: 'Pendaftaran elektronik', descriptionEn: 'Electronic registration' },
+    ];
+    await menusCol.insertMany([...menuItems, ...subLayanan].map(m => ({ ...m, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() })));
   }
 }
 
