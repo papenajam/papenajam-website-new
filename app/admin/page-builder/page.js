@@ -79,13 +79,159 @@ function Toast({ msg, type }) {
 }
 
 const BLOCK_TYPES = [
-  { type: 'hero', label: 'Hero', icon: Layers, desc: 'Banner hero dengan gambar latar', color: 'bg-blue-50 text-blue-700' },
-  { type: 'text', label: 'Teks', icon: Type, desc: 'Blok teks bebas / rich content', color: 'bg-gray-50 text-gray-700' },
-  { type: 'image', label: 'Gambar', icon: Image, desc: 'Gambar dengan keterangan', color: 'bg-green-50 text-green-700' },
-  { type: 'cardgrid', label: 'Card Grid', icon: LayoutGrid, desc: 'Grid kartu informasi', color: 'bg-purple-50 text-purple-700' },
-  { type: 'stats', label: 'Statistik', icon: BarChart2, desc: 'Angka statistik menarik', color: 'bg-amber-50 text-amber-700' },
-  { type: 'cta', label: 'CTA', icon: Zap, desc: 'Call-to-action button', color: 'bg-red-50 text-red-700' },
-  { type: 'gallery', label: 'Galeri', icon: Image, desc: 'Grid galeri foto', color: 'bg-teal-50 text-teal-700' },
+  { type: 'hero',     label: 'Hero',       icon: Layers,     desc: 'Banner hero dengan gambar latar',  color: 'bg-blue-50 text-blue-700'   },
+  { type: 'text',     label: 'Teks',       icon: Type,       desc: 'Blok teks bebas / rich content',   color: 'bg-gray-50 text-gray-700'   },
+  { type: 'image',    label: 'Gambar',     icon: Image,      desc: 'Gambar dengan keterangan',          color: 'bg-green-50 text-green-700' },
+  { type: 'cardgrid', label: 'Card Grid',  icon: LayoutGrid, desc: 'Grid kartu informasi',              color: 'bg-purple-50 text-purple-700'},
+  { type: 'stats',    label: 'Statistik',  icon: BarChart2,  desc: 'Angka statistik menarik',           color: 'bg-amber-50 text-amber-700' },
+  { type: 'cta',      label: 'CTA',        icon: Zap,        desc: 'Call-to-action button',             color: 'bg-red-50 text-red-700'     },
+  { type: 'gallery',  label: 'Galeri',     icon: Image,      desc: 'Grid galeri foto',                  color: 'bg-teal-50 text-teal-700'   },
+];
+
+// ─── Template Definitions ─────────────────────────────────────────────────────
+const PAGE_TEMPLATES = [
+  {
+    id: 'blank',
+    name: 'Halaman Kosong',
+    desc: 'Mulai dari nol tanpa blok apapun',
+    icon: '📄',
+    color: 'bg-gray-50 border-gray-200',
+    category: 'Dasar',
+    blocks: [],
+  },
+  {
+    id: 'profil-lembaga',
+    name: 'Profil Lembaga',
+    desc: 'Halaman profil lengkap dengan visi, misi, dan statistik',
+    icon: '🏛️',
+    color: 'bg-green-50 border-green-200',
+    category: 'Informasi',
+    blocks: [
+      { type: 'hero', settings: { title: 'Profil Pengadilan Agama Penajam', subtitle: 'Lembaga peradilan yang bertugas memberikan keadilan bagi masyarakat Muslim di Kabupaten Penajam Paser Utara', backgroundImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80', buttonText: 'Lihat Layanan', buttonLink: '/#layanan' } },
+      { type: 'text', settings: { content: '<h2>Tentang Kami</h2><p>Pengadilan Agama Penajam adalah pengadilan tingkat pertama yang bertugas memeriksa, memutus, dan menyelesaikan perkara di bidang perkawinan, kewarisan, wasiat, hibah, wakaf, zakat, infaq, shadaqah, dan ekonomi syariah untuk masyarakat Muslim di Kabupaten Penajam Paser Utara.</p><p>Berdiri sejak tahun 1985, Pengadilan Agama Penajam telah melayani ribuan masyarakat dengan menjunjung tinggi prinsip keadilan, kepastian hukum, dan kemanfaatan.</p>' } },
+      { type: 'cardgrid', settings: { title: 'Nilai-Nilai Kami', items: [{ id: 'v1', icon: '⚖️', title: 'Keadilan', description: 'Memberikan putusan yang adil dan tidak memihak' }, { id: 'v2', icon: '🔍', title: 'Transparansi', description: 'Pelayanan terbuka dan dapat diakses publik' }, { id: 'v3', icon: '🤝', title: 'Integritas', description: 'Menjunjung tinggi kejujuran dalam setiap tindakan' }] } },
+      { type: 'stats', settings: { items: [{ id: 's1', number: '500+', label: 'Perkara Diselesaikan' }, { id: 's2', number: '8', label: 'Hakim Profesional' }, { id: 's3', number: '20+', label: 'Tahun Pengalaman' }, { id: 's4', number: '15.000+', label: 'Masyarakat Dilayani' }] } },
+      { type: 'text', settings: { content: '<h2>Visi</h2><p><em>"Terwujudnya Pengadilan Agama Penajam yang Agung"</em></p><h2>Misi</h2><ul><li>Menjaga kemandirian badan peradilan</li><li>Memberikan pelayanan hukum yang berkeadilan kepada pencari keadilan</li><li>Meningkatkan kualitas kepemimpinan badan peradilan</li><li>Meningkatkan kredibilitas dan transparansi badan peradilan</li></ul>' } },
+      { type: 'cta', settings: { title: 'Siap Melayani Anda', subtitle: 'Hubungi kami untuk informasi lebih lanjut atau kunjungi langsung kantor kami', buttonText: 'Hubungi Kami', buttonLink: '/#kontak', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'layanan-detail',
+    name: 'Halaman Layanan',
+    desc: 'Menampilkan detail layanan dengan kartu dan prosedur',
+    icon: '⚙️',
+    color: 'bg-blue-50 border-blue-200',
+    category: 'Layanan',
+    blocks: [
+      { type: 'hero', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan kepaniteraan tersedia untuk masyarakat Kabupaten Penajam Paser Utara', backgroundImage: '', buttonText: 'Daftar Sekarang', buttonLink: '/pengaduan' } },
+      { type: 'cardgrid', settings: { title: 'Jenis Layanan', items: [{ id: 'l1', icon: '📋', title: 'Pendaftaran Perkara', description: 'Pendaftaran perkara cerai gugat, cerai talak, waris, dan lainnya' }, { id: 'l2', icon: '📅', title: 'Jadwal Sidang', description: 'Informasi jadwal sidang yang transparan dan akuntabel' }, { id: 'l3', icon: '💰', title: 'Biaya Perkara', description: 'Estimasi biaya panjar perkara sesuai ketentuan' }, { id: 'l4', icon: '📦', title: 'Pengambilan Produk', description: 'Salinan putusan, akta cerai, dan produk pengadilan lainnya' }, { id: 'l5', icon: '🛡️', title: 'Pos Bantuan Hukum', description: 'Layanan konsultasi hukum gratis bagi masyarakat tidak mampu' }, { id: 'l6', icon: '💻', title: 'e-Court', description: 'Pendaftaran dan persidangan secara elektronik' }] } },
+      { type: 'text', settings: { content: '<h2>Prosedur Pendaftaran Perkara</h2><ol><li><strong>Datang ke Meja Pendaftaran</strong> — Serahkan berkas persyaratan lengkap ke petugas meja I</li><li><strong>Pembayaran Panjar Biaya</strong> — Bayar panjar biaya perkara sesuai estimasi yang diberikan</li><li><strong>Penomoran Perkara</strong> — Perkara dicatat dan diberi nomor register</li><li><strong>Penetapan Majelis Hakim</strong> — Ketua Pengadilan menetapkan majelis hakim</li><li><strong>Pelaksanaan Sidang</strong> — Proses persidangan sesuai jadwal yang ditetapkan</li></ol>' } },
+      { type: 'cta', settings: { title: 'Butuh Bantuan?', subtitle: 'Konsultasikan kebutuhan hukum Anda dengan petugas kami atau kunjungi Pos Bantuan Hukum', buttonText: 'Hubungi Kami', buttonLink: '/pengaduan', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'persyaratan-perkara',
+    name: 'Persyaratan Perkara',
+    desc: 'Daftar persyaratan pendaftaran berbagai jenis perkara',
+    icon: '📋',
+    color: 'bg-amber-50 border-amber-200',
+    category: 'Layanan',
+    blocks: [
+      { type: 'hero', settings: { title: 'Persyaratan Pendaftaran Perkara', subtitle: 'Siapkan dokumen-dokumen berikut sebelum mendaftar perkara di Pengadilan Agama Penajam', backgroundImage: '', buttonText: 'Unduh Formulir', buttonLink: '/dokumen' } },
+      { type: 'text', settings: { content: '<h2>Cerai Gugat</h2><p>Persyaratan yang harus disiapkan:</p><ul><li>Surat Gugatan (6 rangkap)</li><li>Fotokopi KTP Penggugat (2 lembar)</li><li>Fotokopi KTP Tergugat (2 lembar)</li><li>Fotokopi Buku Nikah / Akta Perkawinan (2 lembar)</li><li>Fotokopi Kartu Keluarga (2 lembar)</li><li>Akta Kelahiran anak (bila ada, 2 lembar)</li><li>Materai Rp 10.000 (2 lembar)</li></ul><h2>Cerai Talak</h2><ul><li>Surat Permohonan (6 rangkap)</li><li>Fotokopi KTP Pemohon (2 lembar)</li><li>Fotokopi KTP Termohon (2 lembar)</li><li>Fotokopi Buku Nikah / Akta Perkawinan (2 lembar)</li><li>Fotokopi Kartu Keluarga (2 lembar)</li><li>Materai Rp 10.000 (2 lembar)</li></ul>' } },
+      { type: 'text', settings: { content: '<h2>Itsbat Nikah</h2><ul><li>Surat Permohonan (6 rangkap)</li><li>Fotokopi KTP Pemohon I dan II</li><li>Surat Keterangan Nikah dari Kepala Desa/Lurah</li><li>Fotokopi Kartu Keluarga</li><li>Materai Rp 10.000</li></ul><h2>Penetapan Ahli Waris</h2><ul><li>Surat Permohonan (6 rangkap)</li><li>Fotokopi KTP seluruh Pemohon</li><li>Surat Kematian pewaris dari Kelurahan/Desa</li><li>Fotokopi Buku Nikah/Akta Perkawinan</li><li>Fotokopi Kartu Keluarga</li><li>Materai Rp 10.000</li></ul>' } },
+      { type: 'cta', settings: { title: 'Perlu Bantuan Melengkapi Berkas?', subtitle: 'Datang ke Pos Bantuan Hukum (Posbakum) kami untuk mendapatkan bimbingan gratis', buttonText: 'Kunjungi Posbakum', buttonLink: '/pengaduan', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'sejarah-lembaga',
+    name: 'Sejarah Lembaga',
+    desc: 'Halaman sejarah dan perkembangan lembaga',
+    icon: '📜',
+    color: 'bg-amber-50 border-amber-200',
+    category: 'Informasi',
+    blocks: [
+      { type: 'hero', settings: { title: 'Sejarah Pengadilan Agama Penajam', subtitle: 'Perjalanan panjang mengabdi dan memberikan keadilan bagi masyarakat', backgroundImage: '', buttonText: 'Profil Lengkap', buttonLink: '/p/profil-lembaga' } },
+      { type: 'text', settings: { content: '<h2>Latar Belakang Pendirian</h2><p>Pengadilan Agama Penajam didirikan berdasarkan Keputusan Presiden Republik Indonesia sebagai bagian dari sistem peradilan agama di Indonesia yang bernaung di bawah Mahkamah Agung Republik Indonesia.</p><p>Keberadaan Pengadilan Agama di Kabupaten Penajam Paser Utara merupakan wujud nyata komitmen negara dalam memberikan akses keadilan bagi seluruh lapisan masyarakat, khususnya masyarakat Muslim yang membutuhkan penyelesaian sengketa berdasarkan hukum Islam.</p>' } },
+      { type: 'stats', settings: { items: [{ id: 'h1', number: '1985', label: 'Tahun Berdiri' }, { id: 'h2', number: '40+', label: 'Tahun Mengabdi' }, { id: 'h3', number: '10.000+', label: 'Perkara Diselesaikan' }] } },
+      { type: 'text', settings: { content: '<h2>Perkembangan & Pencapaian</h2><p>Selama lebih dari empat dekade, Pengadilan Agama Penajam terus berkembang baik dari sisi sumber daya manusia, infrastruktur, maupun kualitas layanan. Beberapa pencapaian penting antara lain:</p><ul><li>Implementasi e-Court untuk pendaftaran perkara secara elektronik</li><li>Raih predikat WBK (Wilayah Bebas dari Korupsi) dari Kemenpan RB</li><li>Program sidang keliling untuk menjangkau masyarakat terpencil</li><li>Kerjasama dengan berbagai lembaga untuk layanan Posbakum</li></ul>' } },
+      { type: 'image', settings: { src: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80', caption: 'Gedung Pengadilan Agama Penajam', alignment: 'center' } },
+    ],
+  },
+  {
+    id: 'struktur-organisasi',
+    name: 'Struktur Organisasi',
+    desc: 'Halaman susunan pejabat dan struktur organisasi',
+    icon: '👥',
+    color: 'bg-violet-50 border-violet-200',
+    category: 'Informasi',
+    blocks: [
+      { type: 'hero', settings: { title: 'Struktur Organisasi', subtitle: 'Susunan pejabat dan pegawai Pengadilan Agama Penajam', backgroundImage: '', buttonText: 'Profil Lembaga', buttonLink: '/p/profil-lembaga' } },
+      { type: 'cardgrid', settings: { title: 'Pimpinan', items: [{ id: 'p1', icon: '👨‍⚖️', title: 'Ketua Pengadilan', description: 'Bertanggung jawab atas jalannya organisasi dan teknis peradilan' }, { id: 'p2', icon: '👩‍⚖️', title: 'Wakil Ketua', description: 'Membantu Ketua dalam melaksanakan tugas dan fungsi pengadilan' }, { id: 'p3', icon: '⚖️', title: 'Hakim', description: 'Memeriksa dan memutus perkara yang diajukan oleh para pihak' }] } },
+      { type: 'cardgrid', settings: { title: 'Kepaniteraan & Kesekretariatan', items: [{ id: 'k1', icon: '📋', title: 'Panitera', description: 'Bertanggung jawab atas administrasi perkara' }, { id: 'k2', icon: '📁', title: 'Sekretaris', description: 'Bertanggung jawab atas administrasi umum dan keuangan' }, { id: 'k3', icon: '🗄️', title: 'Panitera Muda', description: 'Membantu Panitera dalam administrasi perkara' }] } },
+      { type: 'text', settings: { content: '<h2>Tugas dan Fungsi</h2><p>Pengadilan Agama Penajam sebagai salah satu pelaksana kekuasaan kehakiman bagi masyarakat pencari keadilan yang beragama Islam mempunyai tugas dan kewenangan sebagaimana diatur dalam Pasal 49 UU No. 3 Tahun 2006 tentang Peradilan Agama, yakni memeriksa, memutus, dan menyelesaikan perkara di bidang:</p><ul><li>Perkawinan</li><li>Waris</li><li>Wasiat</li><li>Hibah</li><li>Wakaf</li><li>Zakat, Infaq, dan Shadaqah</li><li>Ekonomi Syariah</li></ul>' } },
+    ],
+  },
+  {
+    id: 'program-kerja',
+    name: 'Program Kerja',
+    desc: 'Rencana dan program kerja tahunan lembaga',
+    icon: '🎯',
+    color: 'bg-orange-50 border-orange-200',
+    category: 'Informasi',
+    blocks: [
+      { type: 'hero', settings: { title: `Program Kerja ${new Date().getFullYear()}`, subtitle: 'Rencana strategis dan program unggulan Pengadilan Agama Penajam', backgroundImage: '', buttonText: 'Unduh Laporan', buttonLink: '/dokumen' } },
+      { type: 'cardgrid', settings: { title: 'Program Unggulan', items: [{ id: 'pr1', icon: '⚡', title: 'Peningkatan Kualitas Putusan', description: 'Pelatihan dan pengembangan SDM hakim untuk kualitas putusan yang lebih baik' }, { id: 'pr2', icon: '💻', title: 'Digitalisasi Layanan', description: 'Implementasi penuh e-Court dan sistem informasi perkara berbasis digital' }, { id: 'pr3', icon: '🤝', title: 'Sidang Keliling', description: 'Menjangkau masyarakat di wilayah terpencil yang sulit mengakses pengadilan' }, { id: 'pr4', icon: '📚', title: 'Penyuluhan Hukum', description: 'Sosialisasi hukum kepada masyarakat di seluruh kecamatan' }] } },
+      { type: 'stats', settings: { items: [{ id: 'pk1', number: '95%', label: 'Target Penyelesaian' }, { id: 'pk2', number: '4', label: 'Kali Sidang Keliling' }, { id: 'pk3', number: '12', label: 'Program Penyuluhan' }] } },
+      { type: 'text', settings: { content: '<h2>Rencana Strategis</h2><p>Dalam rangka mewujudkan pengadilan yang agung, Pengadilan Agama Penajam menetapkan beberapa sasaran strategis:</p><ol><li><strong>Meningkatnya penyelesaian perkara</strong> — Target penyelesaian perkara tepat waktu mencapai 95%</li><li><strong>Meningkatnya akseptabilitas putusan hakim</strong> — Upaya kasasi/banding kurang dari 5%</li><li><strong>Meningkatnya efektifitas pengelolaan penyelesaian perkara</strong> — Implementasi SIPP 100%</li><li><strong>Meningkatnya aksesibilitas masyarakat terhadap peradilan</strong> — Minimal 4 kegiatan sidang keliling</li></ol>' } },
+      { type: 'cta', settings: { title: 'Informasi Lebih Lanjut', subtitle: 'Hubungi bagian kesekretariatan untuk informasi program kerja dan laporan kinerja', buttonText: 'Hubungi Kami', buttonLink: '/pengaduan', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'artikel-berita',
+    name: 'Artikel / Berita',
+    desc: 'Template artikel atau berita dengan gambar dan konten',
+    icon: '📰',
+    color: 'bg-cyan-50 border-cyan-200',
+    category: 'Konten',
+    blocks: [
+      { type: 'hero', settings: { title: 'Judul Artikel atau Berita', subtitle: 'Keterangan singkat tentang isi artikel ini', backgroundImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80', buttonText: 'Kembali ke Berita', buttonLink: '/#berita' } },
+      { type: 'text', settings: { content: '<p><strong>Penajam, 2024</strong> — Tulis paragraf pembuka artikel Anda di sini. Paragraf ini sebaiknya menjawab pertanyaan siapa, apa, kapan, di mana, mengapa, dan bagaimana.</p><p>Lanjutkan dengan paragraf isi yang lebih detail. Anda bisa menambahkan kutipan, data, atau penjelasan lebih mendalam di sini.</p><blockquote>"Kutipan atau pernyataan penting bisa ditempatkan di sini." — Nama Narasumber</blockquote><p>Tutup artikel dengan kesimpulan atau informasi kontak untuk pertanyaan lebih lanjut.</p>' } },
+      { type: 'image', settings: { src: 'https://images.unsplash.com/photo-1575505586569-646b2ca898fc?w=1200&q=80', caption: 'Keterangan foto: deskripsi singkat tentang foto ini', alignment: 'center' } },
+      { type: 'text', settings: { content: '<h3>Informasi Lebih Lanjut</h3><p>Untuk informasi lebih lanjut mengenai kegiatan ini, masyarakat dapat menghubungi Humas Pengadilan Agama Penajam melalui:</p><ul><li>Telepon: (0542) 7211234</li><li>Email: pa.penajam@gmail.com</li><li>Atau langsung datang ke kantor pada jam kerja</li></ul>' } },
+      { type: 'cta', settings: { title: 'Tetap Terhubung', subtitle: 'Ikuti perkembangan kegiatan kami melalui media sosial dan website resmi', buttonText: 'Lihat Berita Lainnya', buttonLink: '/#berita', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'maklumat-layanan',
+    name: 'Maklumat Pelayanan',
+    desc: 'Halaman maklumat standar pelayanan publik',
+    icon: '📢',
+    color: 'bg-rose-50 border-rose-200',
+    category: 'Layanan',
+    blocks: [
+      { type: 'hero', settings: { title: 'Maklumat Pelayanan', subtitle: 'Pengadilan Agama Penajam berkomitmen memberikan pelayanan terbaik kepada masyarakat', backgroundImage: '', buttonText: 'Lihat Standar Layanan', buttonLink: '/dokumen' } },
+      { type: 'text', settings: { content: '<h2>Maklumat Pelayanan Pengadilan Agama Penajam</h2><p>Dengan ini, kami menyatakan sanggup menyelenggarakan pelayanan sesuai standar pelayanan yang telah ditetapkan dan apabila tidak menepati janji ini, kami siap menerima sanksi sesuai peraturan perundang-undangan yang berlaku.</p><h3>Standar Pelayanan Kami:</h3><ul><li>✅ Melayani dengan <strong>ramah, sopan, dan santun</strong></li><li>✅ Memberikan informasi dengan <strong>jelas dan benar</strong></li><li>✅ Menyelesaikan perkara secara <strong>tepat waktu</strong></li><li>✅ Tidak memungut biaya di luar ketentuan</li><li>✅ Memberikan pelayanan tanpa <strong>diskriminasi</strong></li></ul>' } },
+      { type: 'cardgrid', settings: { title: 'Komitmen Pelayanan', items: [{ id: 'm1', icon: '🤝', title: 'Ramah & Sopan', description: 'Melayani dengan sikap yang ramah, sopan, dan penuh empati' }, { id: 'm2', icon: '⏱️', title: 'Tepat Waktu', description: 'Menyelesaikan perkara sesuai dengan standar waktu yang ditetapkan' }, { id: 'm3', icon: '💰', title: 'Biaya Sesuai Ketentuan', description: 'Tidak memungut biaya apapun di luar yang telah ditetapkan' }] } },
+      { type: 'text', settings: { content: '<h2>Saluran Pengaduan</h2><p>Apabila pelayanan kami tidak sesuai dengan standar, Anda dapat menyampaikan pengaduan melalui:</p><ul><li>📞 <strong>Telepon:</strong> (0542) 7211234</li><li>✉️ <strong>Email:</strong> pa.penajam@gmail.com</li><li>📱 <strong>Form Pengaduan Online:</strong> melalui website ini</li><li>📮 <strong>Kotak Saran:</strong> tersedia di lobi pengadilan</li></ul>' } },
+      { type: 'cta', settings: { title: 'Sampaikan Masukan Anda', subtitle: 'Masukan dan saran Anda sangat berharga bagi peningkatan pelayanan kami', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1b5e20' } },
+    ],
+  },
+  {
+    id: 'landing-promo',
+    name: 'Landing Page Promosi',
+    desc: 'Halaman promosi layanan dengan tampilan menarik',
+    icon: '🚀',
+    color: 'bg-indigo-50 border-indigo-200',
+    category: 'Konten',
+    blocks: [
+      { type: 'hero', settings: { title: 'Layanan e-Court Tersedia!', subtitle: 'Daftarkan perkara Anda secara online, kapan saja dan di mana saja tanpa harus antri', backgroundImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80', buttonText: 'Daftar e-Court Sekarang', buttonLink: 'https://ecourt.mahkamahagung.go.id' } },
+      { type: 'cardgrid', settings: { title: 'Keunggulan e-Court', items: [{ id: 'e1', icon: '🏠', title: 'Dari Rumah', description: 'Daftar perkara tanpa perlu datang ke pengadilan' }, { id: 'e2', icon: '⚡', title: 'Cepat & Mudah', description: 'Proses pendaftaran online yang simpel dan efisien' }, { id: 'e3', icon: '💳', title: 'Bayar Online', description: 'Pembayaran panjar biaya perkara melalui virtual account bank' }, { id: 'e4', icon: '📱', title: 'Akses Mobile', description: 'Dapat diakses melalui smartphone kapanpun dan dimanapun' }] } },
+      { type: 'stats', settings: { items: [{ id: 'es1', number: '24/7', label: 'Layanan Tersedia' }, { id: 'es2', number: '5 Menit', label: 'Waktu Pendaftaran' }, { id: 'es3', number: '0', label: 'Biaya Tambahan' }] } },
+      { type: 'text', settings: { content: '<h2>Cara Daftar e-Court</h2><ol><li>Kunjungi <a href="https://ecourt.mahkamahagung.go.id" target="_blank">ecourt.mahkamahagung.go.id</a></li><li>Buat akun pengguna terdaftar (advokat) atau pengguna lain (perorangan)</li><li>Pilih pengadilan tujuan dan isi data perkara</li><li>Upload berkas pendaftaran</li><li>Lakukan pembayaran panjar biaya melalui virtual account</li><li>Tunggu konfirmasi dari pengadilan</li></ol>' } },
+      { type: 'cta', settings: { title: 'Butuh Panduan?', subtitle: 'Hubungi petugas meja informasi kami untuk bantuan pendaftaran e-Court', buttonText: 'Hubungi Kami', buttonLink: '/pengaduan', bgColor: '#1b5e20' } },
+    ],
+  },
 ];
 
 const defaultSettings = {
@@ -381,6 +527,8 @@ export default function PageBuilderAdmin() {
   const [pageMeta, setPageMeta] = useState({ title: '', slug: '', status: 'draft' });
   const [toast, setToast] = useState({ msg: '', type: 'success' });
   const [creating, setCreating] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [templateCategory, setTemplateCategory] = useState('Semua');
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : '';
   const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
@@ -420,6 +568,45 @@ export default function PageBuilderAdmin() {
       await fetchPages();
       openBuilder(data);
       showToast('Halaman baru dibuat');
+    } catch { showToast('Gagal membuat halaman', 'error'); }
+  }
+
+  async function createFromTemplate(template) {
+    setShowTemplateModal(false);
+    // Assign fresh UUIDs to all block IDs
+    const templateBlocks = template.blocks.map(b => ({
+      ...b,
+      id: uuidv4(),
+      settings: {
+        ...b.settings,
+        items: b.settings?.items ? b.settings.items.map(i => ({ ...i, id: uuidv4() })) : b.settings?.items,
+      },
+    }));
+
+    // Jika sedang di builder, tanya konfirmasi sebelum ganti blok
+    if (view === 'builder') {
+      if (template.id === 'blank') {
+        if (confirm('Hapus semua blok dan mulai dari kosong?')) {
+          setBlocks([]);
+          showToast('Blok dihapus, halaman dikosongkan');
+        }
+        return;
+      }
+      if (blocks.length > 0 && !confirm(`Ganti semua blok saat ini dengan template "${template.name}"? Blok yang ada akan dihapus.`)) return;
+      setBlocks(templateBlocks);
+      showToast(`Template "${template.name}" diterapkan! Jangan lupa klik Simpan.`);
+      return;
+    }
+
+    // Jika dari list view, buat halaman baru
+    const slug = `${template.id}-${Date.now()}`;
+    const title = template.id === 'blank' ? 'Halaman Baru' : template.name;
+    try {
+      const res = await fetch('/api/pages', { method: 'POST', headers, body: JSON.stringify({ title, slug, blocks: templateBlocks, status: 'draft' }) });
+      const data = await res.json();
+      await fetchPages();
+      openBuilder(data);
+      showToast(template.id === 'blank' ? 'Halaman kosong dibuat' : `Template "${template.name}" berhasil diterapkan!`);
     } catch { showToast('Gagal membuat halaman', 'error'); }
   }
 
@@ -471,15 +658,76 @@ export default function PageBuilderAdmin() {
 
   // Page list view
   if (view === 'list') {
+    const templateCategories = ['Semua', ...new Set(PAGE_TEMPLATES.map(t => t.category))];
+    const filteredTemplates = templateCategory === 'Semua' ? PAGE_TEMPLATES : PAGE_TEMPLATES.filter(t => t.category === templateCategory);
+
     return (
       <div>
         <Toast msg={toast.msg} type={toast.type} />
+
+        {/* ─── Template Modal ─── */}
+        {showTemplateModal && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowTemplateModal(false)}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex items-center justify-between p-6 border-b flex-shrink-0">
+                <div>
+                  <h2 className="text-xl font-extrabold text-[#1b5e20]">Pilih Template Halaman</h2>
+                  <p className="text-gray-500 text-sm mt-1">Mulai dengan template siap pakai atau buat dari nol</p>
+                </div>
+                <button onClick={() => setShowTemplateModal(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Category filter */}
+              <div className="flex gap-2 px-6 pt-4 flex-shrink-0 overflow-x-auto pb-2">
+                {templateCategories.map(cat => (
+                  <button key={cat} onClick={() => setTemplateCategory(cat)}
+                    className={`px-4 py-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                      templateCategory === cat ? 'bg-[#1b5e20] text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Template grid */}
+              <div className="flex-1 overflow-y-auto p-6 pt-4">
+                <div className="grid md:grid-cols-3 gap-4">
+                  {filteredTemplates.map(tpl => (
+                    <button key={tpl.id} onClick={() => createFromTemplate(tpl)}
+                      className={`text-left p-4 rounded-2xl border-2 transition-all hover:shadow-md hover:border-[#1b5e20] group ${tpl.color}`}>
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-3xl">{tpl.icon}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-white/70 px-2 py-0.5 rounded-full">{tpl.category}</span>
+                      </div>
+                      <h3 className="font-bold text-[#1b5e20] text-sm mb-1 group-hover:text-[#2e7d32]">{tpl.name}</h3>
+                      <p className="text-gray-500 text-xs leading-relaxed">{tpl.desc}</p>
+                      {tpl.blocks.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {tpl.blocks.slice(0, 4).map((b, i) => (
+                            <span key={i} className="text-[10px] bg-white/80 text-gray-600 px-1.5 py-0.5 rounded font-medium border border-white/60">
+                              {b.type === 'hero' ? '🖼️ Hero' : b.type === 'text' ? '📝 Teks' : b.type === 'cardgrid' ? '⊞ Kartu' : b.type === 'stats' ? '📊 Statistik' : b.type === 'cta' ? '⚡ CTA' : b.type === 'image' ? '🖼️ Gambar' : b.type}
+                            </span>
+                          ))}
+                          {tpl.blocks.length > 4 && <span className="text-[10px] text-gray-400">+{tpl.blocks.length - 4} lagi</span>}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-[#1b5e20]">Page Builder</h1>
             <p className="text-gray-500 text-sm mt-0.5">Kelola halaman statis website</p>
           </div>
-          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={createNewPage}>
+          <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={() => setShowTemplateModal(true)}>
             <Plus className="w-4 h-4 mr-2" /> Halaman Baru
           </Button>
         </div>
@@ -493,7 +741,7 @@ export default function PageBuilderAdmin() {
             <Layers className="w-12 h-12 mx-auto mb-3 text-gray-200" />
             <p className="text-gray-500 font-medium">Belum ada halaman</p>
             <p className="text-gray-400 text-sm mb-4">Buat halaman pertama Anda dengan drag & drop builder</p>
-            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={createNewPage}>
+            <Button className="bg-[#1b5e20] hover:bg-[#2e7d32] text-white" onClick={() => setShowTemplateModal(true)}>
               <Plus className="w-4 h-4 mr-2" /> Buat Halaman
             </Button>
           </div>
@@ -538,6 +786,56 @@ export default function PageBuilderAdmin() {
     <div className="h-[calc(100vh-120px)] flex flex-col -m-4 md:-m-6">
       <Toast msg={toast.msg} type={toast.type} />
 
+      {/* Template Modal (juga tersedia di builder) */}
+      {showTemplateModal && (
+        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4" onClick={() => setShowTemplateModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-6 border-b flex-shrink-0">
+              <div>
+                <h2 className="text-xl font-extrabold text-[#1b5e20]">Terapkan Template</h2>
+                <p className="text-amber-600 text-sm mt-1">⚠️ Blok yang ada akan diganti dengan blok dari template yang dipilih</p>
+              </div>
+              <button onClick={() => setShowTemplateModal(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex gap-2 px-6 pt-4 flex-shrink-0 overflow-x-auto pb-2">
+              {['Semua', ...new Set(PAGE_TEMPLATES.map(t => t.category))].map(cat => (
+                <button key={cat} onClick={() => setTemplateCategory(cat)}
+                  className={`px-4 py-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${templateCategory === cat ? 'bg-[#1b5e20] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 pt-4">
+              <div className="grid md:grid-cols-3 gap-4">
+                {(templateCategory === 'Semua' ? PAGE_TEMPLATES : PAGE_TEMPLATES.filter(t => t.category === templateCategory)).map(tpl => (
+                  <button key={tpl.id} onClick={() => createFromTemplate(tpl)}
+                    className={`text-left p-4 rounded-2xl border-2 transition-all hover:shadow-md hover:border-[#1b5e20] group ${tpl.color}`}>
+                    <div className="flex items-start justify-between mb-3">
+                      <span className="text-3xl">{tpl.icon}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-white/70 px-2 py-0.5 rounded-full">{tpl.category}</span>
+                    </div>
+                    <h3 className="font-bold text-[#1b5e20] text-sm mb-1">{tpl.name}</h3>
+                    <p className="text-gray-500 text-xs leading-relaxed">{tpl.desc}</p>
+                    {tpl.blocks.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {tpl.blocks.slice(0, 4).map((b, i) => (
+                          <span key={i} className="text-[10px] bg-white/80 text-gray-600 px-1.5 py-0.5 rounded font-medium border border-white/60">
+                            {b.type === 'hero' ? '🖼️ Hero' : b.type === 'text' ? '📝 Teks' : b.type === 'cardgrid' ? '⊞ Kartu' : b.type === 'stats' ? '📊 Statistik' : b.type === 'cta' ? '⚡ CTA' : b.type === 'image' ? '🖼️ Gambar' : b.type}
+                          </span>
+                        ))}
+                        {tpl.blocks.length > 4 && <span className="text-[10px] text-gray-400">+{tpl.blocks.length - 4} lagi</span>}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Builder toolbar */}
       <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center gap-3 flex-shrink-0">
         <Button variant="ghost" size="sm" onClick={() => setView('list')}>
@@ -560,6 +858,9 @@ export default function PageBuilderAdmin() {
         </div>
         <Button variant="outline" size="sm" onClick={() => setPreview(!preview)}>
           <Eye className="w-4 h-4 mr-1" /> {preview ? 'Edit' : 'Preview'}
+        </Button>
+        <Button variant="outline" size="sm" title="Ganti dengan template lain" onClick={() => setShowTemplateModal(true)}>
+          <Layers className="w-4 h-4 mr-1" /> Template
         </Button>
         <Button size="sm" className="bg-[#d4a017] hover:bg-[#b88010] text-white" onClick={savePage} disabled={saving}>
           <Save className="w-4 h-4 mr-1" /> {saving ? 'Simpan...' : 'Simpan'}
