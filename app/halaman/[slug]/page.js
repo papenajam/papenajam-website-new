@@ -2,8 +2,9 @@ import HalamanContent from './HalamanContent';
 
 export async function generateMetadata({ params }) {
   try {
+    const { slug } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/pages/slug/${params.slug}`, {
+    const res = await fetch(`${baseUrl}/api/pages/slug/${slug}`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) {
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }) {
         type: 'website',
       },
       alternates: {
-        canonical: `${baseUrl}/halaman/${params.slug}`,
+        canonical: `${baseUrl}/halaman/${slug}`,
       },
     };
   } catch {

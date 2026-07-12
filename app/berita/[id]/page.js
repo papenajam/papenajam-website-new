@@ -2,8 +2,9 @@ import BeritaDetailContent from './BeritaDetailContent';
 
 export async function generateMetadata({ params }) {
   try {
+    const { id } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/news/${params.id}`, {
+    const res = await fetch(`${baseUrl}/api/news/${id}`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) {
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }) {
         images: item.image ? [item.image] : [],
       },
       alternates: {
-        canonical: `${baseUrl}/berita/${params.id}`,
+        canonical: `${baseUrl}/berita/${id}`,
       },
     };
   } catch {

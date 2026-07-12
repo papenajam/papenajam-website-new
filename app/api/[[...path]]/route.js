@@ -80,22 +80,26 @@ async function handleRequest(request, pathSegments, method) {
 }
 
 export async function GET(request, { params }) {
-  const p = params.path || [];
+  const resolvedParams = await params;
+  const p = resolvedParams.path || [];
   try { return await handleRequest(request, p, 'GET'); }
   catch (err) { console.error('API Error:', err); return NextResponse.json({ error: 'Internal Server Error', detail: err.message }, { status: 500 }); }
 }
 export async function POST(request, { params }) {
-  const p = params.path || [];
+  const resolvedParams = await params;
+  const p = resolvedParams.path || [];
   try { return await handleRequest(request, p, 'POST'); }
   catch (err) { console.error('API Error:', err); return NextResponse.json({ error: 'Internal Server Error', detail: err.message }, { status: 500 }); }
 }
 export async function PUT(request, { params }) {
-  const p = params.path || [];
+  const resolvedParams = await params;
+  const p = resolvedParams.path || [];
   try { return await handleRequest(request, p, 'PUT'); }
   catch (err) { console.error('API Error:', err); return NextResponse.json({ error: 'Internal Server Error', detail: err.message }, { status: 500 }); }
 }
 export async function DELETE(request, { params }) {
-  const p = params.path || [];
+  const resolvedParams = await params;
+  const p = resolvedParams.path || [];
   try { return await handleRequest(request, p, 'DELETE'); }
   catch (err) { console.error('API Error:', err); return NextResponse.json({ error: 'Internal Server Error', detail: err.message }, { status: 500 }); }
 }
