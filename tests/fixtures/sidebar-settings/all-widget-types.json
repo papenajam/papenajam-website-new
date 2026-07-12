@@ -1,0 +1,146 @@
+{
+  "widgets": [
+    {
+      "id": "b1000000-0000-4000-8000-000000000001",
+      "type": "faq",
+      "label": "FAQ",
+      "labelEn": "FAQ",
+      "icon": "❓",
+      "color": "#1b5e20",
+      "isActive": true,
+      "order": 0,
+      "settings": {
+        "title": "Pertanyaan Umum",
+        "titleEn": "Common Questions",
+        "limit": 4,
+        "showAll": true
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000002",
+      "type": "stats",
+      "label": "Statistik",
+      "labelEn": "Statistics",
+      "icon": "📊",
+      "color": "#d4a017",
+      "isActive": true,
+      "order": 1,
+      "settings": {
+        "title": "Statistik",
+        "titleEn": "Statistics",
+        "showVisitors": true,
+        "showCases": true,
+        "days": 30
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000003",
+      "type": "contact",
+      "label": "Kontak",
+      "labelEn": "Contact",
+      "icon": "📞",
+      "color": "#2e7d32",
+      "isActive": true,
+      "order": 2,
+      "settings": {
+        "title": "Hubungi Kami",
+        "titleEn": "Contact Us",
+        "showPhone": true,
+        "showEmail": true,
+        "showHours": true,
+        "showAddress": false
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000004",
+      "type": "quicklinks",
+      "label": "Tautan Cepat",
+      "labelEn": "Quick Links",
+      "icon": "🔗",
+      "color": "#7c3aed",
+      "isActive": true,
+      "order": 3,
+      "settings": {
+        "title": "Tautan Cepat",
+        "titleEn": "Quick Links",
+        "links": [
+          {
+            "id": "c1000000-0000-4000-8000-000000000001",
+            "label": "Agenda Sidang",
+            "labelEn": "Court Schedule",
+            "url": "/agenda-sidang",
+            "icon": "📅",
+            "external": false
+          },
+          {
+            "id": "c1000000-0000-4000-8000-000000000002",
+            "label": "Putusan",
+            "labelEn": "Court Decisions",
+            "url": "/putusan",
+            "icon": "📄",
+            "external": false
+          },
+          {
+            "id": "c1000000-0000-4000-8000-000000000003",
+            "label": "SIPP MA",
+            "labelEn": "MA SIPP",
+            "url": "https://sipp.mahkamahagung.go.id",
+            "icon": "🌐",
+            "external": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000005",
+      "type": "complaint",
+      "label": "Pengaduan",
+      "labelEn": "Complaints",
+      "icon": "📩",
+      "color": "#dc2626",
+      "isActive": true,
+      "order": 4,
+      "settings": {
+        "title": "Pengaduan",
+        "titleEn": "Complaints",
+        "description": "Sampaikan pengaduan atau masukan Anda",
+        "descriptionEn": "Submit your complaint or feedback",
+        "buttonText": "Kirim Pengaduan",
+        "buttonTextEn": "Submit Complaint"
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000006",
+      "type": "social",
+      "label": "Media Sosial",
+      "labelEn": "Social Media",
+      "icon": "🌐",
+      "color": "#0891b2",
+      "isActive": true,
+      "order": 5,
+      "settings": {
+        "title": "Media Sosial",
+        "titleEn": "Social Media"
+      }
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000007",
+      "type": "hours",
+      "label": "Jam Operasional",
+      "labelEn": "Service Hours",
+      "icon": "🕐",
+      "color": "#d97706",
+      "isActive": true,
+      "order": 6,
+      "settings": {
+        "title": "Jam Pelayanan",
+        "titleEn": "Service Hours",
+        "schedule": [
+          { "days": "Senin - Kamis", "hours": "08:00 - 16:00 WITA" },
+          { "days": "Jumat", "hours": "08:00 - 11:00 WITA" },
+          { "days": "Sabtu - Minggu", "hours": "Tutup" }
+        ]
+      }
+    }
+  ]
+}

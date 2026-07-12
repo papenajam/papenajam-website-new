@@ -7,18 +7,42 @@ Base URL: http://localhost:3000 (but using production URL from env)
 
 import requests
 import json
+import os
+import sys
 import uuid
 from datetime import datetime
 
-# Configuration - using production URL from env
-BASE_URL = "https://pengadilan-agama-cms.preview.emergentagent.com"
-
-# Test credentials as specified
+# Configuration
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000").rstrip("/")
 CREDENTIALS = {
-    "admin": {"email": "admin@pa-penajam.go.id", "password": "Admin@1234"},
-    "staff": {"email": "staff@pa-penajam.go.id", "password": "Staff@1234"},
-    "editor": {"email": "editor@pa-penajam.go.id", "password": "Editor@1234"}
+    "admin": {
+        "email": os.environ.get("ADMIN_EMAIL", ""),
+        "password": os.environ.get("ADMIN_PASSWORD", ""),
+    },
+    "staff": {
+        "email": os.environ.get("STAFF_EMAIL", ""),
+        "password": os.environ.get("STAFF_PASSWORD", ""),
+    },
+    "editor": {
+        "email": os.environ.get("EDITOR_EMAIL", ""),
+        "password": os.environ.get("EDITOR_PASSWORD", ""),
+    },
 }
+REQUEST_TIMEOUT_SECONDS = float(os.environ.get("REQUEST_TIMEOUT_SECONDS", "15"))
+
+
+def validate_configuration():
+    required = {
+        "ADMIN_EMAIL": CREDENTIALS["admin"]["email"],
+        "ADMIN_PASSWORD": CREDENTIALS["admin"]["password"],
+        "STAFF_EMAIL": CREDENTIALS["staff"]["email"],
+        "STAFF_PASSWORD": CREDENTIALS["staff"]["password"],
+    }
+    missing = [name for name, value in required.items() if not value]
+    if missing:
+        print(f"Missing required environment variables: {', '.join(missing)}", file=sys.stderr)
+        return False
+    return True
 
 class APITesterV2:
     def __init__(self):
@@ -48,17 +72,19 @@ class APITesterV2:
             
         try:
             if method == 'GET':
-                response = self.session.get(url, headers=headers, params=params)
+                response = self.session.get(url, headers=headers, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
             elif method == 'POST':
-                response = self.session.post(url, json=data, headers=headers)
+                response = self.session.post(url, json=data, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             elif method == 'PUT':
-                response = self.session.put(url, json=data, headers=headers)
+                response = self.session.put(url, json=data, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             elif method == 'DELETE':
-                response = self.session.delete(url, headers=headers)
+                response = self.session.delete(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             else:
                 return None, f"Unsupported method: {method}"
             
             return response, None
+        except requests.exceptions.Timeout:
+            return None, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s: {method} {endpoint}"
         except requests.exceptions.RequestException as e:
             return None, f"Request failed: {str(e)}"
     
@@ -650,6 +676,8 @@ class APITesterV2:
         return passed == total
 
 if __name__ == "__main__":
+    if not validate_configuration():
+        sys.exit(2)
     tester = APITesterV2()
     success = tester.run_all_tests()
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)

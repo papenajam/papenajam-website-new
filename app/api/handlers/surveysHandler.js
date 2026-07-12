@@ -1,45 +1,125 @@
+// Surveys handler (Task 12: MongoDB -> PostgreSQL/Prisma migration).
+//
+// Behaviour is byte-identical to the legacy Mongo handler:
+//   - GET  /surveys/config          -> singleton config (id 'main') or defaults
+//   - PUT  /surveys/config          -> upsert id 'main' (auth)
+//   - POST /surveys/submit          -> insert SurveyResponse
+//   - GET  /surveys?page&limit      -> paginated responses + avg (auth)
+//       envelope: { items, total, totalPages, averageRating, totalResponses }
+//       (no `page` key — matches legacy Mongo shape)
+//
+// Prisma models: SurveyConfig (@@map("survey_config")),
+//                SurveyResponse (@@map("survey_responses")).
+// averageRating: one-decimal via toFixed(1) then parseFloat (legacy parity).
+
 import { NextResponse } from 'next/server';
-import { getCollection } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { serializeRecord, serializeList } from '@/lib/api/serialize.js';
+import { parsePagination } from '@/lib/api/query.js';
+
+const CONFIG_ID = 'main';
+const DEFAULT_CONFIG = {
+  id: CONFIG_ID,
+  isActive: true,
+  title: 'Survei Kepuasan',
+  subtitle: 'Bantu kami meningkatkan pelayanan',
+};
+
+/** Pick only schema-known SurveyConfig fields from a request body. */
+function pickConfigFields(body) {
+  const out = {};
+  if ('isActive' in body) out.isActive = Boolean(body.isActive);
+  if ('title' in body) out.title = body.title;
+  if ('subtitle' in body) out.subtitle = body.subtitle;
+  if ('thankYouMessage' in body) out.thankYouMessage = body.thankYouMessage;
+  return out;
+}
 
 export async function handleSurveys(request, segments, method) {
   const [sub] = segments;
 
   if (sub === 'config') {
-    const col = await getCollection('survey_config');
     if (method === 'GET') {
-      const config = await col.findOne({ id: 'main' });
-      return NextResponse.json(config || { id: 'main', isActive: true, title: 'Survei Kepuasan', subtitle: 'Bantu kami meningkatkan pelayanan' });
+      const config = await prisma.surveyConfig.findUnique({
+        where: { id: CONFIG_ID },
+      });
+      if (!config) return NextResponse.json(DEFAULT_CONFIG);
+      return NextResponse.json(serializeRecord('SurveyConfig', config));
     }
+
     if (method === 'PUT') {
       const auth = requireAuth(request);
       if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
       const body = await request.json();
-      await col.updateOne({ id: 'main' }, { $set: { ...body, id: 'main', updatedAt: new Date().toISOString() } }, { upsert: true });
+      const fields = pickConfigFields(body);
+      const now = new Date();
+
+      await prisma.surveyConfig.upsert({
+        where: { id: CONFIG_ID },
+        update: { ...fields, updatedAt: now },
+        create: {
+          id: CONFIG_ID,
+          isActive: 'isActive' in fields ? fields.isActive : true,
+          title: 'title' in fields ? fields.title : DEFAULT_CONFIG.title,
+          subtitle: 'subtitle' in fields ? fields.subtitle : null,
+          thankYouMessage: 'thankYouMessage' in fields ? fields.thankYouMessage : null,
+          updatedAt: now,
+        },
+      });
       return NextResponse.json({ message: 'Konfigurasi survei disimpan' });
     }
   }
 
   if (sub === 'submit' && method === 'POST') {
-    const col  = await getCollection('survey_responses');
     const body = await request.json();
-    await col.insertOne({ id: uuidv4(), ...body, createdAt: new Date().toISOString() });
+    await prisma.surveyResponse.create({
+      data: {
+        rating: Number(body.rating) || 0,
+        comment: body.comment ?? null,
+        page: body.page ?? null,
+        createdAt: new Date(),
+      },
+    });
     return NextResponse.json({ message: 'Terima kasih atas masukan Anda!' });
   }
 
   if (!sub && method === 'GET') {
     const auth = requireAuth(request);
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const col   = await getCollection('survey_responses');
-    const url   = new URL(request.url);
-    const page  = parseInt(url.searchParams.get('page')  || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const total = await col.countDocuments();
-    const items = await col.find({}).sort({ createdAt: -1 }).skip((page-1)*limit).limit(limit).toArray();
-    const all   = await col.find({}, { projection: { rating: 1 } }).toArray();
-    const avg   = all.length ? (all.reduce((s, r) => s + (r.rating || 0), 0) / all.length).toFixed(1) : 0;
-    return NextResponse.json({ items, total, totalPages: Math.ceil(total/limit), averageRating: parseFloat(avg), totalResponses: all.length });
+
+    const url = new URL(request.url);
+    const { page, limit, skip, take } = parsePagination(url, 'survey_responses');
+
+    const [total, items, agg] = await Promise.all([
+      prisma.surveyResponse.count(),
+      prisma.surveyResponse.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      prisma.surveyResponse.aggregate({
+        _avg: { rating: true },
+        _count: { _all: true },
+      }),
+    ]);
+
+    const totalResponses = agg._count._all;
+    // Legacy: (sum/len).toFixed(1) then parseFloat; empty -> 0 (number).
+    const averageRating =
+      totalResponses && agg._avg.rating != null
+        ? parseFloat(Number(agg._avg.rating).toFixed(1))
+        : 0;
+
+    return NextResponse.json({
+      items: serializeList('SurveyResponse', items),
+      total,
+      totalPages: Math.ceil(total / limit),
+      averageRating,
+      totalResponses,
+    });
   }
+
   return null;
 }

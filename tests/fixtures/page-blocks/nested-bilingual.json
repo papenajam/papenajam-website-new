@@ -1,0 +1,106 @@
+[
+  {
+    "id": "nb-accordion-001",
+    "type": "accordion",
+    "settings": {
+      "title": "Pertanyaan Umum",
+      "titleEn": "Frequently Asked Questions",
+      "items": [
+        {
+          "id": "acc-1",
+          "title": "Bagaimana cara mendaftar perkara?",
+          "titleEn": "How do I register a case?",
+          "content": "<p>Datang ke meja pendaftaran dengan membawa berkas lengkap.</p>",
+          "contentEn": "<p>Visit the registration desk with complete documents.</p>"
+        },
+        {
+          "id": "acc-2",
+          "title": "Berapa biaya panjar?",
+          "titleEn": "What is the court fee deposit?",
+          "content": "<p>Biaya panjar dihitung sesuai jenis perkara.</p>",
+          "contentEn": "<p>The deposit is calculated based on case type.</p>"
+        }
+      ]
+    }
+  },
+  {
+    "id": "nb-tabs-001",
+    "type": "tabs",
+    "settings": {
+      "title": "Informasi Layanan",
+      "titleEn": "Service Information",
+      "tabs": [
+        {
+          "id": "tab-1",
+          "label": "Jam Kerja",
+          "labelEn": "Working Hours",
+          "content": "<p>Senin–Kamis 08:00–16:00, Jumat 08:00–16:30.</p>",
+          "contentEn": "<p>Mon–Thu 08:00–16:00, Fri 08:00–16:30.</p>"
+        },
+        {
+          "id": "tab-2",
+          "label": "Lokasi",
+          "labelEn": "Location",
+          "content": "<p>Jl. Propinsi KM 9, Penajam.</p>",
+          "contentEn": "<p>Provincial Road KM 9, Penajam.</p>"
+        }
+      ]
+    }
+  },
+  {
+    "id": "nb-gallery-001",
+    "type": "gallery",
+    "settings": {
+      "columns": 3,
+      "images": [
+        {
+          "id": "img-1",
+          "src": "https://example.test/a.jpg",
+          "caption": "Gedung utama",
+          "captionEn": "Main building",
+          "alt": "Gedung PA Penajam",
+          "altEn": "PA Penajam building"
+        },
+        {
+          "id": "img-2",
+          "src": "https://example.test/b.jpg",
+          "caption": "Ruang sidang",
+          "captionEn": "Courtroom",
+          "alt": "Ruang sidang",
+          "altEn": "Courtroom"
+        }
+      ]
+    }
+  },
+  {
+    "id": "nb-map-001",
+    "type": "map",
+    "settings": {
+      "title": "Lokasi Kami",
+      "titleEn": "Our Location",
+      "embedUrl": "https://maps.google.com/?q=Penajam",
+      "height": 360
+    }
+  },
+  {
+    "id": "nb-countdown-001",
+    "type": "countdown",
+    "settings": {
+      "title": "Hitung Mundur Acara",
+      "titleEn": "Event Countdown",
+      "targetDate": "2026-12-31T00:00:00.000Z",
+      "message": "Acara dimulai!",
+      "messageEn": "The event has started!"
+    }
+  },
+  {
+    "id": "nb-image-001",
+    "type": "image",
+    "settings": {
+      "src": "https://example.test/hero.jpg",
+      "caption": "Dokumentasi kegiatan",
+      "captionEn": "Activity documentation",
+      "alignment": "center"
+    }
+  }
+]

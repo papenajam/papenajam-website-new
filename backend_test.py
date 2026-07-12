@@ -6,13 +6,26 @@ Testing all new feature APIs as requested in the review.
 
 import requests
 import json
+import os
 import sys
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://pengadilan-agama-cms.preview.emergentagent.com"
-ADMIN_EMAIL = "admin@pa-penajam.go.id"
-ADMIN_PASSWORD = "Admin@1234"
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000").rstrip("/")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+REQUEST_TIMEOUT_SECONDS = float(os.environ.get("REQUEST_TIMEOUT_SECONDS", "15"))
+
+
+def validate_configuration():
+    missing = [name for name, value in {
+        "ADMIN_EMAIL": ADMIN_EMAIL,
+        "ADMIN_PASSWORD": ADMIN_PASSWORD,
+    }.items() if not value]
+    if missing:
+        print(f"Missing required environment variables: {', '.join(missing)}", file=sys.stderr)
+        return False
+    return True
 
 class APITester:
     def __init__(self):
@@ -43,7 +56,7 @@ class APITester:
                 "password": ADMIN_PASSWORD
             }
             
-            response = self.session.post(url, json=data)
+            response = self.session.post(url, json=data, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 result = response.json()
@@ -54,6 +67,9 @@ class APITester:
                 self.log_test("Admin Login", False, f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("Admin Login", False, f"Exception: {str(e)}")
             return False
@@ -69,7 +85,7 @@ class APITester:
         """Test GET /api/gallery - should return gallery items with categories"""
         try:
             url = f"{self.base_url}/api/gallery"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -84,6 +100,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/gallery", False, f"Exception: {str(e)}")
             return False
@@ -92,7 +111,7 @@ class APITester:
         """Test GET /api/documents - should return documents with categories"""
         try:
             url = f"{self.base_url}/api/documents"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -108,6 +127,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/documents", False, f"Exception: {str(e)}")
             return False
@@ -116,7 +138,7 @@ class APITester:
         """Test GET /api/faq - should return FAQ items"""
         try:
             url = f"{self.base_url}/api/faq"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -131,6 +153,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/faq", False, f"Exception: {str(e)}")
             return False
@@ -139,7 +164,7 @@ class APITester:
         """Test GET /api/banners - should return active banners"""
         try:
             url = f"{self.base_url}/api/banners"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -153,6 +178,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/banners", False, f"Exception: {str(e)}")
             return False
@@ -161,7 +189,7 @@ class APITester:
         """Test GET /api/surveys/config - should return survey config"""
         try:
             url = f"{self.base_url}/api/surveys/config"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -177,6 +205,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/surveys/config", False, f"Exception: {str(e)}")
             return False
@@ -190,7 +221,7 @@ class APITester:
                 "comment": "Sangat baik"
             }
             
-            response = self.session.post(url, json=data)
+            response = self.session.post(url, json=data, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 result = response.json()
@@ -204,6 +235,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("POST /api/surveys/submit", False, f"Exception: {str(e)}")
             return False
@@ -213,7 +247,7 @@ class APITester:
         try:
             url = f"{self.base_url}/api/surveys"
             headers = self.get_headers(auth_required=True)
-            response = self.session.get(url, headers=headers)
+            response = self.session.get(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -230,6 +264,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/surveys (auth)", False, f"Exception: {str(e)}")
             return False
@@ -244,7 +281,7 @@ class APITester:
                 "message": "Test complaint"
             }
             
-            response = self.session.post(url, json=data)
+            response = self.session.post(url, json=data, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 201:
                 result = response.json()
@@ -259,6 +296,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("POST /api/complaints", False, f"Exception: {str(e)}")
             return False
@@ -268,7 +308,7 @@ class APITester:
         try:
             url = f"{self.base_url}/api/complaints"
             headers = self.get_headers(auth_required=True)
-            response = self.session.get(url, headers=headers)
+            response = self.session.get(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -284,6 +324,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/complaints (auth)", False, f"Exception: {str(e)}")
             return False
@@ -296,7 +339,7 @@ class APITester:
                 "path": "/"
             }
             
-            response = self.session.post(url, json=data)
+            response = self.session.post(url, json=data, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 result = response.json()
@@ -310,6 +353,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("POST /api/analytics/track", False, f"Exception: {str(e)}")
             return False
@@ -319,7 +365,7 @@ class APITester:
         try:
             url = f"{self.base_url}/api/analytics"
             headers = self.get_headers(auth_required=True)
-            response = self.session.get(url, headers=headers)
+            response = self.session.get(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -336,6 +382,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/analytics (auth)", False, f"Exception: {str(e)}")
             return False
@@ -344,7 +393,7 @@ class APITester:
         """Test GET /api/search?q=pengadilan - should return search results across multiple content types"""
         try:
             url = f"{self.base_url}/api/search?q=pengadilan"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -365,6 +414,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/search?q=pengadilan", False, f"Exception: {str(e)}")
             return False
@@ -373,7 +425,7 @@ class APITester:
         """Test GET /api/settings - should include new keys (whatsapp, facebook, seo_title, footer_description)"""
         try:
             url = f"{self.base_url}/api/settings"
-            response = self.session.get(url)
+            response = self.session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 data = response.json()
@@ -401,6 +453,9 @@ class APITester:
                     f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_test("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_test("GET /api/settings", False, f"Exception: {str(e)}")
             return False
@@ -467,6 +522,8 @@ class APITester:
         return passed == total
 
 if __name__ == "__main__":
+    if not validate_configuration():
+        sys.exit(2)
     tester = APITester()
     success = tester.run_all_tests()
     sys.exit(0 if success else 1)

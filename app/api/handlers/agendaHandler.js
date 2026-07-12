@@ -1,61 +1,156 @@
+// Agenda handler (Task 9: MongoDB -> PostgreSQL/Prisma migration).
+//
+// Behaviour is byte-identical to the legacy Mongo handler:
+//   - GET    /agenda?page&limit&search&dateFrom&dateTo&status&public
+//     search     -> nomorPerkara contains + mode:'insensitive'
+//     status     -> equality (overwritten when public=true)
+//     dateFrom   -> tanggalSidang gte (parsed date-only)
+//     dateTo     -> tanggalSidang lte (parsed date-only)
+//     public     -> status: { not: 'dibatalkan' }
+//     sort       -> tanggalSidang asc, waktuSidang asc
+//   - POST   /agenda       -> 201 created row (auth)
+//   - GET    /agenda/:id   -> 200 row | 404
+//   - PUT    /agenda/:id   -> 200 post-update row | 200 null when missing
+//   - DELETE /agenda/:id   -> 200 `{ message: 'Berhasil dihapus' }` ALWAYS
+//
+// Prisma model is `Agenda` (@@map("agenda")). Date-only: tanggalSidang.
+
 import { NextResponse } from 'next/server';
-import { getCollection } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { serializeRecord, serializeList } from '@/lib/api/serialize.js';
+import { parsePagination, paginationEnvelope } from '@/lib/api/query.js';
+import { parseDateOnly, DateInputError } from '@/lib/api/dates.js';
+
+function parseAgendaDates(body) {
+  const out = { ...body };
+  if ('tanggalSidang' in out) {
+    out.tanggalSidang = parseDateOnly(out.tanggalSidang, 'tanggalSidang');
+  }
+  return out;
+}
 
 export async function handleAgenda(request, segments, method) {
   const [id] = segments;
-  const col = await getCollection('agenda');
 
   if (!id) {
     if (method === 'GET') {
       const url = new URL(request.url);
-      const page       = parseInt(url.searchParams.get('page')   || '1');
-      const limit      = parseInt(url.searchParams.get('limit')  || '20');
-      const search     = url.searchParams.get('search')   || '';
-      const dateFrom   = url.searchParams.get('dateFrom') || '';
-      const dateTo     = url.searchParams.get('dateTo')   || '';
-      const status     = url.searchParams.get('status')   || '';
+      const { page, limit, skip, take } = parsePagination(url, 'agenda');
+      const search = url.searchParams.get('search') || '';
+      const dateFrom = url.searchParams.get('dateFrom') || '';
+      const dateTo = url.searchParams.get('dateTo') || '';
+      const status = url.searchParams.get('status') || '';
       const publicOnly = url.searchParams.get('public') === 'true';
-      const query = {};
-      if (search) query.nomorPerkara = { $regex: search, $options: 'i' };
-      if (status) query.status = status;
-      if (dateFrom || dateTo) {
-        query.tanggalSidang = {};
-        if (dateFrom) query.tanggalSidang.$gte = dateFrom;
-        if (dateTo)   query.tanggalSidang.$lte = dateTo;
+
+      const where = {};
+      if (search) {
+        where.nomorPerkara = { contains: search, mode: 'insensitive' };
       }
-      if (publicOnly) query.status = { $ne: 'dibatalkan' };
-      const total = await col.countDocuments(query);
-      const items = await col.find(query).sort({ tanggalSidang: 1, waktuSidang: 1 }).skip((page-1)*limit).limit(limit).toArray();
-      return NextResponse.json({ items, total, page, totalPages: Math.ceil(total/limit) });
+      if (status) {
+        where.status = status;
+      }
+      if (dateFrom || dateTo) {
+        where.tanggalSidang = {};
+        try {
+          if (dateFrom) {
+            where.tanggalSidang.gte = parseDateOnly(dateFrom, 'dateFrom');
+          }
+          if (dateTo) {
+            where.tanggalSidang.lte = parseDateOnly(dateTo, 'dateTo');
+          }
+        } catch (err) {
+          if (err instanceof DateInputError) {
+            return NextResponse.json(
+              { error: err.message, field: err.field },
+              { status: 400 },
+            );
+          }
+          throw err;
+        }
+      }
+      // public=true overwrites any explicit status filter (legacy Mongo
+      // assignment: query.status = { $ne: 'dibatalkan' }).
+      if (publicOnly) {
+        where.status = { not: 'dibatalkan' };
+      }
+
+      const [total, rows] = await Promise.all([
+        prisma.agenda.count({ where }),
+        prisma.agenda.findMany({
+          where,
+          orderBy: [{ tanggalSidang: 'asc' }, { waktuSidang: 'asc' }],
+          skip,
+          take,
+        }),
+      ]);
+
+      return NextResponse.json(
+        paginationEnvelope(serializeList('Agenda', rows), total, page, limit),
+      );
     }
     if (method === 'POST') {
       const auth = requireAuth(request);
       if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       const body = await request.json();
-      const item = { id: uuidv4(), ...body, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-      await col.insertOne(item);
-      return NextResponse.json(item, { status: 201 });
+      let data;
+      try {
+        data = parseAgendaDates(body);
+      } catch (err) {
+        if (err instanceof DateInputError) {
+          return NextResponse.json(
+            { error: err.message, field: err.field },
+            { status: 400 },
+          );
+        }
+        throw err;
+      }
+      const now = new Date().toISOString();
+      const { id: _ignoreId, createdAt: _c, updatedAt: _u, ...rest } = data;
+      const created = await prisma.agenda.create({
+        data: {
+          ...rest,
+          createdAt: now,
+          updatedAt: now,
+        },
+      });
+      return NextResponse.json(serializeRecord('Agenda', created), { status: 201 });
     }
   }
 
   if (method === 'GET') {
-    const item = await col.findOne({ id });
-    if (!item) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
-    return NextResponse.json(item);
+    const row = await prisma.agenda.findUnique({ where: { id } });
+    if (!row) return NextResponse.json({ error: 'Tidak ditemukan' }, { status: 404 });
+    return NextResponse.json(serializeRecord('Agenda', row));
   }
   if (method === 'PUT') {
     const auth = requireAuth(request);
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const body = await request.json();
-    await col.updateOne({ id }, { $set: { ...body, updatedAt: new Date().toISOString() } });
-    return NextResponse.json(await col.findOne({ id }));
+    let data;
+    try {
+      data = parseAgendaDates(body);
+    } catch (err) {
+      if (err instanceof DateInputError) {
+        return NextResponse.json(
+          { error: err.message, field: err.field },
+          { status: 400 },
+        );
+      }
+      throw err;
+    }
+    const { id: _ignoreId, createdAt: _c, ...rest } = data;
+    await prisma.agenda.updateMany({
+      where: { id },
+      data: { ...rest, updatedAt: new Date().toISOString() },
+    });
+    const row = await prisma.agenda.findUnique({ where: { id } });
+    return NextResponse.json(serializeRecord('Agenda', row));
   }
   if (method === 'DELETE') {
     const auth = requireAuth(request);
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    await col.deleteOne({ id });
+    await prisma.agenda.deleteMany({ where: { id } });
     return NextResponse.json({ message: 'Berhasil dihapus' });
   }
   return null;
