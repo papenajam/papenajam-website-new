@@ -1,0 +1,450 @@
+// PostgreSQL Prisma schema for the MongoDB -> PostgreSQL migration.
+//
+// Authoritative source: plan section 5 (.omo/plans/mongodb-to-postgresql-prisma-migration.md),
+// model-by-model. Field names, types, nullability, indexes, and relations
+// below are bound to that matrix. Model and field names are kept camelCase
+// so the JavaScript handlers read naturally; tables and columns are mapped
+// to snake_case via @@map / @map so the underlying SQL is conventional.
+//
+// Schema conventions (plan section 5.1):
+//   - Public `id`: String @id @default(uuid()) @db.Uuid. PENDING the live
+//     profiler: if non-UUID legacy ids are found, this column is widened to
+//     String @id @db.Text WITHOUT changing external ids (plan line 158).
+//     See docs/database-migration.md for the open decision.
+//   - Timestamps: DateTime @db.Timestamptz(3). We do NOT use @updatedAt;
+//     handlers set `updatedAt` explicitly so legacy write semantics survive
+//     (plan line 159). `updatedAt` is therefore nullable on every model.
+//   - Calendar dates: DateTime? @db.Date. Parsed/serialized at the API
+//     boundary so the wire shape stays `YYYY-MM-DD`.
+//   - Long text / HTML: String @db.Text.
+//   - JSON blobs: Json @db.JsonB (pages.blocks, sidebar_widgets.settings).
+//   - No Prisma enums initially (legacy MongoDB values are unconstrained);
+//     CHECK constraints are deferred until after profiling/owner sign-off.
+//   - Uniqueness on email/slug/key is the TARGET state per plan section 5.
+//     The importer (Task 16) must resolve duplicates BEFORE applying this
+//     migration; the transform-rules PENDING registry from Task 3 already
+//     fails loud on those anomalies. See docs/database-migration.md.
+//   - Menu self-relation uses onDelete: Restrict so the current one-level
+//     deletion semantics are preserved (plan line 208-209): a parent with
+//     children must be explicitly cleared by the handler.
+
+generator client {
+  provider               = "prisma-client"
+  // Output location deviation from plan line 350: the plan specified
+  // `../app/generated/prisma`, but Next.js 16 Turbopack scans the `app/`
+  // directory for routes/types. Generated `.ts` files inside `app/` make
+  // Next auto-promote the project to TypeScript (re-writing tsconfig.json
+  // and dropping the `@/` path aliases from jsconfig.json), which breaks
+  // `next build`. The generated client is therefore emitted OUTSIDE `app/`
+  // at `../lib/generated/prisma`. This preserves the plan's intent (custom
+  // output, not the default `node_modules/.prisma/client`) while keeping
+  // the JavaScript application building cleanly. See docs/database-migration.md.
+  output                 = "../lib/generated/prisma"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  // Import specifier extension written into the generated files. Must match
+  // generatedFileExtension ("ts"): the generator emits `.ts` files whose
+  // internal import specifiers must point at `.ts` so Next.js (Turbopack and
+  // webpack) can resolve them. The previous value "js" produced `.ts` files
+  // containing `.js` specifiers, which neither Turbopack nor webpack resolves
+  // by default (Next.js issue #82945), breaking `next build` as soon as any
+  // app code imports lib/prisma.js.
+  importFileExtension    = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  // The connection URL is provided by prisma.config.mjs (Prisma v7), NOT
+  // by an `url = env(...)` line here. CI injects the direct URL as
+  // DATABASE_URL for `prisma migrate deploy` jobs (plan line 377).
+}
+
+// ---------------------------------------------------------------------------
+// 1. User
+// ---------------------------------------------------------------------------
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.Text
+  email     String    @unique @db.Text
+  password  String    @db.Text
+  role      String    @db.Text
+  createdAt DateTime  @db.Timestamptz(3)
+  updatedAt DateTime? @db.Timestamptz(3)
+
+  @@index([createdAt(sort: Desc)])
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// 2. News
+// ---------------------------------------------------------------------------
+model News {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.Text
+  titleEn     String?   @db.Text
+  content     String    @db.Text
+  contentEn   String?   @db.Text
+  image       String?   @db.Text
+  imageAlt    String?   @db.Text
+  imageAltEn  String?   @db.Text
+  author      String?   @db.Text
+  category    String?   @db.Text
+  isPublished Boolean
+  publishDate DateTime? @db.Date
+  createdAt   DateTime  @db.Timestamptz(3)
+  updatedAt   DateTime? @db.Timestamptz(3)
+
+  @@index([isPublished, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("news")
+}
+
+// ---------------------------------------------------------------------------
+// 3. Announcement
+// ---------------------------------------------------------------------------
+model Announcement {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.Text
+  content     String    @db.Text
+  publishDate DateTime? @db.Date
+  isActive    Boolean
+  createdAt   DateTime  @db.Timestamptz(3)
+  updatedAt   DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, createdAt(sort: Desc)])
+  @@map("announcements")
+}
+
+// ---------------------------------------------------------------------------
+// 4. Service
+// ---------------------------------------------------------------------------
+model Service {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.Text
+  description String?   @db.Text
+  icon        String?   @db.Text
+  order       Int
+  isActive    Boolean
+  createdAt   DateTime  @db.Timestamptz(3)
+  updatedAt   DateTime? @db.Timestamptz(3)
+
+  @@index([order])
+  @@index([isActive, order])
+  @@map("services")
+}
+
+// ---------------------------------------------------------------------------
+// 5. CaseRecord (avoids the `Case` keyword/constructor collision in JS)
+//    Maps to table `cases` to preserve collection identity.
+// ---------------------------------------------------------------------------
+model CaseRecord {
+  id           String    @id @default(uuid()) @db.Uuid
+  nomorPerkara String    @db.Text
+  tahun        String    @db.Text
+  jenisPerkara String    @db.Text
+  pemohon      String?   @db.Text
+  termohon     String?   @db.Text
+  status       String?   @db.Text
+  jadwalSidang DateTime? @db.Date
+  ruangSidang  String?   @db.Text
+  hakim        String?   @db.Text
+  createdAt    DateTime  @db.Timestamptz(3)
+  updatedAt    DateTime? @db.Timestamptz(3)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([tahun])
+  @@index([status])
+  @@index([jenisPerkara])
+  @@map("cases")
+}
+
+// ---------------------------------------------------------------------------
+// 6. Agenda
+// ---------------------------------------------------------------------------
+model Agenda {
+  id            String    @id @default(uuid()) @db.Uuid
+  nomorPerkara  String    @db.Text
+  jenisPerkara  String?   @db.Text
+  tanggalSidang DateTime  @db.Date
+  waktuSidang   String?   @db.Text
+  ruangSidang   String?   @db.Text
+  hakim         String?   @db.Text
+  panitera      String?   @db.Text
+  status        String?   @db.Text
+  keterangan    String?   @db.Text
+  createdAt     DateTime  @db.Timestamptz(3)
+  updatedAt     DateTime? @db.Timestamptz(3)
+
+  @@index([tanggalSidang, waktuSidang])
+  @@index([status])
+  @@index([nomorPerkara])
+  @@map("agenda")
+}
+
+// ---------------------------------------------------------------------------
+// 7. Decision (maps to the legacy `putusan` collection/table)
+//    Per plan line 194, the model name is `Decision`; the table is `putusan`.
+// ---------------------------------------------------------------------------
+model Decision {
+  id               String    @id @default(uuid()) @db.Uuid
+  nomorPerkara     String    @db.Text
+  jenisPerkara     String?   @db.Text
+  tanggalPutusan   DateTime? @db.Date
+  ringkasanPutusan String?   @db.Text
+  filePutusan      String?   @db.Text
+  hakim            String?   @db.Text
+  statusPublish    Boolean
+  createdAt        DateTime  @db.Timestamptz(3)
+  updatedAt        DateTime? @db.Timestamptz(3)
+
+  @@index([statusPublish, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("putusan")
+}
+
+// ---------------------------------------------------------------------------
+// 8. Setting (natural string key; no surrogate id; importer ignores _id)
+// ---------------------------------------------------------------------------
+model Setting {
+  key   String @id @db.Text
+  value String @db.Text
+
+  @@map("settings")
+}
+
+// ---------------------------------------------------------------------------
+// 9. Page (slug unique target-state; blocks stored whole as JSONB)
+// ---------------------------------------------------------------------------
+model Page {
+  id        String    @id @default(uuid()) @db.Uuid
+  title     String    @db.Text
+  slug      String    @unique @db.Text
+  status    String    @db.Text
+  blocks    Json      @db.JsonB
+  createdAt DateTime  @db.Timestamptz(3)
+  updatedAt DateTime? @db.Timestamptz(3)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("pages")
+}
+
+// ---------------------------------------------------------------------------
+// 10. MenuItem (self-relation; onDelete Restrict preserves one-level delete)
+// ---------------------------------------------------------------------------
+model MenuItem {
+  id            String    @id @default(uuid()) @db.Uuid
+  label         String    @db.Text
+  labelEn       String?   @db.Text
+  url           String    @db.Text
+  type          String?   @db.Text
+  icon          String?   @db.Text
+  order         Int
+  isActive      Boolean
+  parentId      String?   @db.Uuid
+  description   String?   @db.Text
+  descriptionEn String?   @db.Text
+  target        String?   @db.Text
+  createdAt     DateTime  @db.Timestamptz(3)
+  updatedAt     DateTime? @db.Timestamptz(3)
+
+  parent   MenuItem?  @relation("MenuItemParent", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  children MenuItem[] @relation("MenuItemParent")
+
+  @@index([parentId, order])
+  @@index([isActive, order])
+  @@map("menus")
+}
+
+// ---------------------------------------------------------------------------
+// 11. SidebarWidget (settings stored whole as JSONB)
+// ---------------------------------------------------------------------------
+model SidebarWidget {
+  id        String    @id @default(uuid()) @db.Uuid
+  type      String    @db.Text
+  label     String    @db.Text
+  labelEn   String?   @db.Text
+  icon      String?   @db.Text
+  color     String?   @db.Text
+  isActive  Boolean
+  order     Int
+  settings  Json      @db.JsonB
+  createdAt DateTime  @db.Timestamptz(3)
+  updatedAt DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, order])
+  @@map("sidebar_widgets")
+}
+
+// ---------------------------------------------------------------------------
+// 12. GalleryItem
+// ---------------------------------------------------------------------------
+model GalleryItem {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.Text
+  titleEn     String?   @db.Text
+  description String?   @db.Text
+  category    String?   @db.Text
+  imageUrl    String    @db.Text
+  isActive    Boolean
+  order       Int
+  createdAt   DateTime  @db.Timestamptz(3)
+  updatedAt   DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, category, order])
+  @@index([order, createdAt(sort: Desc)])
+  @@map("gallery")
+}
+
+// ---------------------------------------------------------------------------
+// 13. Document
+// ---------------------------------------------------------------------------
+model Document {
+  id            String    @id @default(uuid()) @db.Uuid
+  title         String    @db.Text
+  titleEn       String?   @db.Text
+  description   String?   @db.Text
+  category      String?   @db.Text
+  fileUrl       String?   @db.Text
+  fileType      String?   @db.Text
+  isActive      Boolean
+  order         Int
+  downloadCount Int
+  createdAt     DateTime  @db.Timestamptz(3)
+  updatedAt     DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, category, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("documents")
+}
+
+// ---------------------------------------------------------------------------
+// 14. Faq
+// ---------------------------------------------------------------------------
+model Faq {
+  id         String    @id @default(uuid()) @db.Uuid
+  question   String    @db.Text
+  questionEn String?   @db.Text
+  answer     String    @db.Text
+  answerEn   String?   @db.Text
+  category   String?   @db.Text
+  isActive   Boolean
+  order      Int
+  createdAt  DateTime  @db.Timestamptz(3)
+  updatedAt  DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, category, order])
+  @@map("faq")
+}
+
+// ---------------------------------------------------------------------------
+// 15. Banner (empty date imports as NULL; serializer re-emits '' if needed)
+// ---------------------------------------------------------------------------
+model Banner {
+  id         String    @id @default(uuid()) @db.Uuid
+  title      String    @db.Text
+  subtitle   String?   @db.Text
+  buttonText String?   @db.Text
+  buttonUrl  String?   @db.Text
+  imageUrl   String?   @db.Text
+  bgColor    String?   @db.Text
+  textColor  String?   @db.Text
+  isActive   Boolean
+  order      Int
+  startDate  DateTime? @db.Date
+  endDate    DateTime? @db.Date
+  createdAt  DateTime  @db.Timestamptz(3)
+  updatedAt  DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, order])
+  @@index([isActive, endDate])
+  @@map("banners")
+}
+
+// ---------------------------------------------------------------------------
+// 16. Complaint
+// ---------------------------------------------------------------------------
+model Complaint {
+  id         String    @id @default(uuid()) @db.Uuid
+  name       String    @db.Text
+  email      String?   @db.Text
+  phone      String?   @db.Text
+  category   String?   @db.Text
+  subject    String?   @db.Text
+  message    String    @db.Text
+  status     String    @db.Text
+  adminNotes String?   @db.Text
+  createdAt  DateTime  @db.Timestamptz(3)
+  updatedAt  DateTime? @db.Timestamptz(3)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("complaints")
+}
+
+// ---------------------------------------------------------------------------
+// 17. AnalyticsDailyPath (surrogate UUID id + @@unique([date, path]))
+// ---------------------------------------------------------------------------
+model AnalyticsDailyPath {
+  id    String   @id @default(uuid()) @db.Uuid
+  date  DateTime @db.Date
+  path  String   @db.Text
+  views Int
+
+  @@unique([date, path])
+  @@index([date(sort: Desc)])
+  @@index([views(sort: Desc)])
+  @@map("analytics")
+}
+
+// ---------------------------------------------------------------------------
+// 18. SurveyConfig (singleton: id 'main' as natural string key)
+// ---------------------------------------------------------------------------
+model SurveyConfig {
+  id              String    @id @db.Text
+  isActive        Boolean
+  title           String    @db.Text
+  subtitle        String?   @db.Text
+  thankYouMessage String?   @db.Text
+  updatedAt       DateTime? @db.Timestamptz(3)
+
+  @@map("survey_config")
+}
+
+// ---------------------------------------------------------------------------
+// 19. SurveyResponse (CHECK rating BETWEEN 1 AND 5 deferred per plan line 247)
+// ---------------------------------------------------------------------------
+model SurveyResponse {
+  id        String   @id @default(uuid()) @db.Uuid
+  rating    Int
+  comment   String?  @db.Text
+  page      String?  @db.Text
+  createdAt DateTime @db.Timestamptz(3)
+
+  @@index([createdAt(sort: Desc)])
+  @@map("survey_responses")
+}
+
+// ---------------------------------------------------------------------------
+// 20. Media
+// ---------------------------------------------------------------------------
+model Media {
+  id           String    @id @default(uuid()) @db.Uuid
+  filename     String    @db.Text
+  originalName String    @db.Text
+  url          String    @db.Text
+  type         String    @db.Text
+  mimeType     String?   @db.Text
+  size         Int
+  ext          String?   @db.Text
+  title        String?   @db.Text
+  alt          String?   @db.Text
+  uploadedBy   String?   @db.Text
+  createdAt    DateTime  @db.Timestamptz(3)
+  updatedAt    DateTime? @db.Timestamptz(3)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([originalName])
+  @@index([size])
+  @@index([type])
+  @@map("media")
+}

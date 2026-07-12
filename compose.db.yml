@@ -1,0 +1,56 @@
+# Local/test PostgreSQL 16 environment for the MongoDB -> PostgreSQL + Prisma
+# migration.
+#
+# Scope: LOCAL AND TEST ONLY. Do not use this file for production.
+#
+# What it provides:
+#   - PostgreSQL 16 (pinned via `postgres:16-alpine`) for reproducibility.
+#   - Two separate databases created on first start by the init script in
+#     `db/init-databases.sh`:
+#       * pa_penajam_dev   -> app development database
+#       * pa_penajam_test  -> isolated test database (dropped/reset by tests)
+#   - A non-root application role `papenajam` granted on both databases.
+#   - A named volume for data persistence across `down` (without `-v`).
+#   - A `pg_isready` healthcheck so dependent tooling can wait on readiness.
+#
+# All credentials here are PLACEHOLDERS for local development only. They MUST
+# be overridden via a real `.env` file (NEVER committed) or environment
+# variables. See `.env.example` and `docs/database-local-setup.md`.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: papenajam-postgres
+    restart: unless-stopped
+    # Map 127.0.0.1 only so the server is not exposed on other interfaces.
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      # Superuser password for the local container. PLACEHOLDER ONLY.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      # Application database + role created by the init script below.
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER:-papenajam}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:-papenajam}
+      POSTGRES_DEV_DB: ${POSTGRES_DEV_DB:-pa_penajam_dev}
+      POSTGRES_TEST_DB: ${POSTGRES_TEST_DB:-pa_penajam_test}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Init script runs ONCE on first container start (empty data volume)
+      # and creates the dev + test databases and the application role.
+      - ./db/init-databases.sh:/docker-entrypoint-initdb.d/10-init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d $$POSTGRES_DEV_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    # Local ergonomics: keep stdout timestamps for debugging.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+    name: papenajam_postgres_data

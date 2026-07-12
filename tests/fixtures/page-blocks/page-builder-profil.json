@@ -1,0 +1,84 @@
+[
+  {
+    "id": "pb-hero-001",
+    "type": "hero",
+    "settings": {
+      "title": "Profil Pengadilan Agama Penajam",
+      "titleEn": "Profile of Penajam Religious Court",
+      "subtitle": "Lembaga peradilan yang bertugas memberikan keadilan bagi masyarakat Muslim di Kabupaten Penajam Paser Utara",
+      "subtitleEn": "A judicial institution tasked with delivering justice for the Muslim community in Penajam Paser Utara Regency",
+      "backgroundImage": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80",
+      "buttonText": "Lihat Layanan",
+      "buttonTextEn": "View Services",
+      "buttonLink": "/#layanan"
+    }
+  },
+  {
+    "id": "pb-text-001",
+    "type": "text",
+    "settings": {
+      "content": "<h2>Tentang Kami</h2><p>Pengadilan Agama Penajam adalah pengadilan tingkat pertama.</p>",
+      "contentEn": "<h2>About Us</h2><p>Penajam Religious Court is a first-instance court.</p>"
+    }
+  },
+  {
+    "id": "pb-cardgrid-001",
+    "type": "cardgrid",
+    "settings": {
+      "title": "Nilai-Nilai Kami",
+      "titleEn": "Our Values",
+      "items": [
+        {
+          "id": "v1",
+          "icon": "⚖️",
+          "title": "Keadilan",
+          "titleEn": "Justice",
+          "description": "Memberikan putusan yang adil dan tidak memihak",
+          "descriptionEn": "Delivering fair and impartial decisions"
+        },
+        {
+          "id": "v2",
+          "icon": "🔍",
+          "title": "Transparansi",
+          "titleEn": "Transparency",
+          "description": "Pelayanan terbuka dan dapat diakses publik",
+          "descriptionEn": "Open services accessible to the public"
+        },
+        {
+          "id": "v3",
+          "icon": "🤝",
+          "title": "Integritas",
+          "titleEn": "Integrity",
+          "description": "Menjunjung tinggi kejujuran dalam setiap tindakan",
+          "descriptionEn": "Upholding honesty in every action"
+        }
+      ]
+    }
+  },
+  {
+    "id": "pb-stats-001",
+    "type": "stats",
+    "settings": {
+      "items": [
+        { "id": "s1", "number": "500+", "label": "Perkara Diselesaikan", "labelEn": "Cases Resolved" },
+        { "id": "s2", "number": "8", "label": "Hakim Profesional", "labelEn": "Professional Judges" },
+        { "id": "s3", "number": "20+", "label": "Tahun Pengalaman", "labelEn": "Years of Experience" },
+        { "id": "s4", "number": "15.000+", "label": "Masyarakat Dilayani", "labelEn": "People Served" }
+      ]
+    }
+  },
+  {
+    "id": "pb-cta-001",
+    "type": "cta",
+    "settings": {
+      "title": "Siap Melayani Anda",
+      "titleEn": "Ready to Serve You",
+      "subtitle": "Hubungi kami untuk informasi lebih lanjut",
+      "subtitleEn": "Contact us for more information",
+      "buttonText": "Hubungi Kami",
+      "buttonTextEn": "Contact Us",
+      "buttonLink": "/#kontak",
+      "bgColor": "#1b5e20"
+    }
+  }
+]

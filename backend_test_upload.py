@@ -9,12 +9,25 @@ import json
 import uuid
 import io
 import os
+import sys
 from PIL import Image
 
 # Configuration
-BASE_URL = "https://pengadilan-agama-cms.preview.emergentagent.com"
-ADMIN_EMAIL = "admin@pa-penajam.go.id"
-ADMIN_PASSWORD = "Admin@1234"
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000").rstrip("/")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+REQUEST_TIMEOUT_SECONDS = float(os.environ.get("REQUEST_TIMEOUT_SECONDS", "30"))
+
+
+def validate_configuration():
+    missing = [name for name, value in {
+        "ADMIN_EMAIL": ADMIN_EMAIL,
+        "ADMIN_PASSWORD": ADMIN_PASSWORD,
+    }.items() if not value]
+    if missing:
+        print(f"Missing required environment variables: {', '.join(missing)}", file=sys.stderr)
+        return False
+    return True
 
 class FileUploadTester:
     def __init__(self):
@@ -43,6 +56,9 @@ class FileUploadTester:
             img.save(img_buffer, format='PNG')
             img_buffer.seek(0)
             return img_buffer.getvalue()
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             print(f"Error creating test image: {e}")
             return None
@@ -116,7 +132,7 @@ startxref
         }
         
         try:
-            response = self.session.post(url, json=login_data)
+            response = self.session.post(url, json=login_data, timeout=REQUEST_TIMEOUT_SECONDS)
             if response.status_code == 200:
                 result = response.json()
                 if 'token' in result:
@@ -130,6 +146,9 @@ startxref
             else:
                 self.log_result("Admin Login", False, f"Login failed with status {response.status_code}: {response.text}")
                 return False
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("Admin Login", False, f"Login error: {str(e)}")
             return False
@@ -155,7 +174,7 @@ startxref
         files = {'file': ('test_image.png', image_data, 'image/png')}
         
         try:
-            response = self.session.post(url, files=files, headers=headers)
+            response = self.session.post(url, files=files, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 result = response.json()
@@ -185,6 +204,9 @@ startxref
                 self.log_result("Image Upload", False, f"Upload failed with status {response.status_code}: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("Image Upload", False, f"Upload error: {str(e)}")
             return False
@@ -207,7 +229,7 @@ startxref
         files = {'file': ('test_document.pdf', pdf_data, 'application/pdf')}
         
         try:
-            response = self.session.post(url, files=files, headers=headers)
+            response = self.session.post(url, files=files, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 200:
                 result = response.json()
@@ -237,6 +259,9 @@ startxref
                 self.log_result("PDF Upload", False, f"Upload failed with status {response.status_code}: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("PDF Upload", False, f"Upload error: {str(e)}")
             return False
@@ -257,7 +282,7 @@ startxref
         files = {'file': ('unauthorized_test.png', image_data, 'image/png')}
         
         try:
-            response = self.session.post(url, files=files)
+            response = self.session.post(url, files=files, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 401:
                 self.log_result("Upload No Auth", True, "Correctly rejected unauthorized upload request")
@@ -266,6 +291,9 @@ startxref
                 self.log_result("Upload No Auth", False, f"Expected 401 but got {response.status_code}: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("Upload No Auth", False, f"Request error: {str(e)}")
             return False
@@ -286,7 +314,7 @@ startxref
             full_url = f"{BASE_URL}{file_url}"
             
             try:
-                response = self.session.get(full_url)
+                response = self.session.get(full_url, timeout=REQUEST_TIMEOUT_SECONDS)
                 
                 if response.status_code == 200:
                     self.log_result(f"File Access - {file_info['type']}", True, f"File accessible: {file_url}")
@@ -294,6 +322,9 @@ startxref
                 else:
                     self.log_result(f"File Access - {file_info['type']}", False, f"File not accessible: {file_url} (status: {response.status_code})")
                     
+            except requests.exceptions.Timeout:
+                self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+                return False
             except Exception as e:
                 self.log_result(f"File Access - {file_info['type']}", False, f"Access error for {file_url}: {str(e)}")
         
@@ -340,7 +371,7 @@ startxref
         }
         
         try:
-            response = self.session.post(url, json=news_data, headers=headers)
+            response = self.session.post(url, json=news_data, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 201:
                 result = response.json()
@@ -359,6 +390,9 @@ startxref
                 self.log_result("News with Image", False, f"News creation failed with status {response.status_code}: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("News with Image", False, f"News creation error: {str(e)}")
             return False
@@ -400,7 +434,7 @@ startxref
         }
         
         try:
-            response = self.session.post(url, json=putusan_data, headers=headers)
+            response = self.session.post(url, json=putusan_data, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
             
             if response.status_code == 201:
                 result = response.json()
@@ -419,6 +453,9 @@ startxref
                 self.log_result("Putusan with PDF", False, f"Putusan creation failed with status {response.status_code}: {response.text}")
                 return False
                 
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             self.log_result("Putusan with PDF", False, f"Putusan creation error: {str(e)}")
             return False
@@ -437,13 +474,16 @@ startxref
         success_count = 0
         for test_url in test_urls:
             try:
-                response = self.session.get(test_url)
+                response = self.session.get(test_url, timeout=REQUEST_TIMEOUT_SECONDS)
                 # 403 or 404 is expected for directory listing, but not 500
                 if response.status_code in [200, 403, 404]:
                     self.log_result(f"Directory Check", True, f"Directory structure exists: {test_url.split('/')[-2] if test_url.endswith('/') else 'base'}")
                     success_count += 1
                 else:
                     self.log_result(f"Directory Check", False, f"Unexpected status for {test_url}: {response.status_code}")
+            except requests.exceptions.Timeout:
+                self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+                return False
             except Exception as e:
                 self.log_result(f"Directory Check", False, f"Error accessing {test_url}: {str(e)}")
         
@@ -464,11 +504,14 @@ startxref
         if hasattr(self, 'created_news_id') and self.created_news_id:
             url = f"{BASE_URL}/api/news/{self.created_news_id}"
             try:
-                response = self.session.delete(url, headers=headers)
+                response = self.session.delete(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
                 if response.status_code == 200:
                     self.log_result("Cleanup News", True, "Test news deleted successfully")
                 else:
                     self.log_result("Cleanup News", False, f"Failed to delete test news: {response.status_code}")
+            except requests.exceptions.Timeout:
+                self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+                return False
             except Exception as e:
                 self.log_result("Cleanup News", False, f"Error deleting news: {str(e)}")
         
@@ -476,11 +519,14 @@ startxref
         if hasattr(self, 'created_putusan_id') and self.created_putusan_id:
             url = f"{BASE_URL}/api/putusan/{self.created_putusan_id}"
             try:
-                response = self.session.delete(url, headers=headers)
+                response = self.session.delete(url, headers=headers, timeout=REQUEST_TIMEOUT_SECONDS)
                 if response.status_code == 200:
                     self.log_result("Cleanup Putusan", True, "Test putusan deleted successfully")
                 else:
                     self.log_result("Cleanup Putusan", False, f"Failed to delete test putusan: {response.status_code}")
+            except requests.exceptions.Timeout:
+                self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+                return False
             except Exception as e:
                 self.log_result("Cleanup Putusan", False, f"Error deleting putusan: {str(e)}")
         
@@ -515,6 +561,9 @@ startxref
             # Cleanup
             self.cleanup_test_data()
             
+        except requests.exceptions.Timeout:
+            self.log_result("HTTP Request Timeout", False, f"Request timed out after {REQUEST_TIMEOUT_SECONDS:g}s")
+            return False
         except Exception as e:
             print(f"\n💥 Unexpected error during testing: {str(e)}")
         
@@ -549,6 +598,8 @@ startxref
         return passed == total
 
 if __name__ == "__main__":
+    if not validate_configuration():
+        sys.exit(2)
     tester = FileUploadTester()
     success = tester.run_all_tests()
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)

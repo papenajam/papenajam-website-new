@@ -1,0 +1,61 @@
+[
+  {
+    "id": "hp-hero-home-001",
+    "type": "hero_home",
+    "settings": {
+      "title": "Pengadilan Agama Penajam",
+      "titleEn": "Penajam Religious Court",
+      "subtitle": "Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan",
+      "subtitleEn": "Delivering Fast, Simple, and Affordable Justice",
+      "backgroundImage": "",
+      "buttonText": "Lihat Layanan",
+      "buttonTextEn": "View Services",
+      "buttonLink": "#layanan",
+      "button2Text": "Hubungi Kami",
+      "button2TextEn": "Contact Us",
+      "button2Link": "#kontak",
+      "showStats": true
+    }
+  },
+  {
+    "id": "hp-services-grid-001",
+    "type": "services_grid",
+    "settings": {
+      "title": "Layanan Kami",
+      "titleEn": "Our Services",
+      "subtitle": "Berbagai layanan tersedia untuk masyarakat",
+      "subtitleEn": "Various services available to the public"
+    }
+  },
+  {
+    "id": "hp-news-ann-001",
+    "type": "news_ann",
+    "settings": {
+      "title": "Berita & Pengumuman",
+      "titleEn": "News & Announcements",
+      "newsCount": 4,
+      "annCount": 5
+    }
+  },
+  {
+    "id": "hp-case-search-001",
+    "type": "case_search",
+    "settings": {
+      "title": "Informasi Perkara",
+      "titleEn": "Case Information",
+      "subtitle": "Cari informasi perkara Anda dengan mudah",
+      "subtitleEn": "Easily search for your case information"
+    }
+  },
+  {
+    "id": "hp-contact-info-001",
+    "type": "contact_info",
+    "settings": {
+      "title": "Hubungi Kami",
+      "titleEn": "Contact Us",
+      "subtitle": "Kami siap melayani Anda",
+      "subtitleEn": "We are ready to serve you",
+      "bgColor": "#f9fafb"
+    }
+  }
+]
