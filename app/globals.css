@@ -446,8 +446,13 @@ textarea:focus-visible,
    ACCESSIBLE INTERACTIVE ELEMENT MINIMUM SIZE
    WCAG 2.5.5 - Target size minimum 44x44px
    ============================================================ */
-button, a, [role="button"], [role="link"],
-input[type="checkbox"], input[type="radio"] {
+/* Only target standalone interactive elements — NOT inline <a>/<button> */
+nav a, nav button,
+header a, header button,
+footer a, footer button,
+[role="button"], [role="link"],
+button[class], a[class],
+a[href^="#"], a[href^="/"] {
   min-height: 44px;
   min-width: 44px;
 }

@@ -972,7 +972,7 @@ export default function DynamicHomepage() {
 
   async function loadAll() {
     try {
-      await fetch('/api/seed', { method: 'POST' }).catch(() => {});
+      // Seed removed — POST /api/seed no longer fires on page load
       const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes] = await Promise.all([
         fetch('/api/pages/slug/_homepage'),
         fetch('/api/news?public=true&limit=8'),
