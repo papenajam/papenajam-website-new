@@ -81,12 +81,24 @@ function HeroHomeBlock({ settings, stats }) {
                 { label: t('hero.caseThisYear'), val: stats?.casesThisYear ?? 0 },
                 { label: t('hero.caseDone'), val: stats?.casesDone ?? 0 },
                 { label: t('hero.caseOngoing'), val: stats?.casesOngoing ?? 0 },
-              ].map(({ label, val }) => (
-                <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-                  <p className="text-3xl font-extrabold text-pa-gold">{val}</p>
-                  <p className="text-white/80 text-xs mt-1">{label}</p>
-                </div>
-              ))}
+              ].map(({ label, val }) => {
+                const isLoading = (stats?.casesThisYear ?? 0) === 0 && (stats?.casesDone ?? 0) === 0 && (stats?.casesOngoing ?? 0) === 0;
+                return (
+                  <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                    {isLoading ? (
+                      <div className="animate-pulse">
+                        <div className="h-9 w-16 mx-auto bg-white/20 rounded-lg" />
+                        <p className="text-white/80 text-xs mt-1">{label}</p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-3xl font-extrabold text-pa-gold">{val}</p>
+                        <p className="text-white/80 text-xs mt-1">{label}</p>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -969,6 +981,30 @@ export default function DynamicHomepage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // IntersectionObserver for automatic nav sync on scroll
+  useEffect(() => {
+    if (blocks === null || dataLoading) return;
+    const sectionIds = ['beranda', 'layanan', 'berita', 'pengumuman', 'perkara', 'galeri', 'dokumen', 'faq', 'pengaduan', 'kontak'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveNav(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -50% 0px', threshold: 0.1 }
+    );
+    // Observe after a short delay to ensure DOM is painted
+    const timer = setTimeout(() => {
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    }, 100);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [blocks, dataLoading]);
 
   async function loadAll() {
     try {
