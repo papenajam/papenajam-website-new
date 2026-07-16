@@ -43,18 +43,18 @@ function HeroHomeBlock({ settings, stats }) {
   const { t, lang } = useLanguage();
   return (
     <header id="beranda" role="banner" className="relative min-h-screen flex items-center" style={{ scrollMarginTop: '80px' }}>
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a3d0e] via-[#1b5e20] to-[#2e7d32]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-br from-pa-green-dark via-pa-green to-pa-green-mid" aria-hidden="true" />
       {s.backgroundImage && (
         <div className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${s.backgroundImage}')` }} role="img" aria-label={lang === 'id' ? 'Gedung Pengadilan Agama Penajam' : 'Penajam Religious Court building'} />
       )}
       {!s.backgroundImage && (
         <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{ backgroundImage: `url('${HERO_FALLBACK}')` }} aria-hidden="true" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a3d0e]/60" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-pa-green-dark/60" aria-hidden="true" />
       <div className="container mx-auto px-4 relative z-10 pt-20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/80 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-white/10">
-            <Globe className="w-4 h-4 text-[#d4a017]" aria-hidden="true" />
+            <Globe className="w-4 h-4 text-pa-gold" aria-hidden="true" />
             {t('underMA')}
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
@@ -65,7 +65,7 @@ function HeroHomeBlock({ settings, stats }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {s.buttonText && (
-              <a href={s.buttonLink || '#layanan'} className="inline-flex items-center justify-center bg-[#e07028] hover:bg-[#c05018] text-white text-base font-bold px-8 py-4 rounded-xl shadow-lg min-h-[52px] transition-colors">
+              <a href={s.buttonLink || '#layanan'} className="inline-flex items-center justify-center bg-pa-orange hover:bg-pa-orange-dark text-white text-base font-bold px-8 py-4 rounded-xl shadow-lg min-h-[52px] transition-colors">
                 {s.buttonText} <ChevronRight className="ml-2 w-5 h-5" aria-hidden="true" />
               </a>
             )}
@@ -83,7 +83,7 @@ function HeroHomeBlock({ settings, stats }) {
                 { label: t('hero.caseOngoing'), val: stats?.casesOngoing ?? 0 },
               ].map(({ label, val }) => (
                 <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-                  <p className="text-3xl font-extrabold text-[#d4a017]">{val}</p>
+                  <p className="text-3xl font-extrabold text-pa-gold">{val}</p>
                   <p className="text-white/80 text-xs mt-1">{label}</p>
                 </div>
               ))}
@@ -102,7 +102,7 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
     <section id="berita" aria-labelledby="news-ann-h" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 id="news-ann-h" className="text-3xl font-extrabold text-[#1b5e20] mb-3">
+          <h2 id="news-ann-h" className="text-3xl font-extrabold text-pa-green mb-3">
             {s.title || (lang === 'id' ? 'Berita & Pengumuman' : 'News & Announcements')}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto text-sm">
@@ -112,15 +112,15 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* News Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 bg-[#1b5e20]">
+            <div className="flex items-center justify-between px-6 py-4 bg-pa-green">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><Newspaper className="w-4 h-4 text-[#d4a017]" /></div>
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><Newspaper className="w-4 h-4 text-pa-gold" /></div>
                 <div>
                   <h3 className="font-bold text-white text-sm">{t('news.title')}</h3>
                   <p className="text-white/80 text-xs">{t('news.subtitle')}</p>
                 </div>
               </div>
-              <a href="/berita" className="text-[#d4a017] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
+              <a href="/berita" className="text-pa-gold text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
                 {t('news.allNews')} <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -137,13 +137,13 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                             <img src={item.image} alt={item.imageAlt || item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" width="80" height="64" />
                           </div>
                         ) : (
-                          <div className="w-20 h-16 rounded-xl bg-[#1b5e20]/5 flex items-center justify-center flex-shrink-0">
-                            <Newspaper className="w-6 h-6 text-[#1b5e20]/30" />
+                          <div className="w-20 h-16 rounded-xl bg-pa-green/5 flex items-center justify-center flex-shrink-0">
+                            <Newspaper className="w-6 h-6 text-pa-green/30" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          {item.category && <span className="inline-block text-[10px] font-semibold text-[#b88010] bg-[#d4a017]/10 px-2 py-0.5 rounded-full mb-1">{item.category}</span>}
-                          <p className="text-sm font-semibold text-[#1b5e20] line-clamp-2 leading-snug group-hover:text-[#b88010] transition-colors">{item.title}</p>
+                          {item.category && <span className="inline-block text-[10px] font-semibold text-pa-gold-dark bg-pa-gold/10 px-2 py-0.5 rounded-full mb-1">{item.category}</span>}
+                          <p className="text-sm font-semibold text-pa-green line-clamp-2 leading-snug group-hover:text-pa-gold-dark transition-colors">{item.title}</p>
                           <time dateTime={item.publishedAt || item.createdAt} className="text-xs text-gray-500 mt-1 block">{formatDate(item.publishedAt || item.createdAt)}</time>
                         </div>
                       </a>
@@ -155,7 +155,7 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
           </div>
           {/* Announcements Card */}
           <div id="pengumuman" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style={{ scrollMarginTop: '80px' }}>
-            <div className="flex items-center justify-between px-6 py-4 bg-[#d4a017]">
+            <div className="flex items-center justify-between px-6 py-4 bg-pa-gold">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"><ClipboardList className="w-4 h-4 text-white" /></div>
                 <div>
@@ -175,11 +175,11 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                   {announcements.slice(0, s.annCount || 5).map((ann, idx) => (
                     <li key={ann.id}>
                       <div className="flex items-start gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-                        <div className="w-8 h-8 rounded-full bg-[#d4a017]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-[#b88010] text-xs font-extrabold">{String(idx + 1).padStart(2, '0')}</span>
+                        <div className="w-8 h-8 rounded-full bg-pa-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-pa-gold-dark text-xs font-extrabold">{String(idx + 1).padStart(2, '0')}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-[#1b5e20] text-sm leading-snug line-clamp-2">{ann.title}</h4>
+                          <h4 className="font-semibold text-pa-green text-sm leading-snug line-clamp-2">{ann.title}</h4>
                           <p className="text-gray-500 text-xs mt-1 line-clamp-2">{ann.content?.replace(/<[^>]+>/g, '').substring(0, 100)}</p>
                           <time dateTime={ann.publishedAt || ann.createdAt} className="text-xs text-gray-500 mt-1 block">{formatDate(ann.publishedAt || ann.createdAt)}</time>
                         </div>
@@ -203,7 +203,7 @@ function ServicesGridBlock({ settings, services }) {
     <section id="layanan" aria-labelledby="services-h" className="py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 id="services-h" className="text-3xl font-extrabold text-[#1b5e20] mb-4">{s.title || t('services.title')}</h2>
+          <h2 id="services-h" className="text-3xl font-extrabold text-pa-green mb-4">{s.title || t('services.title')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{s.subtitle || t('services.subtitle')}</p>
         </div>
         <ul className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto list-none p-0">
@@ -211,11 +211,11 @@ function ServicesGridBlock({ settings, services }) {
             const Icon = ICON_MAP[svc.icon] || FileText;
             return (
               <li key={svc.id}>
-                <article className="bg-gradient-to-br from-[#1b5e20]/5 to-[#2e7d32]/5 rounded-2xl p-6 border border-[#1b5e20]/10 hover:shadow-md transition-all h-full">
-                  <div className="w-12 h-12 bg-[#1b5e20] rounded-xl flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-[#d4a017]" aria-hidden="true" />
+                <article className="bg-gradient-to-br from-pa-green/5 to-pa-green-mid/5 rounded-2xl p-6 border border-pa-green/10 hover:shadow-md transition-all h-full">
+                  <div className="w-12 h-12 bg-pa-green rounded-xl flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-pa-gold" aria-hidden="true" />
                   </div>
-                  <h3 className="font-bold text-[#1b5e20] mb-2">{svc.title}</h3>
+                  <h3 className="font-bold text-pa-green mb-2">{svc.title}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{svc.description}</p>
                 </article>
               </li>
@@ -231,7 +231,7 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
   const s = settings || {};
   const { t, lang } = useLanguage();
   return (
-    <section id="perkara" aria-labelledby="case-search-h" className="py-20 bg-[#1b5e20]" style={{ scrollMarginTop: '80px' }}>
+    <section id="perkara" aria-labelledby="case-search-h" className="py-20 bg-pa-green" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 id="case-search-h" className="text-3xl font-extrabold text-white mb-4">{s.title || t('caseSearch.title')}</h2>
@@ -247,7 +247,7 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
               <label htmlFor="hp-tahun" className="block text-white font-semibold mb-1.5 text-sm">{t('caseSearch.yearLabel')}</label>
               <Input id="hp-tahun" type="number" placeholder={t('caseSearch.yearPlaceholder')} value={searchTahun} onChange={e => setSearchTahun(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white text-base" min="2000" max="2099" />
             </div>
-            <Button type="submit" className="w-full bg-[#e07028] hover:bg-[#c05018] text-white font-bold text-base py-3 min-h-[52px]" disabled={searchLoading}>
+            <Button type="submit" className="w-full bg-pa-orange hover:bg-pa-orange-dark text-white font-bold text-base py-3 min-h-[52px]" disabled={searchLoading}>
               <Search className="w-5 h-5 mr-2" aria-hidden="true" />
               {searchLoading ? t('caseSearch.searching') : t('caseSearch.searchBtn')}
             </Button>
@@ -267,7 +267,7 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
                       <article className="bg-white rounded-xl p-4">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <h4 className="font-bold text-[#1b5e20] text-sm">{t('caseSearch.caseNumber')}: {c.nomorPerkara || c.caseNumber}</h4>
+                            <h4 className="font-bold text-pa-green text-sm">{t('caseSearch.caseNumber')}: {c.nomorPerkara || c.caseNumber}</h4>
                             <p className="text-gray-600 text-xs mt-1">{t('caseSearch.parties')}: {c.pihak || c.parties}</p>
                           </div>
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${statusColor(c.status)}`}>{statusLabel(c.status)}</span>
@@ -298,17 +298,17 @@ function ContactInfoBlock({ settings, siteSettings }) {
     <section id="kontak" aria-labelledby="contact-h" className="py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 id="contact-h" className="text-3xl font-extrabold text-[#1b5e20] mb-4">{s.title || t('contact.title')}</h2>
+          <h2 id="contact-h" className="text-3xl font-extrabold text-pa-green mb-4">{s.title || t('contact.title')}</h2>
           <p className="text-gray-600">{s.subtitle || t('contact.subtitle')}</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
           {items.map(({ icon: Icon, title, content, href, linkLabel }) => (
             <article key={title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-              <div className="w-10 h-10 bg-[#1b5e20] rounded-xl flex items-center justify-center mb-4"><Icon className="w-5 h-5 text-[#d4a017]" aria-hidden="true" /></div>
-              <h3 className="font-bold text-[#1b5e20] text-sm mb-1">{title}</h3>
+              <div className="w-10 h-10 bg-pa-green rounded-xl flex items-center justify-center mb-4"><Icon className="w-5 h-5 text-pa-gold" aria-hidden="true" /></div>
+              <h3 className="font-bold text-pa-green text-sm mb-1">{title}</h3>
               <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
               {href && linkLabel && (
-                <a href={href} className="text-[#b88010] text-xs font-semibold hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                <a href={href} className="text-pa-gold-dark text-xs font-semibold hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
                   {linkLabel} {href.startsWith('http') && <ExternalLink className="w-3 h-3" />}
                 </a>
               )}
@@ -332,14 +332,14 @@ function ProfileCardsBlock({ settings }) {
     <section id="profil" aria-labelledby="profile-h" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 id="profile-h" className="text-3xl font-extrabold text-[#1b5e20] mb-4">{s.title || t('profile.title')}</h2>
+          <h2 id="profile-h" className="text-3xl font-extrabold text-pa-green mb-4">{s.title || t('profile.title')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{s.subtitle || t('profile.subtitle')}</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {cards.map(({ icon: Icon, title, content }) => (
             <article key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-[#1b5e20]/10 rounded-xl flex items-center justify-center mb-4"><Icon className="w-6 h-6 text-[#1b5e20]" aria-hidden="true" /></div>
-              <h3 className="font-bold text-[#1b5e20] text-lg mb-2">{title}</h3>
+              <div className="w-12 h-12 bg-pa-green/10 rounded-xl flex items-center justify-center mb-4"><Icon className="w-6 h-6 text-pa-green" aria-hidden="true" /></div>
+              <h3 className="font-bold text-pa-green text-lg mb-2">{title}</h3>
               <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
             </article>
           ))}
@@ -358,7 +358,7 @@ function HeroStaticBlock({ settings }) {
       <div className="container mx-auto px-4 relative z-10 text-center pt-20">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">{s.title}</h1>
         <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">{s.subtitle}</p>
-        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-[#e07028] hover:bg-[#c05018] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText} <ChevronRight className="ml-2 w-5 h-5" /></a>}
+        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-pa-orange hover:bg-pa-orange-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText} <ChevronRight className="ml-2 w-5 h-5" /></a>}
       </div>
     </header>
   );
@@ -367,12 +367,12 @@ function HeroStaticBlock({ settings }) {
 function StatsBlock({ settings }) {
   const s = settings || {};
   return (
-    <section className="py-12 bg-[#1b5e20]">
+    <section className="py-12 bg-pa-green">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
           {(s.items || []).map(item => (
             <div key={item.id} className="text-center">
-              <div className="text-3xl font-extrabold text-[#d4a017]">{item.number}</div>
+              <div className="text-3xl font-extrabold text-pa-gold">{item.number}</div>
               <div className="text-white/80 text-sm mt-1">{item.label}</div>
             </div>
           ))}
@@ -403,12 +403,12 @@ function CardGridBlock({ settings }) {
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        {s.title && <h2 className="text-3xl font-extrabold text-[#1b5e20] text-center mb-10">{s.title}</h2>}
+        {s.title && <h2 className="text-3xl font-extrabold text-pa-green text-center mb-10">{s.title}</h2>}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {(s.items || []).map(item => (
             <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
               <div className="text-4xl mb-4">{item.icon}</div>
-              <h3 className="font-bold text-[#1b5e20] mb-2">{item.title}</h3>
+              <h3 className="font-bold text-pa-green mb-2">{item.title}</h3>
               <p className="text-gray-500 text-sm">{item.description}</p>
             </div>
           ))}
@@ -425,7 +425,7 @@ function CtaBlock({ settings }) {
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl font-extrabold text-white mb-4">{s.title}</h2>
         <p className="text-white/80 mb-8 max-w-xl mx-auto">{s.subtitle}</p>
-        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-[#e07028] hover:bg-[#c05018] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText}</a>}
+        {s.buttonText && <a href={s.buttonLink || '#'} className="inline-flex items-center bg-pa-orange hover:bg-pa-orange-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">{s.buttonText}</a>}
       </div>
     </section>
   );
@@ -460,7 +460,7 @@ function GalleryGridBlock({ settings, galleryItems }) {
     <section id="galeri" className="py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold text-[#1b5e20] mb-3">{s.title || 'Galeri Foto'}</h2>
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Galeri Foto'}</h2>
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
@@ -480,7 +480,7 @@ function GalleryGridBlock({ settings, galleryItems }) {
         )}
         {s.showViewAll !== false && (
           <div className="text-center mt-8">
-            <a href="/galeri" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+            <a href="/galeri" className="inline-flex items-center gap-2 border-2 border-pa-green text-pa-green hover:bg-pa-green hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
               {lang === 'id' ? 'Lihat Semua Galeri' : 'View All Gallery'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </a>
           </div>
@@ -511,7 +511,7 @@ function FAQSectionBlock({ settings, faqItems }) {
     <section id="faq" className="py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold text-[#1b5e20] mb-3">{s.title || 'Tanya Jawab'}</h2>
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Tanya Jawab'}</h2>
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
@@ -526,8 +526,8 @@ function FAQSectionBlock({ settings, faqItems }) {
                 <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                   <button onClick={() => setOpenId(isOpen ? null : item.id)}
                     className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
-                    <span className="font-semibold text-[#1b5e20] text-sm pr-4">{q}</span>
-                    <Plus className={`w-4 h-4 text-[#b88010] flex-shrink-0 transition-transform ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true" />
+                    <span className="font-semibold text-pa-green text-sm pr-4">{q}</span>
+                    <Plus className={`w-4 h-4 text-pa-gold-dark flex-shrink-0 transition-transform ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true" />
                   </button>
                   {isOpen && <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-50 pt-4">{a}</div>}
                 </div>
@@ -536,7 +536,7 @@ function FAQSectionBlock({ settings, faqItems }) {
           </div>
         )}
         <div className="text-center">
-          <a href="/faq" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+          <a href="/faq" className="inline-flex items-center gap-2 border-2 border-pa-green text-pa-green hover:bg-pa-green hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
             {lang === 'id' ? 'Lihat Semua FAQ' : 'View All FAQ'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </a>
         </div>
@@ -559,7 +559,7 @@ function ComplaintCTABlock({ settings, siteSettings }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href={s.buttonLink || '/pengaduan'}
-              className="inline-flex items-center justify-center bg-[#e07028] hover:bg-[#c05018] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
+              className="inline-flex items-center justify-center bg-pa-orange hover:bg-pa-orange-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
               {s.buttonText || 'Kirim Pengaduan'} <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
             </a>
             {s.showPhone !== false && siteSettings.phone && (
@@ -595,7 +595,7 @@ function VisitorStatsBlock({ settings, visitorStats }) {
             { label: lang === 'id' ? 'Halaman Terpopuler' : 'Top Page', value: stats.topPages?.[0]?.path?.replace('/', '') || '-', sub: `${stats.topPages?.[0]?.views || 0} ${lang === 'id' ? 'kunjungan' : 'visits'}` },
           ].map(({ label, value, sub }) => (
             <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/10">
-              <p className="text-3xl font-extrabold text-[#d4a017]">{value}</p>
+              <p className="text-3xl font-extrabold text-pa-gold">{value}</p>
               <p className="text-white font-semibold text-sm mt-1">{label}</p>
               <p className="text-white/80 text-xs mt-0.5">{sub}</p>
             </div>
@@ -607,7 +607,7 @@ function VisitorStatsBlock({ settings, visitorStats }) {
             <div className="flex items-end gap-1 h-20">
               {stats.dailyData.slice(-30).map(d => (
                 <div key={d.date} className="flex-1 flex flex-col items-center justify-end" title={`${d.date}: ${d.views}`}>
-                  <div className="w-full rounded-t-sm bg-[#d4a017]/80 transition-all" style={{ height: `${(d.views / maxViews) * 70}px`, minHeight: d.views > 0 ? 2 : 0 }} />
+                  <div className="w-full rounded-t-sm bg-pa-gold/80 transition-all" style={{ height: `${(d.views / maxViews) * 70}px`, minHeight: d.views > 0 ? 2 : 0 }} />
                 </div>
               ))}
             </div>
@@ -645,7 +645,7 @@ function BannerSliderBlock({ settings, bannerItems }) {
           {banner.subtitle && <p className="text-lg mb-8 opacity-80" style={{ color: banner.textColor || '#ffffff' }}>{banner.subtitle}</p>}
           {banner.buttonText && (
             <a href={banner.buttonUrl || '#'} target={banner.buttonUrl?.startsWith('http') ? '_blank' : undefined} rel={banner.buttonUrl?.startsWith('http') ? 'noopener' : undefined}
-              className="inline-flex items-center bg-[#e07028] hover:bg-[#c05018] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors">
+              className="inline-flex items-center bg-pa-orange hover:bg-pa-orange-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-colors">
               {banner.buttonText}
             </a>
           )}
@@ -682,7 +682,7 @@ function DocumentListBlock({ settings, documentItems }) {
     <section id="dokumen" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold text-[#1b5e20] mb-3">{s.title || 'Dokumen & Peraturan'}</h2>
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Dokumen & Peraturan'}</h2>
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
@@ -691,16 +691,16 @@ function DocumentListBlock({ settings, documentItems }) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {items.map(item => (
               <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
-                <span className="flex-shrink-0">{item.fileType === 'pdf' ? <FileText className="w-6 h-6 text-[#1b5e20]" aria-hidden="true" /> : <ClipboardList className="w-6 h-6 text-[#1b5e20]" aria-hidden="true" />}</span>
+                <span className="flex-shrink-0">{item.fileType === 'pdf' ? <FileText className="w-6 h-6 text-pa-green" aria-hidden="true" /> : <ClipboardList className="w-6 h-6 text-pa-green" aria-hidden="true" />}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-[#1b5e20] text-sm leading-snug line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
+                  <h3 className="font-bold text-pa-green text-sm leading-snug line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
                   {item.description && <p className="text-gray-500 text-xs mt-1 line-clamp-1">{item.description}</p>}
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="px-2 py-0.5 bg-[#1b5e20]/10 text-[#1b5e20] text-xs rounded-full">{item.category}</span>
+                    <span className="px-2 py-0.5 bg-pa-green/10 text-pa-green text-xs rounded-full">{item.category}</span>
                   </div>
                 </div>
                 <button onClick={() => handleDownload(item)} disabled={!item.fileUrl}
-                  className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-[#1b5e20] hover:bg-[#2e7d32] text-white' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`}>
+                  className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-pa-green hover:bg-pa-green-mid text-white' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`}>
                   <Download className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
@@ -709,7 +709,7 @@ function DocumentListBlock({ settings, documentItems }) {
         )}
         {s.showViewAll !== false && (
           <div className="text-center mt-8">
-            <a href="/dokumen" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+            <a href="/dokumen" className="inline-flex items-center gap-2 border-2 border-pa-green text-pa-green hover:bg-pa-green hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
               {lang === 'id' ? 'Lihat Semua Dokumen' : 'View All Documents'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </a>
           </div>
@@ -763,24 +763,24 @@ function AccordionPublicBlock({ settings: s }) {
     <section className="py-14 bg-white">
       <div className="container mx-auto px-4 max-w-3xl">
         {s.title && (
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b5e20] text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-pa-green text-center mb-8">
             {s.title}
           </h2>
         )}
         <div className="space-y-2">
           {items.map((item, i) => (
-            <div key={item.id || i} className={`border rounded-2xl overflow-hidden transition-all duration-200 ${openIdx === i ? 'border-[#1b5e20]/40 shadow-sm' : 'border-gray-200'}`}>
+            <div key={item.id || i} className={`border rounded-2xl overflow-hidden transition-all duration-200 ${openIdx === i ? 'border-pa-green/40 shadow-sm' : 'border-gray-200'}`}>
               <button
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors ${openIdx === i ? 'bg-[#1b5e20]/5' : 'bg-white hover:bg-gray-50'}`}
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors ${openIdx === i ? 'bg-pa-green/5' : 'bg-white hover:bg-gray-50'}`}
               >
-                <span className={`font-semibold ${openIdx === i ? 'text-[#1b5e20]' : 'text-gray-800'}`}>
+                <span className={`font-semibold ${openIdx === i ? 'text-pa-green' : 'text-gray-800'}`}>
                   {item.question}
                 </span>
-                <ChevronDown className={`ml-4 w-4 h-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-500'}`} aria-hidden="true" />
+                <ChevronDown className={`ml-4 w-4 h-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-pa-green' : 'text-gray-500'}`} aria-hidden="true" />
               </button>
               {openIdx === i && (
-                <div className="px-5 py-4 border-t border-[#1b5e20]/10 bg-white">
+                <div className="px-5 py-4 border-t border-pa-green/10 bg-white">
                   {item.answer?.includes('<') ? (
                     <div className="prose prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{ __html: sanitizeHTML(item.answer) }} />
                   ) : (
@@ -816,7 +816,7 @@ function TabsPublicBlock({ settings: s }) {
                 onClick={() => setActiveTab(i)}
                 className={`px-5 py-3 text-sm font-semibold whitespace-nowrap transition-all border-b-2 -mb-0.5 ${
                   i === activeTab
-                    ? 'border-[#1b5e20] text-[#1b5e20] bg-[#1b5e20]/5'
+                    ? 'border-pa-green text-pa-green bg-pa-green/5'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -851,7 +851,7 @@ function MapPublicBlock({ settings: s }) {
     <section className="py-10">
       <div className="container mx-auto px-4">
         {s.title && (
-          <h2 className="text-2xl font-bold text-[#1b5e20] text-center mb-5 flex items-center justify-center gap-2">
+          <h2 className="text-2xl font-bold text-pa-green text-center mb-5 flex items-center justify-center gap-2">
             <MapPin className="w-5 h-5" aria-hidden="true" /> {s.title}
           </h2>
         )}
@@ -915,12 +915,12 @@ function CountdownPublicBlock({ settings: s }) {
         {!s.targetDate ? (
           <p className="text-white/40 text-sm">Tanggal target belum diatur</p>
         ) : timeLeft.expired ? (
-          <div className="text-2xl font-bold text-[#d4a017] flex items-center justify-center gap-2"><CheckCircle className="w-6 h-6" aria-hidden="true" /> Acara Telah Berlangsung!</div>
+          <div className="text-2xl font-bold text-pa-gold flex items-center justify-center gap-2"><CheckCircle className="w-6 h-6" aria-hidden="true" /> Acara Telah Berlangsung!</div>
         ) : (
           <div className="flex justify-center gap-3 md:gap-6 flex-wrap">
             {units.map(({ label, value }) => (
               <div key={label} className="flex flex-col items-center bg-white/10 rounded-2xl px-5 md:px-8 py-4 md:py-6 min-w-[80px] md:min-w-[110px] backdrop-blur-sm border border-white/20">
-                <span className="text-4xl md:text-6xl font-extrabold text-[#d4a017] tabular-nums leading-none">
+                <span className="text-4xl md:text-6xl font-extrabold text-pa-gold tabular-nums leading-none">
                   {String(value).padStart(2, '0')}
                 </span>
                 <span className="text-white/70 text-xs uppercase tracking-widest mt-2 font-semibold">{label}</span>
@@ -1050,9 +1050,9 @@ export default function DynamicHomepage() {
   // Loading
   if (blocks === null || dataLoading) {
     return (
-      <div className="min-h-screen bg-[#1b5e20] flex items-center justify-center">
+      <div className="min-h-screen bg-pa-green flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-white/20 border-t-[#d4a017] rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-white/20 border-t-pa-gold rounded-full animate-spin mx-auto mb-4" />
           <p className="text-white/80 text-sm">{t('common.loading')}</p>
         </div>
       </div>
@@ -1072,15 +1072,15 @@ export default function DynamicHomepage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 lg:h-20 relative">
             {/* Logo */}
-            <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[#d4a017] focus:ring-offset-2 rounded-lg flex-shrink-0">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-[#1b5e20] to-[#2e7d32] flex items-center justify-center shadow-md">
-                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-[#d4a017]" aria-hidden="true" />
+            <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-pa-gold focus:ring-offset-2 rounded-lg flex-shrink-0">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-pa-green to-pa-green-mid flex items-center justify-center shadow-md">
+                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-pa-gold" aria-hidden="true" />
               </div>
               <div>
-                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1b5e20]' : 'text-white'}`}>
+                <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-pa-green' : 'text-white'}`}>
                   {lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}
                 </p>
-                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#b88010]">Penajam</p>
+                <p className="font-extrabold text-base lg:text-lg leading-tight text-pa-gold-dark">Penajam</p>
               </div>
             </a>
             {/* Dynamic Mega Menu */}
@@ -1101,21 +1101,21 @@ export default function DynamicHomepage() {
       </main>
 
       {/* FOOTER */}
-      <footer role="contentinfo" className="bg-[#1b5e20] text-white py-12">
+      <footer role="contentinfo" className="bg-pa-green text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Scale className="w-5 h-5 text-[#d4a017]" aria-hidden="true" /></div>
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Scale className="w-5 h-5 text-pa-gold" aria-hidden="true" /></div>
                 <div>
                   <p className="font-bold text-sm">{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
-                  <p className="font-extrabold text-[#d4a017]">Penajam</p>
+                  <p className="font-extrabold text-pa-gold">Penajam</p>
                 </div>
               </div>
               <p className="text-white/70 text-sm leading-relaxed">{t('footer.description')}</p>
             </div>
             <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
-              <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
+              <h3 className="font-bold text-pa-gold mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
               <ul className="space-y-2 list-none p-0">
                 {[
                   { id: 'beranda', label: t('nav.home') },
@@ -1134,7 +1134,7 @@ export default function DynamicHomepage() {
               </ul>
             </nav>
             <nav aria-label={lang === 'id' ? 'Informasi' : 'Information'}>
-              <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">{t('footer.information')}</h3>
+              <h3 className="font-bold text-pa-gold mb-4 text-sm uppercase tracking-wide">{t('footer.information')}</h3>
               <ul className="space-y-2 list-none p-0">
                 {[
                   { href: '/agenda-sidang', label: t('nav.courtSchedule') },
