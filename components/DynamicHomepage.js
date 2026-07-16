@@ -13,6 +13,7 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import MegaMenuNavbar from '@/components/MegaMenu';
+import { sanitizeHTML } from '@/lib/sanitize';
 
 const ICON_MAP = {
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
@@ -382,7 +383,7 @@ function StatsBlock({ settings }) {
 }
 
 function TextBlock({ settings }) {
-  return <section className="py-12 bg-white"><div className="container mx-auto px-4 max-w-3xl prose prose-lg" dangerouslySetInnerHTML={{ __html: settings?.content || '' }} /></section>;
+  return <section className="py-12 bg-white"><div className="container mx-auto px-4 max-w-3xl prose prose-lg" dangerouslySetInnerHTML={{ __html: sanitizeHTML(settings?.content || '') }} /></section>;
 }
 
 function ImageBlock({ settings }) {
@@ -781,7 +782,7 @@ function AccordionPublicBlock({ settings: s }) {
               {openIdx === i && (
                 <div className="px-5 py-4 border-t border-[#1b5e20]/10 bg-white">
                   {item.answer?.includes('<') ? (
-                    <div className="prose prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{ __html: item.answer }} />
+                    <div className="prose prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{ __html: sanitizeHTML(item.answer) }} />
                   ) : (
                     <p className="text-gray-600 leading-relaxed">{item.answer}</p>
                   )}
@@ -828,7 +829,7 @@ function TabsPublicBlock({ settings: s }) {
         {tabs[activeTab] && (
           <div className="bg-white border border-t-0 border-gray-200 rounded-b-2xl p-6 min-h-[120px]">
             {tabs[activeTab].content?.includes('<') ? (
-              <div className="prose prose-lg max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: tabs[activeTab].content }} />
+              <div className="prose prose-lg max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: sanitizeHTML(tabs[activeTab].content) }} />
             ) : (
               <p className="text-gray-700 leading-relaxed">{tabs[activeTab].content}</p>
             )}
