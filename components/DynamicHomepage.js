@@ -7,7 +7,8 @@ import {
   Scale, Phone, Mail, MapPin, Search, ChevronRight,
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
   Users, Stamp, Building2, BookOpen, Award, CheckCircle,
-  Clock, ClipboardList, ArrowRight, ExternalLink, Globe, Newspaper
+  Clock, ClipboardList, ArrowRight, ExternalLink, Globe, Newspaper,
+  Download, ChevronDown, Plus, X, MessageSquare
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -479,7 +480,7 @@ function GalleryGridBlock({ settings, galleryItems }) {
         {s.showViewAll !== false && (
           <div className="text-center mt-8">
             <a href="/galeri" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-              {lang === 'id' ? 'Lihat Semua Galeri' : 'View All Gallery'} →
+              {lang === 'id' ? 'Lihat Semua Galeri' : 'View All Gallery'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </a>
           </div>
         )}
@@ -491,7 +492,7 @@ function GalleryGridBlock({ settings, galleryItems }) {
             <div className="text-white text-center mt-3">
               <p className="font-bold">{lang === 'en' && lightbox.titleEn ? lightbox.titleEn : lightbox.title}</p>
             </div>
-            <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl">&times;</button>
+            <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 text-white/70 hover:text-white" aria-label="Close"><X className="w-6 h-6" /></button>
           </div>
         </div>
       )}
@@ -525,7 +526,7 @@ function FAQSectionBlock({ settings, faqItems }) {
                   <button onClick={() => setOpenId(isOpen ? null : item.id)}
                     className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
                     <span className="font-semibold text-[#1b5e20] text-sm pr-4">{q}</span>
-                    <span className={`text-[#b88010] flex-shrink-0 text-xl leading-none transition-transform ${isOpen ? 'rotate-45' : ''}`}>+</span>
+                    <Plus className={`w-4 h-4 text-[#b88010] flex-shrink-0 transition-transform ${isOpen ? 'rotate-45' : ''}`} aria-hidden="true" />
                   </button>
                   {isOpen && <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-50 pt-4">{a}</div>}
                 </div>
@@ -535,7 +536,7 @@ function FAQSectionBlock({ settings, faqItems }) {
         )}
         <div className="text-center">
           <a href="/faq" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-            {lang === 'id' ? 'Lihat Semua FAQ' : 'View All FAQ'} →
+            {lang === 'id' ? 'Lihat Semua FAQ' : 'View All FAQ'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </a>
         </div>
       </div>
@@ -550,7 +551,7 @@ function ComplaintCTABlock({ settings, siteSettings }) {
     <section id="pengaduan" className="py-20" style={{ background: s.bgColor || '#1b5e20', scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">📩</div>
+          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6"><MessageSquare className="w-8 h-8 text-white" aria-hidden="true" /></div>
           <h2 className="text-3xl font-extrabold text-white mb-4">{s.title || 'Sampaikan Pengaduan Anda'}</h2>
           <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             {s.subtitle || 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.'}
@@ -558,12 +559,12 @@ function ComplaintCTABlock({ settings, siteSettings }) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href={s.buttonLink || '/pengaduan'}
               className="inline-flex items-center justify-center bg-[#e07028] hover:bg-[#c05018] text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
-              {s.buttonText || 'Kirim Pengaduan'} →
+              {s.buttonText || 'Kirim Pengaduan'} <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
             </a>
             {s.showPhone !== false && siteSettings.phone && (
               <a href={`tel:${siteSettings.phone.replace(/[^0-9+]/g, '')}`}
                 className="inline-flex items-center justify-center border-2 border-white/30 text-white hover:bg-white/10 font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px]">
-                📞 {siteSettings.phone}
+                <Phone className="w-4 h-4" aria-hidden="true" /> {siteSettings.phone}
               </a>
             )}
           </div>
@@ -689,7 +690,7 @@ function DocumentListBlock({ settings, documentItems }) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {items.map(item => (
               <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
-                <span className="text-3xl flex-shrink-0">{item.fileType === 'pdf' ? '📄' : '📋'}</span>
+                <span className="flex-shrink-0">{item.fileType === 'pdf' ? <FileText className="w-6 h-6 text-[#1b5e20]" aria-hidden="true" /> : <ClipboardList className="w-6 h-6 text-[#1b5e20]" aria-hidden="true" />}</span>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-[#1b5e20] text-sm leading-snug line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
                   {item.description && <p className="text-gray-500 text-xs mt-1 line-clamp-1">{item.description}</p>}
@@ -699,7 +700,7 @@ function DocumentListBlock({ settings, documentItems }) {
                 </div>
                 <button onClick={() => handleDownload(item)} disabled={!item.fileUrl}
                   className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-[#1b5e20] hover:bg-[#2e7d32] text-white' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`}>
-                  ⬇
+                  <Download className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             ))}
@@ -708,7 +709,7 @@ function DocumentListBlock({ settings, documentItems }) {
         {s.showViewAll !== false && (
           <div className="text-center mt-8">
             <a href="/dokumen" className="inline-flex items-center gap-2 border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#1b5e20] hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-              {lang === 'id' ? 'Lihat Semua Dokumen' : 'View All Documents'} →
+              {lang === 'id' ? 'Lihat Semua Dokumen' : 'View All Documents'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </a>
           </div>
         )}
@@ -775,9 +776,7 @@ function AccordionPublicBlock({ settings: s }) {
                 <span className={`font-semibold ${openIdx === i ? 'text-[#1b5e20]' : 'text-gray-800'}`}>
                   {item.question}
                 </span>
-                <span className={`ml-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-500'}`}>
-                  ▼
-                </span>
+                <ChevronDown className={`ml-4 w-4 h-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-500'}`} aria-hidden="true" />
               </button>
               {openIdx === i && (
                 <div className="px-5 py-4 border-t border-[#1b5e20]/10 bg-white">
@@ -852,7 +851,7 @@ function MapPublicBlock({ settings: s }) {
       <div className="container mx-auto px-4">
         {s.title && (
           <h2 className="text-2xl font-bold text-[#1b5e20] text-center mb-5 flex items-center justify-center gap-2">
-            📍 {s.title}
+            <MapPin className="w-5 h-5" aria-hidden="true" /> {s.title}
           </h2>
         )}
         <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200" style={{ height: `${s.height || 400}px` }}>
@@ -915,7 +914,7 @@ function CountdownPublicBlock({ settings: s }) {
         {!s.targetDate ? (
           <p className="text-white/40 text-sm">Tanggal target belum diatur</p>
         ) : timeLeft.expired ? (
-          <div className="text-2xl font-bold text-[#d4a017]">🎉 Acara Telah Berlangsung!</div>
+          <div className="text-2xl font-bold text-[#d4a017] flex items-center justify-center gap-2"><CheckCircle className="w-6 h-6" aria-hidden="true" /> Acara Telah Berlangsung!</div>
         ) : (
           <div className="flex justify-center gap-3 md:gap-6 flex-wrap">
             {units.map(({ label, value }) => (

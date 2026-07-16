@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { Scale, ChevronDown, ExternalLink } from 'lucide-react';
+import { Scale, ChevronDown, ExternalLink, X, Menu } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
@@ -257,7 +257,7 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
         aria-expanded={mobileMenuOpen}
         aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
       >
-        {mobileMenuOpen ? <span className="text-2xl">&times;</span> : <span className="text-2xl">&#9776;</span>}
+        {mobileMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
       </button>
 
       {/* Mobile Menu Drawer */}
