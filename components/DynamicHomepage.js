@@ -77,13 +77,14 @@ function HeroHomeBlock({ settings, stats }) {
           </div>
           {s.showStats !== false && (
             <div className="mt-16 grid grid-cols-3 gap-4 max-w-2xl mx-auto" role="region" aria-label={lang === 'id' ? 'Statistik perkara' : 'Case statistics'}>
-              {[
+              {(() => {
+                const isLoading = (stats?.casesThisYear ?? 0) === 0 && (stats?.casesDone ?? 0) === 0 && (stats?.casesOngoing ?? 0) === 0;
+                return [
                 { label: t('hero.caseThisYear'), val: stats?.casesThisYear ?? 0 },
                 { label: t('hero.caseDone'), val: stats?.casesDone ?? 0 },
                 { label: t('hero.caseOngoing'), val: stats?.casesOngoing ?? 0 },
-              ].map(({ label, val }) => {
-                const isLoading = (stats?.casesThisYear ?? 0) === 0 && (stats?.casesDone ?? 0) === 0 && (stats?.casesOngoing ?? 0) === 0;
-                return (
+              ].map(({ label, val }) => (
+
                   <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
                     {isLoading ? (
                       <div className="animate-pulse">
@@ -97,8 +98,8 @@ function HeroHomeBlock({ settings, stats }) {
                       </>
                     )}
                   </div>
-                );
-              })}
+                ));
+              })()}
             </div>
           )}
         </div>
