@@ -30,7 +30,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         {/* Prevent DataCloneError for PerformanceServerTiming */}
         <script dangerouslySetInnerHTML={{
