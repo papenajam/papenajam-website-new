@@ -118,7 +118,7 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                   <p className="text-white/80 text-xs">{t('news.subtitle')}</p>
                 </div>
               </div>
-              <a href="/berita" className="text-[#b88010] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
+              <a href="/berita" className="text-[#d4a017] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
                 {t('news.allNews')} <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -256,7 +256,7 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
               {searchResult.length === 0 ? (
                 <div className="bg-white/10 rounded-xl p-6 text-center" role="alert">
                   <p className="text-white font-semibold">{t('caseSearch.noResult')}</p>
-                  <p className="text-white/60 text-sm mt-1">{t('caseSearch.noResultDesc')}</p>
+                  <p className="text-white/70 text-sm mt-1">{t('caseSearch.noResultDesc')}</p>
                 </div>
               ) : (
                 <ul className="space-y-3 list-none p-0">
@@ -923,7 +923,7 @@ function CountdownPublicBlock({ settings: s }) {
                 <span className="text-4xl md:text-6xl font-extrabold text-[#d4a017] tabular-nums leading-none">
                   {String(value).padStart(2, '0')}
                 </span>
-                <span className="text-white/60 text-xs uppercase tracking-widest mt-2 font-semibold">{label}</span>
+                <span className="text-white/70 text-xs uppercase tracking-widest mt-2 font-semibold">{label}</span>
               </div>
             ))}
           </div>
@@ -1112,7 +1112,7 @@ export default function DynamicHomepage() {
                   <p className="font-extrabold text-[#d4a017]">Penajam</p>
                 </div>
               </div>
-              <p className="text-white/60 text-sm leading-relaxed">{t('footer.description')}</p>
+              <p className="text-white/70 text-sm leading-relaxed">{t('footer.description')}</p>
             </div>
             <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
               <h3 className="font-bold text-[#d4a017] mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
@@ -1127,7 +1127,7 @@ export default function DynamicHomepage() {
                   <li key={link.id}>
                     <button
                       onClick={() => scrollTo(link.id)}
-                      className="text-white/60 hover:text-white text-sm transition-colors text-left min-h-[44px]"
+                      className="text-white/70 hover:text-white text-sm transition-colors text-left min-h-[44px]"
                     >{link.label}</button>
                   </li>
                 ))}
@@ -1143,7 +1143,7 @@ export default function DynamicHomepage() {
                   { href: '/accessibility', label: '♿ ' + t('footer.accessibility') },
                 ].map(l => (
                   <li key={l.href}>
-                    <a href={l.href} className="text-white/60 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a>
+                    <a href={l.href} className="text-white/70 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a>
                   </li>
                 ))}
               </ul>

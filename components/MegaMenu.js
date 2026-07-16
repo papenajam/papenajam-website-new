@@ -61,7 +61,7 @@ function MegaDropdown({ item, children, scrolled, activeNav }) {
                 <div>
                   <p className="font-bold text-white text-sm leading-tight">{label}</p>
                   {(lang === 'id' ? item.description : item.descriptionEn) && (
-                    <p className="text-white/60 text-xs">{lang === 'id' ? item.description : item.descriptionEn}</p>
+                    <p className="text-white/70 text-xs">{lang === 'id' ? item.description : item.descriptionEn}</p>
                   )}
                 </div>
               </div>
