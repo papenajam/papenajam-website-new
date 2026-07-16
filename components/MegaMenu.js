@@ -90,7 +90,7 @@ function MegaDropdown({ item, children, scrolled, activeNav }) {
                         {childLabel}
                         {isExt && <ExternalLink className="w-3 h-3 flex-shrink-0" />}
                       </p>
-                      {childDesc && <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{childDesc}</p>}
+                      {childDesc && <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{childDesc}</p>}
                     </div>
                   </a>
                 );
@@ -167,7 +167,7 @@ function MobileMenuItem({ item, children, onClose, onScrollTo }) {
         <span className="flex items-center gap-2">
           <span>{item.icon}</span> {label}
         </span>
-        {hasChildren && <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />}
+        {hasChildren && <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />}
       </button>
       {hasChildren && open && (
         <div className="ml-6 mb-1 space-y-0.5 border-l-2 border-[#d4a017]/30 pl-3">
@@ -188,10 +188,10 @@ function MobileMenuItem({ item, children, onClose, onScrollTo }) {
                 <div>
                   <p className="font-medium leading-tight">{childLabel}</p>
                   {(lang === 'id' ? child.description : child.descriptionEn) && (
-                    <p className="text-xs text-gray-400">{lang === 'id' ? child.description : child.descriptionEn}</p>
+                    <p className="text-xs text-gray-500">{lang === 'id' ? child.description : child.descriptionEn}</p>
                   )}
                 </div>
-                {isExt && <ExternalLink className="w-3 h-3 ml-auto text-gray-400" />}
+                {isExt && <ExternalLink className="w-3 h-3 ml-auto text-gray-500" />}
               </a>
             );
           })}

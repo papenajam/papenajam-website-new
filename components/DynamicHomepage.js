@@ -82,7 +82,7 @@ function HeroHomeBlock({ settings, stats }) {
               ].map(({ label, val }) => (
                 <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
                   <p className="text-3xl font-extrabold text-[#d4a017]">{val}</p>
-                  <p className="text-white/70 text-xs mt-1">{label}</p>
+                  <p className="text-white/80 text-xs mt-1">{label}</p>
                 </div>
               ))}
             </div>
@@ -115,16 +115,16 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><Newspaper className="w-4 h-4 text-[#d4a017]" /></div>
                 <div>
                   <h3 className="font-bold text-white text-sm">{t('news.title')}</h3>
-                  <p className="text-white/50 text-xs">{t('news.subtitle')}</p>
+                  <p className="text-white/80 text-xs">{t('news.subtitle')}</p>
                 </div>
               </div>
-              <a href="/berita" className="text-[#d4a017] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
+              <a href="/berita" className="text-[#b88010] text-xs font-semibold hover:underline flex items-center gap-1 min-h-[44px]">
                 {t('news.allNews')} <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
             <div className="flex-1 divide-y divide-gray-50">
               {!news.length ? (
-                <div className="p-10 text-center text-gray-400 text-sm">{t('news.noNews')}</div>
+                <div className="p-10 text-center text-gray-500 text-sm">{t('news.noNews')}</div>
               ) : (
                 <ul className="list-none p-0 m-0" role="list">
                   {news.slice(0, s.newsCount || 4).map(item => (
@@ -140,9 +140,9 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          {item.category && <span className="inline-block text-[10px] font-semibold text-[#d4a017] bg-[#d4a017]/10 px-2 py-0.5 rounded-full mb-1">{item.category}</span>}
-                          <p className="text-sm font-semibold text-[#1b5e20] line-clamp-2 leading-snug group-hover:text-[#d4a017] transition-colors">{item.title}</p>
-                          <time dateTime={item.publishedAt || item.createdAt} className="text-xs text-gray-400 mt-1 block">{formatDate(item.publishedAt || item.createdAt)}</time>
+                          {item.category && <span className="inline-block text-[10px] font-semibold text-[#b88010] bg-[#d4a017]/10 px-2 py-0.5 rounded-full mb-1">{item.category}</span>}
+                          <p className="text-sm font-semibold text-[#1b5e20] line-clamp-2 leading-snug group-hover:text-[#b88010] transition-colors">{item.title}</p>
+                          <time dateTime={item.publishedAt || item.createdAt} className="text-xs text-gray-500 mt-1 block">{formatDate(item.publishedAt || item.createdAt)}</time>
                         </div>
                       </a>
                     </li>
@@ -158,7 +158,7 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"><ClipboardList className="w-4 h-4 text-white" /></div>
                 <div>
                   <h3 className="font-bold text-white text-sm">{t('announcements.title')}</h3>
-                  <p className="text-white/70 text-xs">{t('announcements.subtitle')}</p>
+                  <p className="text-white/90 text-xs">{t('announcements.subtitle')}</p>
                 </div>
               </div>
               <a href="/pengumuman" className="text-white/90 text-xs font-semibold hover:text-white hover:underline flex items-center gap-1 min-h-[44px]">
@@ -167,19 +167,19 @@ function NewsAnnBlock({ settings, news, announcements, formatDate }) {
             </div>
             <div className="flex-1 divide-y divide-gray-50">
               {!announcements.length ? (
-                <div className="p-10 text-center text-gray-400 text-sm">{t('announcements.noAnnouncements')}</div>
+                <div className="p-10 text-center text-gray-500 text-sm">{t('announcements.noAnnouncements')}</div>
               ) : (
                 <ul className="list-none p-0 m-0" role="list">
                   {announcements.slice(0, s.annCount || 5).map((ann, idx) => (
                     <li key={ann.id}>
                       <div className="flex items-start gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
                         <div className="w-8 h-8 rounded-full bg-[#d4a017]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-[#d4a017] text-xs font-extrabold">{String(idx + 1).padStart(2, '0')}</span>
+                          <span className="text-[#b88010] text-xs font-extrabold">{String(idx + 1).padStart(2, '0')}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-[#1b5e20] text-sm leading-snug line-clamp-2">{ann.title}</h4>
                           <p className="text-gray-500 text-xs mt-1 line-clamp-2">{ann.content?.replace(/<[^>]+>/g, '').substring(0, 100)}</p>
-                          <time dateTime={ann.publishedAt || ann.createdAt} className="text-xs text-gray-400 mt-1 block">{formatDate(ann.publishedAt || ann.createdAt)}</time>
+                          <time dateTime={ann.publishedAt || ann.createdAt} className="text-xs text-gray-500 mt-1 block">{formatDate(ann.publishedAt || ann.createdAt)}</time>
                         </div>
                       </div>
                     </li>
@@ -233,17 +233,17 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 id="case-search-h" className="text-3xl font-extrabold text-white mb-4">{s.title || t('caseSearch.title')}</h2>
-          <p className="text-white/70 max-w-2xl mx-auto">{s.subtitle || t('caseSearch.subtitle')}</p>
+          <p className="text-white/80 max-w-2xl mx-auto">{s.subtitle || t('caseSearch.subtitle')}</p>
         </div>
         <div className="max-w-2xl mx-auto">
           <form onSubmit={onSearch} role="search" className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 space-y-4">
             <div>
               <label htmlFor="hp-search" className="block text-white font-semibold mb-1.5 text-sm">{t('caseSearch.label')}</label>
-              <Input id="hp-search" type="search" placeholder={t('caseSearch.placeholder')} value={searchNomor} onChange={e => setSearchNomor(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white text-base" />
+              <Input id="hp-search" type="search" placeholder={t('caseSearch.placeholder')} value={searchNomor} onChange={e => setSearchNomor(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white text-base" />
             </div>
             <div>
               <label htmlFor="hp-tahun" className="block text-white font-semibold mb-1.5 text-sm">{t('caseSearch.yearLabel')}</label>
-              <Input id="hp-tahun" type="number" placeholder={t('caseSearch.yearPlaceholder')} value={searchTahun} onChange={e => setSearchTahun(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white text-base" min="2000" max="2099" />
+              <Input id="hp-tahun" type="number" placeholder={t('caseSearch.yearPlaceholder')} value={searchTahun} onChange={e => setSearchTahun(e.target.value)} className="bg-white/20 border-white/30 text-white placeholder:text-white/80 focus:bg-white/30 focus:border-white text-base" min="2000" max="2099" />
             </div>
             <Button type="submit" className="w-full bg-[#e07028] hover:bg-[#c05018] text-white font-bold text-base py-3 min-h-[52px]" disabled={searchLoading}>
               <Search className="w-5 h-5 mr-2" aria-hidden="true" />
@@ -306,7 +306,7 @@ function ContactInfoBlock({ settings, siteSettings }) {
               <h3 className="font-bold text-[#1b5e20] text-sm mb-1">{title}</h3>
               <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
               {href && linkLabel && (
-                <a href={href} className="text-[#d4a017] text-xs font-semibold hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                <a href={href} className="text-[#b88010] text-xs font-semibold hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
                   {linkLabel} {href.startsWith('http') && <ExternalLink className="w-3 h-3" />}
                 </a>
               )}
@@ -371,7 +371,7 @@ function StatsBlock({ settings }) {
           {(s.items || []).map(item => (
             <div key={item.id} className="text-center">
               <div className="text-3xl font-extrabold text-[#d4a017]">{item.number}</div>
-              <div className="text-white/70 text-sm mt-1">{item.label}</div>
+              <div className="text-white/80 text-sm mt-1">{item.label}</div>
             </div>
           ))}
         </div>
@@ -462,7 +462,7 @@ function GalleryGridBlock({ settings, galleryItems }) {
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
-          <div className="text-center py-12 text-gray-400"><p>Belum ada foto di galeri</p></div>
+          <div className="text-center py-12 text-gray-500"><p>Belum ada foto di galeri</p></div>
         ) : (
           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
             {items.map(item => (
@@ -513,7 +513,7 @@ function FAQSectionBlock({ settings, faqItems }) {
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
-          <div className="text-center py-8 text-gray-400"><p>Belum ada FAQ tersedia</p></div>
+          <div className="text-center py-8 text-gray-500"><p>Belum ada FAQ tersedia</p></div>
         ) : (
           <div className="space-y-3 mb-8">
             {items.map(item => {
@@ -525,7 +525,7 @@ function FAQSectionBlock({ settings, faqItems }) {
                   <button onClick={() => setOpenId(isOpen ? null : item.id)}
                     className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
                     <span className="font-semibold text-[#1b5e20] text-sm pr-4">{q}</span>
-                    <span className={`text-[#d4a017] flex-shrink-0 text-xl leading-none transition-transform ${isOpen ? 'rotate-45' : ''}`}>+</span>
+                    <span className={`text-[#b88010] flex-shrink-0 text-xl leading-none transition-transform ${isOpen ? 'rotate-45' : ''}`}>+</span>
                   </button>
                   {isOpen && <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-50 pt-4">{a}</div>}
                 </div>
@@ -595,13 +595,13 @@ function VisitorStatsBlock({ settings, visitorStats }) {
             <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/10">
               <p className="text-3xl font-extrabold text-[#d4a017]">{value}</p>
               <p className="text-white font-semibold text-sm mt-1">{label}</p>
-              <p className="text-white/50 text-xs mt-0.5">{sub}</p>
+              <p className="text-white/80 text-xs mt-0.5">{sub}</p>
             </div>
           ))}
         </div>
         {s.showChart !== false && stats.dailyData?.length > 0 && (
           <div className="max-w-4xl mx-auto bg-white/10 rounded-2xl p-6 border border-white/10">
-            <p className="text-white/70 text-sm mb-3 font-medium">{lang === 'id' ? 'Tren kunjungan harian' : 'Daily visit trend'}</p>
+            <p className="text-white/80 text-sm mb-3 font-medium">{lang === 'id' ? 'Tren kunjungan harian' : 'Daily visit trend'}</p>
             <div className="flex items-end gap-1 h-20">
               {stats.dailyData.slice(-30).map(d => (
                 <div key={d.date} className="flex-1 flex flex-col items-center justify-end" title={`${d.date}: ${d.views}`}>
@@ -684,7 +684,7 @@ function DocumentListBlock({ settings, documentItems }) {
           {s.subtitle && <p className="text-gray-500">{s.subtitle}</p>}
         </div>
         {items.length === 0 ? (
-          <div className="text-center py-12 text-gray-400"><p>Belum ada dokumen tersedia</p></div>
+          <div className="text-center py-12 text-gray-500"><p>Belum ada dokumen tersedia</p></div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {items.map(item => (
@@ -692,13 +692,13 @@ function DocumentListBlock({ settings, documentItems }) {
                 <span className="text-3xl flex-shrink-0">{item.fileType === 'pdf' ? '📄' : '📋'}</span>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-[#1b5e20] text-sm leading-snug line-clamp-2">{lang === 'en' && item.titleEn ? item.titleEn : item.title}</h3>
-                  {item.description && <p className="text-gray-400 text-xs mt-1 line-clamp-1">{item.description}</p>}
+                  {item.description && <p className="text-gray-500 text-xs mt-1 line-clamp-1">{item.description}</p>}
                   <div className="flex items-center gap-2 mt-2">
                     <span className="px-2 py-0.5 bg-[#1b5e20]/10 text-[#1b5e20] text-xs rounded-full">{item.category}</span>
                   </div>
                 </div>
                 <button onClick={() => handleDownload(item)} disabled={!item.fileUrl}
-                  className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-[#1b5e20] hover:bg-[#2e7d32] text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}>
+                  className={`flex-shrink-0 p-2 rounded-xl transition-colors ${item.fileUrl ? 'bg-[#1b5e20] hover:bg-[#2e7d32] text-white' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`}>
                   ⬇
                 </button>
               </div>
@@ -775,7 +775,7 @@ function AccordionPublicBlock({ settings: s }) {
                 <span className={`font-semibold ${openIdx === i ? 'text-[#1b5e20]' : 'text-gray-800'}`}>
                   {item.question}
                 </span>
-                <span className={`ml-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-400'}`}>
+                <span className={`ml-4 flex-shrink-0 transition-transform duration-200 ${openIdx === i ? 'rotate-180 text-[#1b5e20]' : 'text-gray-500'}`}>
                   ▼
                 </span>
               </button>
@@ -791,7 +791,7 @@ function AccordionPublicBlock({ settings: s }) {
             </div>
           ))}
           {items.length === 0 && (
-            <div className="py-10 text-center text-gray-400 border-2 border-dashed rounded-2xl">
+            <div className="py-10 text-center text-gray-500 border-2 border-dashed rounded-2xl">
               Belum ada item accordion
             </div>
           )}
@@ -836,7 +836,7 @@ function TabsPublicBlock({ settings: s }) {
           </div>
         )}
         {tabs.length === 0 && (
-          <div className="py-10 text-center text-gray-400 border-2 border-dashed rounded-2xl">
+          <div className="py-10 text-center text-gray-500 border-2 border-dashed rounded-2xl">
             Belum ada tab
           </div>
         )}
@@ -910,7 +910,7 @@ function CountdownPublicBlock({ settings: s }) {
           <h2 className="text-2xl md:text-3xl font-extrabold mb-2">{s.title}</h2>
         )}
         {s.description && (
-          <p className="text-white/70 mb-8 max-w-xl mx-auto">{s.description}</p>
+          <p className="text-white/80 mb-8 max-w-xl mx-auto">{s.description}</p>
         )}
         {!s.targetDate ? (
           <p className="text-white/40 text-sm">Tanggal target belum diatur</p>
@@ -1053,7 +1053,7 @@ export default function DynamicHomepage() {
       <div className="min-h-screen bg-[#1b5e20] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-white/20 border-t-[#d4a017] rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/70 text-sm">{t('common.loading')}</p>
+          <p className="text-white/80 text-sm">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -1080,7 +1080,7 @@ export default function DynamicHomepage() {
                 <p className={`font-bold text-sm lg:text-base leading-tight ${scrolled ? 'text-[#1b5e20]' : 'text-white'}`}>
                   {lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}
                 </p>
-                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#d4a017]">Penajam</p>
+                <p className="font-extrabold text-base lg:text-lg leading-tight text-[#b88010]">Penajam</p>
               </div>
             </a>
             {/* Dynamic Mega Menu */}
@@ -1150,7 +1150,7 @@ export default function DynamicHomepage() {
             </nav>
           </div>
           <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-white/50 text-sm">&copy; {new Date().getFullYear()} {t('siteName')}. {t('footer.allRights')}</p>
+            <p className="text-white/80 text-sm">&copy; {new Date().getFullYear()} {t('siteName')}. {t('footer.allRights')}</p>
             <LanguageSwitcher variant="dark" scrolled={false} />
           </div>
         </div>
