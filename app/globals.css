@@ -353,19 +353,16 @@ html.a11y-simple-mode .a11y-show-simple {
 /* ============================================================
    FOCUS STYLES - WCAG 2.4.7 Focus Visible
    ============================================================ */
-*:focus-visible {
-  outline: 3px solid #c9a84c !important;
-  outline-offset: 2px !important;
-  border-radius: 4px !important;
-}
 a:focus-visible,
 button:focus-visible,
+[role="button"]:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 3px solid #c9a84c !important;
-  outline-offset: 2px !important;
+  outline: 2px solid var(--color-pa-gold-dark, #b88010);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ============================================================

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Scale, ChevronDown, ExternalLink, X, Menu } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -206,12 +206,79 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
   const { lang } = useLanguage();
   const [menuItems, setMenuItems] = useState([]);
   const [menuLoaded, setMenuLoaded] = useState(false);
+  const drawerRef = useRef(null);
+  const previousActiveElement = useRef(null);
 
   useEffect(() => {
     fetch('/api/menus')
       .then(r => r.json())
       .then(data => { setMenuItems(data.items || []); setMenuLoaded(true); })
       .catch(() => setMenuLoaded(true));
+  }, []);
+
+  // Body scroll lock when drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
+  // Save/restore focus when drawer opens/closes
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      previousActiveElement.current = document.activeElement;
+      // Focus the drawer container on open
+      requestAnimationFrame(() => {
+        if (drawerRef.current) {
+          const firstFocusable = drawerRef.current.querySelector(
+            'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          if (firstFocusable) firstFocusable.focus();
+        }
+      });
+    } else if (previousActiveElement.current) {
+      previousActiveElement.current.focus();
+      previousActiveElement.current = null;
+    }
+  }, [mobileMenuOpen]);
+
+  // ESC key handler
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape' && mobileMenuOpen) {
+      e.preventDefault();
+      setMobileMenuOpen(false);
+    }
+  }, [mobileMenuOpen, setMobileMenuOpen]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [mobileMenuOpen, handleKeyDown]);
+
+  // Focus trap
+  const handleDrawerKeyDown = useCallback((e) => {
+    if (e.key !== 'Tab' || !drawerRef.current) return;
+
+    const focusableElements = drawerRef.current.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault();
+      lastElement.focus();
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault();
+      firstElement.focus();
+    }
   }, []);
 
   return (
@@ -262,7 +329,14 @@ export default function MegaMenuNavbar({ scrolled, activeNav, onScrollTo, mobile
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-xl">
+        <div
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu navigasi"
+          onKeyDown={handleDrawerKeyDown}
+          className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-xl"
+        >
           <div className="container mx-auto px-4 py-3 space-y-0.5 max-h-[80vh] overflow-y-auto">
             {menuItems.map(item => (
               <MobileMenuItem
