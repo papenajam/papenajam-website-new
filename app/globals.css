@@ -447,12 +447,10 @@ textarea:focus-visible,
    WCAG 2.5.5 - Target size minimum 44x44px
    ============================================================ */
 /* Only target standalone interactive elements — NOT inline <a>/<button> */
+[role="button"], [role="link"],
 nav a, nav button,
 header a, header button,
-footer a, footer button,
-[role="button"], [role="link"],
-button[class], a[class],
-a[href^="#"], a[href^="/"] {
+footer a, footer button {
   min-height: 44px;
   min-width: 44px;
 }
