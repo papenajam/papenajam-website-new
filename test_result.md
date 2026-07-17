@@ -233,7 +233,7 @@ frontend:
     implemented: true
     working: false
     file: "app/app/page.js, components/DynamicHomepage.js"
-    stuck_count: 4
+    stuck_count: 5
     priority: "high"
     needs_retesting: false
     status_history:
@@ -249,12 +249,16 @@ frontend:
       - working: false
         agent: "testing"
         comment: "REGRESSION TEST AFTER 'use client' FIX - STILL BROKEN ❌ Main agent added 'use client' to page.js but homepage STILL stuck in loading state after 20+ seconds. Loading spinner 'Memuat...' visible, 0 H1 elements, 0 Nav elements, 0 hero sections. NO API calls detected (DynamicHomepage never mounts). HTML source analysis reveals TRUE ROOT CAUSE: 'Bail out to client-side rendering: next/dynamic' error. Next.js attempts server-side rendering, encounters dynamic import with ssr:false, tries to bail out to client-side rendering, but bailout process FAILS. The loading fallback renders but actual component never loads. SOLUTION: Remove next/dynamic entirely from page.js. Since page.js is already a Client Component ('use client'), just import DynamicHomepage normally: import DynamicHomepage from '@/components/DynamicHomepage'. The ssr:false option is unnecessary in a Client Component and is causing the bailout failure. This is a Next.js App Router limitation - dynamic imports with ssr:false don't work reliably even in Client Components during the initial server-side rendering phase."
+      - working: false
+        agent: "testing"
+        comment: "FINAL VERIFICATION AFTER ROOT-CAUSE FIX ❌ Homepage STILL stuck in loading state after 20+ seconds. Loading spinner 'Memuat...' visible, 0 H1 elements, 0 Nav elements. CRITICAL: NO API requests detected - server logs show NO calls to /api/pages/slug/_homepage, /api/news, /api/announcements, etc. This confirms DynamicHomepage component's useEffect/loadAll() is NOT executing. Client-side JavaScript execution is completely failing. The React component renders initial HTML (loading spinner) but event handlers and useEffect hooks do NOT run. This is NOT a next/dynamic issue (already removed) - it's a fundamental JavaScript hydration/execution failure. Possible causes: 1) JavaScript bundle not loading properly, 2) Critical runtime error preventing hydration, 3) Context provider issue, 4) Build/deployment issue. Main agent's claim of 'manual fresh screenshot has homepage hero and no spinner' is contradicted by automated testing. RECOMMENDATION: Investigate JavaScript bundle loading, check for runtime errors in production build, verify all dependencies installed, consider full rebuild."
+
 
   - task: "Admin Login Redirect"
     implemented: true
     working: false
     file: "app/admin/login/page.js"
-    stuck_count: 4
+    stuck_count: 5
     priority: "high"
     needs_retesting: false
     status_history:
@@ -270,6 +274,10 @@ frontend:
       - working: false
         agent: "testing"
         comment: "REGRESSION TEST AFTER 'use client' FIX - STILL BROKEN ❌ Login form now renders correctly (email and password fields present), credentials filled and submitted successfully. However, NO redirect to dashboard occurs. URL changes to /admin/login? (with '?' appended) but stays there. NO token in localStorage, NO user in localStorage after 20+ seconds. Server logs show POST /api/auth/login 200 (successful), so backend is working. The router.refresh() call was added before router.push('/admin/dashboard'), but redirect still not executing. Possible causes: 1) router.push() being blocked by something, 2) Navigation guard preventing redirect, 3) React state update preventing navigation, 4) Need to wait for router.refresh() to complete before calling router.push(). RECOMMENDATION: Try using window.location.href = '/admin/dashboard' as a fallback, or add await before router.refresh() if it returns a promise, or remove router.refresh() entirely and just use router.push()."
+
+      - working: false
+        agent: "testing"
+        comment: "FINAL VERIFICATION AFTER ROOT-CAUSE FIX ❌ Admin login form renders correctly, credentials filled (admin@pa-penajam.go.id / Admin@1234), submit button clicked, but NO redirect occurs. URL stays at /admin/login? (with '?' appended) after 18+ seconds. NO token in localStorage, NO user in localStorage. CRITICAL: Server logs show NO POST /api/auth/login call - the form submit handler (handleLogin function) is NOT executing. This is the same issue as homepage - client-side JavaScript event handlers are NOT working. The form is submitting as a traditional HTML form (hence the '?' in URL) instead of the JavaScript handler executing. This confirms a fundamental JavaScript hydration/execution failure affecting both homepage and admin login. The React components render initial HTML but JavaScript event handlers do NOT attach/execute. RECOMMENDATION: Same as homepage - investigate JavaScript bundle loading, check for runtime errors, verify dependencies, consider full rebuild."
 
   - task: "Accessibility & Bilingual System"
     implemented: true
@@ -847,6 +855,9 @@ backend:
         comment: "User authorized frontend smoke testing for the public website and admin panel after the PostgreSQL cleanup."
       - working: false
         agent: "testing"
+      - working: "NA"
+        agent: "main"
+        comment: "Replaced the problematic next/dynamic bailout with a normal client import of DynamicHomepage and removed the router.refresh/push race from login. Fresh homepage screenshot, lint, and production build pass; final frontend retest requested."
         comment: "FRONTEND SMOKE TEST COMPLETED - CRITICAL ISSUES FOUND ❌ Tested public site and admin panel after PostgreSQL/Prisma cleanup. POSITIVE: ✅ All 9 major public routes load (200 status): /berita, /agenda-sidang, /putusan, /pencarian-perkara, /dokumen, /faq, /galeri, /pengaduan, /accessibility. ✅ All 8 admin panels load successfully: news, page-builder, homepage, agenda-sidang, putusan, media, settings, users. ✅ No console errors (only expected Next.js HMR WebSocket warnings). ✅ No network errors. ✅ No MongoDB references in errors. ✅ Backend APIs responding correctly (all 200 status). CRITICAL ISSUES: ❌ Homepage stuck in loading state - shows 'Memuat...' spinner indefinitely, DynamicHomepage component never renders (no h1, nav, hero, or content elements after 10+ seconds). ❌ Admin login doesn't redirect - after submitting credentials, stays on /admin/login with '?' appended to URL instead of redirecting to /admin/dashboard. ROOT CAUSE ANALYSIS: Homepage issue likely caused by dynamic import in /app/app/page.js not completing - component loads HTML (22302 chars) but client-side hydration fails. Login issue suggests router.push() not working properly. RECOMMENDATION: 1) Add ssr:false to dynamic import in page.js, 2) Debug admin login redirect logic, 3) Check for client-side JavaScript errors preventing hydration."
       - working: "NA"
         agent: "main"
@@ -868,3 +879,8 @@ backend:
   
   - agent: "testing"
     message: "DEFINITIVE REGRESSION TEST AFTER NEXT.JS FIX ATTEMPT - HOMEPAGE STILL BROKEN ❌ Comprehensive testing after main agent added 'use client' to page.js and router.refresh() to login. TEST RESULTS: ❌ HOMEPAGE CRITICAL FAILURE: Loading spinner 'Memuat...' STILL visible after 20+ seconds, NO main heading, NO navigation, NO hero section, NO API calls detected (DynamicHomepage component NOT mounted). Server returns 200 but client-side rendering fails. HTML analysis reveals ROOT CAUSE: 'Bail out to client-side rendering: next/dynamic' error in template. Next.js attempts server-side rendering, encounters dynamic import with ssr:false, tries to bail out to client-side rendering, but bailout process FAILS. ❌ ADMIN LOGIN PARTIAL FAILURE: Form renders correctly, credentials submitted, but NO redirect to dashboard (URL stays at /admin/login?), NO token in localStorage, NO user in localStorage. ✅ ALL PUBLIC ROUTES PASS: /berita, /agenda-sidang, /putusan, /pencarian-perkara all load successfully. ✅ ALL ADMIN ROUTES PASS: /admin/news, /admin/page-builder, /admin/agenda-sidang, /admin/putusan, /admin/settings, /admin/users all load successfully. TECHNICAL ANALYSIS: Even with 'use client' directive, Next.js still attempts initial server-side rendering. When it hits next/dynamic with ssr:false, it should bail out to client-side rendering, but this process is NOT completing. The loading fallback shows but actual component never loads. SOLUTION: Remove next/dynamic entirely from page.js since it's already a Client Component. Just import DynamicHomepage normally: import DynamicHomepage from '@/components/DynamicHomepage'. The ssr:false option is unnecessary and causing the bailout failure. For login: Need to investigate why router.push() is not executing after successful API call."
+
+  - agent: "main"
+    message: "Replaced the problematic next/dynamic bailout with a normal client import of DynamicHomepage and removed the router.refresh/push race from login. Fresh homepage screenshot, lint, and production build pass; final frontend retest requested."
+  - agent: "testing"
+    message: "FINAL VERIFICATION AFTER ROOT-CAUSE FIX - BOTH BLOCKERS PERSIST ❌ Comprehensive testing after main agent removed next/dynamic and simplified login. CRITICAL FINDINGS: 1) ❌ HOMEPAGE STILL BROKEN: Loading spinner 'Memuat...' visible after 20+ seconds, 0 H1 elements, 0 Nav elements, 0 API requests detected. Server logs show NO API calls from homepage (no /api/pages/slug/_homepage, /api/news, /api/announcements). Client-side JavaScript NOT executing - DynamicHomepage component's useEffect/loadAll() never runs. 2) ❌ ADMIN LOGIN STILL BROKEN: Form renders correctly, credentials filled, submit clicked, but URL stays at /admin/login? with NO token/user in localStorage after 18+ seconds. Server logs show NO POST /api/auth/login call - the form submit handler is NOT executing. 3) ✅ PUBLIC ROUTES WORKING: All 4 routes load correctly (/berita, /agenda-sidang, /putusan, /pencarian-perkara). 4) ✅ ADMIN ROUTES WORKING: All 6 admin routes load correctly (/admin/news, /admin/page-builder, /admin/agenda-sidang, /admin/putusan, /admin/settings, /admin/users). ROOT CAUSE: Client-side JavaScript execution is completely failing on homepage and admin login pages. The React components are rendering initial HTML but event handlers and useEffect hooks are NOT executing. This is NOT a next/dynamic issue or router issue - it's a fundamental JavaScript hydration/execution failure. Possible causes: 1) JavaScript bundle not loading, 2) Critical runtime error preventing hydration, 3) Context provider issue, 4) Build/deployment issue. RECOMMENDATION: Check browser network tab for failed JS bundle loads, check for JavaScript errors in production build, verify all dependencies are installed, consider rebuilding the application."

@@ -28,7 +28,6 @@ export default function AdminLogin() {
       if (!res.ok) { setError(data.error || 'Login gagal'); return; }
       localStorage.setItem('admin_token', data.token);
       localStorage.setItem('admin_user', JSON.stringify(data.user));
-      router.refresh();
       router.push('/admin/dashboard');
     } catch {
       setError('Terjadi kesalahan. Coba lagi.');
