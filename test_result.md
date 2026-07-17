@@ -233,7 +233,7 @@ frontend:
     implemented: true
     working: false
     file: "app/app/page.js, components/DynamicHomepage.js"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: false
     status_history:
@@ -243,12 +243,15 @@ frontend:
       - working: false
         agent: "testing"
         comment: "RETEST AFTER SERVER RESTART ❌ Homepage STILL stuck in loading state after 20+ seconds wait. Spinner 'Memuat...' remains visible, 0 H1 elements, 0 Nav elements found. Server responds quickly (GET / 200 in 26-35ms), but client-side dynamic import never completes. NO API calls from DynamicHomepage component detected in server logs (no /api/pages/slug/_homepage, /api/news, /api/announcements calls during test), confirming DynamicHomepage component never mounts. Root cause: Dynamic import in page.js (line 3) is not completing - the loading fallback shows but the actual component never loads. This is NOT a cold-start latency issue - it's a persistent failure of the dynamic import mechanism. User's manual reproduction may have worked due to different browser/cache state. PERSISTENT BLOCKER."
+      - working: false
+        agent: "testing"
+        comment: "FINAL RETEST AFTER TARGETED FIXES ❌ ROOT CAUSE IDENTIFIED. Homepage returns 500 error. Server logs show: '`ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a Client Component.' at /app/app/page.js:3:25. PROBLEM: /app/app/page.js is a Server Component (default in Next.js App Router) but uses `ssr: false` option with next/dynamic, which is ONLY allowed in Client Components. This is a Next.js framework requirement. FIX REQUIRED: Add 'use client' directive at line 1 of /app/app/page.js to convert it to a Client Component. Test results: Homepage returns 500 error with JSON error page, 0 H1 elements, 0 Nav elements, body shows error JSON. Console logs show 'Failed to load resource: the server responded with a status of 500'. This breaks the entire application as page.js is the root homepage."
 
   - task: "Admin Login Redirect"
     implemented: true
     working: false
     file: "app/admin/login/page.js"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: false
     status_history:
@@ -258,6 +261,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "RETEST AFTER SERVER RESTART ❌ Admin login STILL not redirecting after 20+ seconds wait. Form submits, URL changes to /admin/login? (with '?' appended), but stays there. NO token or user in localStorage after 26 seconds. Server logs show POST /api/auth/login 200 responses (668ms-2.4s), and dashboard compilation completed (○ Compiling /admin/dashboard ...), so backend is working. However, client-side redirect logic is not executing. Page shows H1 'Pengadilan Agama Penajam' (login page heading), confirming still on login page. This is NOT a cold-start latency issue - it's a persistent failure of the client-side login handler. User's manual reproduction may have worked due to different browser/cache state. PERSISTENT BLOCKER."
+      - working: false
+        agent: "testing"
+        comment: "FINAL RETEST AFTER TARGETED FIXES ❌ Admin login page returns 500 error. Page loads but shows blank screen with no form fields (input elements not rendered). Test could not fill credentials because no input fields exist on page. This is caused by the same root issue as homepage: /app/app/page.js Server Component error breaks Next.js routing/rendering for all pages. Server logs show GET /admin/login 500 error. Console shows 'Failed to load resource: the server responded with a status of 500'. The router.refresh() fix added to login handler cannot be tested because the page itself doesn't render due to the upstream page.js error. Once page.js is fixed with 'use client' directive, this needs retesting."
 
   - task: "Accessibility & Bilingual System"
     implemented: true
@@ -788,7 +794,6 @@ test_plan:
     - "Admin Login Redirect"
   stuck_tasks:
     - "Homepage Dynamic Loading"
-    - "Admin Login Redirect"
   test_all: false
   test_priority: "high_first"
 
@@ -839,8 +844,13 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "Manual reproduction after server compilation completed found the homepage rendering normally and admin login redirecting to /admin/dashboard with token/user saved after a longer wait. No source change made; frontend retest requested with element/URL-based waits."
+      - working: "NA"
+        agent: "main"
+        comment: "Applied minimal performance/stability changes per troubleshooting: DynamicHomepage now disables SSR and admin login refreshes the router cache before navigation. Frontend retest requested."
   - agent: "testing"
     message: "FRONTEND RETEST WITH ROBUST WAITS COMPLETED ❌ Both blockers PERSIST despite 20+ second waits and server restart. TEST 1 - Homepage: Spinner 'Memuat...' still visible after 20s, 0 H1/Nav elements after 40s. Server responds fast (GET / 200 in 26-35ms) but dynamic import never completes. NO API calls from DynamicHomepage detected in logs (no /api/pages/slug/_homepage, /api/news, /api/announcements), confirming component never mounts. TEST 2 - Admin Login: Form submits, URL becomes /admin/login? but stays there after 26s. NO token/user in localStorage. Server logs show POST /api/auth/login 200 (668ms-2.4s) and dashboard compilation complete, but client-side redirect fails. TEST 3 - Public Routes: ALL 4 routes working perfectly (/berita, /agenda-sidang, /putusan, /pencarian-perkara all 200 with content). CONCLUSION: These are NOT cold-start latency issues - they are PERSISTENT client-side JavaScript failures. The dynamic import mechanism in page.js and the login redirect logic in admin/login/page.js are fundamentally broken. User's manual reproduction likely succeeded due to different browser/cache state or testing method. Both issues require code fixes, not just longer waits."
+  - agent: "testing"
+    message: "CRITICAL BLOCKER IDENTIFIED ❌ Final retest after targeted fixes reveals the root cause. ALL PAGES RETURN 500 ERROR. Server logs show clear error: '`ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a Client Component.' at /app/app/page.js:3:25. ROOT CAUSE: /app/app/page.js is a Server Component (default in Next.js App Router) but uses `ssr: false` option with next/dynamic, which is ONLY allowed in Client Components. IMPACT: Homepage 500 error (returns JSON error page), Admin login 500 error (blank page, no form fields), All public routes 500 error (/berita, /agenda-sidang, /putusan, /pencarian-perkara), Entire application broken. SOLUTION: Add 'use client' directive at the top of /app/app/page.js (line 1) to convert it to a Client Component. This is a Next.js framework requirement - ssr:false option requires Client Component context. Test results: 0/6 pages working (homepage, admin login, 4 public routes all failing with 500). Console shows multiple 'Failed to load resource: the server responded with a status of 500' errors. No API requests detected because pages never render."
 
 
   - agent: "testing"

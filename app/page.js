@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 
 const DynamicHomepage = dynamic(() => import('@/components/DynamicHomepage'), {
+  ssr: false,
   loading: () => (
     <div className="min-h-screen bg-pa-green flex items-center justify-center">
       <div className="text-center">
