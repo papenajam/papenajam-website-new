@@ -229,6 +229,30 @@ backend:
         comment: "Login tested and working."
 
 frontend:
+  - task: "Homepage Dynamic Loading"
+    implemented: true
+    working: false
+    file: "app/app/page.js, components/DynamicHomepage.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE ❌ Homepage stuck in loading state indefinitely. Dynamic import in page.js shows 'Memuat...' spinner but DynamicHomepage component never renders. After 10+ seconds: no h1, no nav, no hero section, no content elements. HTML is served (22302 chars) with site name in content, but client-side hydration fails. Loading spinner still visible. Likely causes: 1) Dynamic import without ssr:false causing hydration mismatch, 2) Component too large for code-splitting, 3) Client-side JavaScript error preventing mount. All API endpoints working (200 status) but some slow (2-3s for news/documents/analytics). Needs immediate fix - homepage is completely unusable."
+
+  - task: "Admin Login Redirect"
+    implemented: true
+    working: false
+    file: "app/admin/login/page.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE ❌ Admin login form submits but doesn't redirect to dashboard. After entering credentials (admin@pa-penajam.go.id / Admin@1234) and clicking submit, page stays on /admin/login with '?' appended to URL. Expected: redirect to /admin/dashboard. Login form renders correctly, credentials are filled, submit button clicks, but router.push('/admin/dashboard') not executing. Possible causes: 1) Login API returning error (need to check response), 2) router.push() failing silently, 3) Token not being set in localStorage. Admin panel is inaccessible."
+
   - task: "Accessibility & Bilingual System"
     implemented: true
     working: "NA"
@@ -240,18 +264,24 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Implemented i18n (ID/EN), accessibility toolbar (font size, high contrast, dark mode, dyslexia font, highlight links, reading guide, simple mode, TTS), accessibility statement page, language switcher in navbar and admin, bilingual content tabs in News admin with alt text support, full WCAG ARIA attributes throughout."
+      - working: "NA"
+        agent: "testing"
+        comment: "NOT TESTED - Cannot verify accessibility widgets and language switcher because homepage is stuck in loading state. Widgets should be visible in navbar but homepage never renders navigation. Need to fix homepage loading issue first before testing accessibility features."
 
   - task: "News Admin with Bilingual Tabs + Alt Text"
     implemented: true
     working: "NA"
     file: "app/admin/news/page.js"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added language tab UI (ID/EN tabs), fields for titleEn, contentEn, imageAlt, imageAltEn. Alt text section with WCAG guidance only visible when image is set."
+      - working: "NA"
+        agent: "testing"
+        comment: "NOT TESTED - Admin panel loads (200 status) but cannot access due to login redirect issue. Need to fix admin login first."
 
   - task: "Admin Layout Language Switcher"
     implemented: true
@@ -264,6 +294,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Added ID/EN language toggle buttons in admin header toolbar area using useLanguage context."
+      - working: "NA"
+        agent: "testing"
+        comment: "NOT TESTED - Cannot access admin panel due to login redirect issue. Need to fix admin login first."
 
   - task: "Accessibility Statement Page /accessibility"
     implemented: true
@@ -745,8 +778,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Page Builder Live Preview"
-  stuck_tasks: []
+    - "Homepage Dynamic Loading"
+    - "Admin Login Redirect"
+  stuck_tasks:
+    - "Homepage Dynamic Loading"
+    - "Admin Login Redirect"
   test_all: false
   test_priority: "high_first"
 
@@ -788,3 +824,12 @@ backend:
       - working: true
         agent: "testing"
         comment: "POST-MONGODB-CLEANUP VALIDATION COMPLETE ✅ All 37 comprehensive backend tests passed (100% success rate). PHASE 1 - Authentication: ✅ Admin/Staff/Editor login working, JWT verification functional. PHASE 2 - Representative Reads: ✅ All 22 API domains tested (news, announcements, services, cases, settings, pages, agenda, putusan, gallery, documents, faq, banners, surveys/config, search, menus, stats, users, sidebar-widgets, complaints, analytics, surveys, media) - all returning 200 with valid data. PHASE 3 - Security: ✅ Protected endpoints return 401 without auth, unknown routes return 404. PHASE 4 - Date Format Validation: ✅ All date-based endpoints (News.publishDate, Agenda.tanggalSidang, Putusan.tanggalPutusan, Banner.startDate/endDate) correctly accept and return YYYY-MM-DD format via lib/api/dates.js parseDateOnly/formatDateOnly helpers. PHASE 5 - CRUD Operations: ✅ Full create-read-update-delete cycles verified for Pages, Complaints, Surveys, Settings with proper cleanup. PHASE 6 - MongoDB Dependency Check: ✅ NO MongoDB references detected in any API responses, logs, or runtime behavior. All handlers use Prisma exclusively. Date helpers are self-contained with no migration tooling dependencies. External PostgreSQL database fully operational with SSL. CONCLUSION: MongoDB cleanup successful, all active API domains functional, date handling correct, no runtime dependencies on removed MongoDB tooling."
+      - working: "NA"
+        agent: "main"
+        comment: "User authorized frontend smoke testing for the public website and admin panel after the PostgreSQL cleanup."
+      - working: false
+        agent: "testing"
+        comment: "FRONTEND SMOKE TEST COMPLETED - CRITICAL ISSUES FOUND ❌ Tested public site and admin panel after PostgreSQL/Prisma cleanup. POSITIVE: ✅ All 9 major public routes load (200 status): /berita, /agenda-sidang, /putusan, /pencarian-perkara, /dokumen, /faq, /galeri, /pengaduan, /accessibility. ✅ All 8 admin panels load successfully: news, page-builder, homepage, agenda-sidang, putusan, media, settings, users. ✅ No console errors (only expected Next.js HMR WebSocket warnings). ✅ No network errors. ✅ No MongoDB references in errors. ✅ Backend APIs responding correctly (all 200 status). CRITICAL ISSUES: ❌ Homepage stuck in loading state - shows 'Memuat...' spinner indefinitely, DynamicHomepage component never renders (no h1, nav, hero, or content elements after 10+ seconds). ❌ Admin login doesn't redirect - after submitting credentials, stays on /admin/login with '?' appended to URL instead of redirecting to /admin/dashboard. ROOT CAUSE ANALYSIS: Homepage issue likely caused by dynamic import in /app/app/page.js not completing - component loads HTML (22302 chars) but client-side hydration fails. Login issue suggests router.push() not working properly. RECOMMENDATION: 1) Add ssr:false to dynamic import in page.js, 2) Debug admin login redirect logic, 3) Check for client-side JavaScript errors preventing hydration."
+
+  - agent: "testing"
+    message: "FRONTEND SMOKE TEST COMPLETED - CRITICAL ISSUES FOUND ❌ Comprehensive testing of public site and admin panel after PostgreSQL/Prisma cleanup. TEST SCOPE: 1) Public homepage and 9 major routes, 2) Navigation/menu behavior, 3) Language/accessibility widgets, 4) Homepage resilience without _homepage API, 5) Admin login and dashboard, 6) 8 key admin panels, 7) Console/network error monitoring. POSITIVE RESULTS: ✅ All 9 public routes load successfully (200 status): /berita, /agenda-sidang, /putusan, /pencarian-perkara, /dokumen, /faq, /galeri, /pengaduan, /accessibility. ✅ All 8 admin panels accessible (200 status): news, page-builder, homepage, agenda-sidang, putusan, media, settings, users. ✅ No critical console errors (only expected Next.js HMR WebSocket 502 warnings). ✅ No network errors. ✅ No MongoDB references in errors or logs. ✅ Backend APIs responding correctly. CRITICAL ISSUES: ❌ HOMEPAGE STUCK IN LOADING STATE - Shows 'Memuat...' spinner indefinitely, DynamicHomepage component never renders. After 10+ seconds: no h1, no nav, no hero, no content elements. HTML served (22302 chars) includes site name but client-side hydration fails. ❌ ADMIN LOGIN DOESN'T REDIRECT - After submitting credentials (admin@pa-penajam.go.id/Admin@1234), page stays on /admin/login with '?' appended instead of redirecting to /admin/dashboard. ROOT CAUSE: Homepage likely caused by dynamic import in /app/app/page.js without ssr:false option causing hydration mismatch. Login issue suggests router.push() not executing. IMPACT: Homepage completely unusable, admin panel inaccessible. RECOMMENDATION: 1) Add ssr:false to dynamic import in page.js, 2) Debug admin login API response and router.push(), 3) Check for client-side JavaScript errors preventing hydration. NOTE: Some API calls slow (2-3s for /api/news, /api/documents, /api/analytics) but not blocking."
