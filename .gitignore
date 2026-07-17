@@ -96,3 +96,7 @@ node_modules/@next/swc-linux-arm64-musl/next-swc.linux-arm64-musl.node
 # Emitted at lib/generated/prisma (outside app/ so Next.js 16 Turbopack does
 # not auto-promote the JS project to TypeScript). See docs/database-migration.md.
 /lib/generated/prisma
+*.env
+credentials.json
+*.key
+.credentials
