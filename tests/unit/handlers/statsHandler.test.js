@@ -1,7 +1,7 @@
 // Unit tests for app/api/handlers/statsHandler.js (Task 12).
 //
 // Covers: auth gate, parallel counts, monthlyData field name/shape (6 buckets),
-// caseTypes:[{name,value}] from groupBy, no Mongo usage.
+// caseTypes:[{name,value}] from groupBy, no previous datastore usage.
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 

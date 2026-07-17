@@ -7,7 +7,7 @@
 //     round-trip DEEP-EQUAL (preserved verbatim, no key drops)
 //   - BigInt -> number when safe, string when out of Number range
 //   - password NEVER appears in the serialized output for ANY model
-//   - _id dropped (Mongo internal, plan _id gate default); __v NOT stripped
+//   - _id dropped (internal, plan _id gate default); __v NOT stripped
 //   - both Prisma model names ('User', 'News') and legacy collection names
 //     ('users', 'news') route to the same per-model rules
 //
@@ -182,7 +182,7 @@ describe('serializeRecord: JSON / JsonB round-trip deep-equal', () => {
   });
 
   test('JSON blob with nested Date nodes coerces them to ISO strings', () => {
-    // Mongo used to allow Date values inside JSON blobs; the pg adapter
+    // Stored JSON may contain Date values inside JSON blobs; the pg adapter
     // normally parses JsonB as plain JS, but the importer might carry Date
     // values through. The serializer normalises nested dates to ISO strings
     // (treats them as timestamps, NOT date-only).
@@ -197,14 +197,14 @@ describe('serializeRecord: JSON / JsonB round-trip deep-equal', () => {
   test('JSON blob drops any embedded password / _id keys (defence-in-depth); __v passes through (not stripped, so the contract suite flags it)', () => {
     const out = serializeRecord('Page', {
       blocks: [
-        { type: 'text', password: 'LEAK', _id: 'mongo-id', __v: 3 },
+        { type: 'text', password: 'LEAK', _id: 'previous-datastore-id', __v: 3 },
         { settings: { ok: true } },
       ],
       _id: 'should-not-appear',
       __v: 2,
     });
     expect(out).not.toHaveProperty('_id');
-    // __v is intentionally NOT stripped (raw mongo driver doesn't emit it;
+    // __v is intentionally NOT stripped (the API serializer doesn't emit it;
     // if it ever appears, let it surface so the contract suite catches it).
     expect(out.__v).toBe(2);
     expect(out.blocks[0]).not.toHaveProperty('password');
@@ -296,7 +296,7 @@ describe('serializeRecord: password NEVER emitted', () => {
   });
 });
 
-describe('serializeRecord: Mongo internals dropped', () => {
+describe('serializeRecord: internal fields dropped', () => {
   test('_id is never emitted (plan _id decision gate default); __v is NOT stripped so a stray key is surfaced by the contract suite', () => {
     const out = serializeRecord('news', {
       _id: '507f1f77bcf86cd799439011',

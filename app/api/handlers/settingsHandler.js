@@ -1,6 +1,6 @@
-// Settings handler (settings task: MongoDB -> PostgreSQL/Prisma migration).
+// Settings handler (settings task: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET /settings -> 200 flat map `{ [key]: value }`
 //     Every Setting row is folded into a single object; natural key is `key`
 //     (`@id`). Values stay text (including `footer_links`, which is a JSON
@@ -20,7 +20,7 @@ import { mapError } from '@/lib/prisma-errors.js';
 /**
  * Coerce a submitted setting value to Text.
  * Objects/arrays are JSON.stringified so `footer_links` remains a JSON string
- * on the wire and in the DB (matches legacy Mongo storage).
+ * on the wire and in the DB (matches established API storage).
  *
  * @param {*} value
  * @returns {string}

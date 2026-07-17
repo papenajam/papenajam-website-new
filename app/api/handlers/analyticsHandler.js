@@ -1,6 +1,6 @@
-// Analytics handler (Task 12: MongoDB -> PostgreSQL/Prisma migration).
+// Analytics handler (Task 12: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - POST /analytics/track  -> upsert by unique (date, path), views += 1
 //   - GET  /analytics?days=N
 //       anonymous       -> { total, days }

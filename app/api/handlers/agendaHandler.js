@@ -1,6 +1,6 @@
-// Agenda handler (Task 9: MongoDB -> PostgreSQL/Prisma migration).
+// Agenda handler (Task 9: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /agenda?page&limit&search&dateFrom&dateTo&status&public
 //     search     -> nomorPerkara contains + mode:'insensitive'
 //     status     -> equality (overwritten when public=true)
@@ -69,7 +69,7 @@ export async function handleAgenda(request, segments, method) {
           throw err;
         }
       }
-      // public=true overwrites any explicit status filter (legacy Mongo
+      // public=true overwrites any explicit status filter (established API
       // assignment: query.status = { $ne: 'dibatalkan' }).
       if (publicOnly) {
         where.status = { not: 'dibatalkan' };

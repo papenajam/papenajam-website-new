@@ -1,17 +1,14 @@
-# Local PostgreSQL setup (migration target)
+# Local PostgreSQL setup
 
 > **Scope.** LOCAL AND TEST ONLY. This document and the `compose.db.yml` /
-> `db/` / `scripts/db/` artifacts exist so a fresh developer can run the
-> upcoming PostgreSQL + Prisma target database on their machine, without
-> touching the production MongoDB source.
+> `db/` / `scripts/db/` artifacts let developers run a PostgreSQL + Prisma
+> database locally without touching any production system.
 >
 > **There is no production reset command in this repository, by design.**
 > The reset helpers below refuse to run against anything that does not look
 > like a local/test database name.
 
-This is the canonical "how do I get PostgreSQL running locally?" entry point
-for the MongoDB -> PostgreSQL + Prisma migration. It is consumed by Task 5
-(Prisma v7 configuration) and later tasks (Prisma migrations, importer).
+This is the canonical local PostgreSQL + Prisma setup guide.
 
 ---
 
@@ -164,25 +161,7 @@ Example:
 
 ---
 
-## 6. MongoDB source (migration tooling only)
-
-The PostgreSQL target is the application's database going forward. MongoDB is
-read **only** by the migration tooling (`scripts/migration/*`) during the
-cutover.
-
-- Source URL: `MONGO_URL` in `.env` (placeholder only in `.env.example`).
-- The read-only profiler (`scripts/migration/profile-mongodb.mjs`) is provably
-  read-only — see the static guard test
-  (`tests/unit/migration/static-guard.test.js`).
-- Never point `MONGO_URL` at a production MongoDB without explicit read-only
-  credentials and an approved maintenance window.
-
-Starting / stopping PostgreSQL via `compose.db.yml` does **not** affect any
-MongoDB instance, local or production.
-
----
-
-## 7. Other application variables
+## 6. Application variables
 
 | Variable       | Purpose                                                      |
 |----------------|--------------------------------------------------------------|
@@ -195,7 +174,7 @@ local `.env`. None of them are ever committed with real values.
 
 ---
 
-## 8. Troubleshooting
+## 7. Troubleshooting
 
 - **`psql: connection refused` after `up -d`** — the container is still
   starting. Re-run `docker compose -f compose.db.yml ps` and wait for
@@ -212,10 +191,10 @@ local `.env`. None of them are ever committed with real values.
 
 ---
 
-## 9. What this does NOT do
+## 8. What this does NOT do
 
 - Does NOT install PostgreSQL on the host (Docker only).
-- Does NOT start or connect to any MongoDB instance.
+- Does NOT connect to external databases unless explicitly configured.
 - Does NOT expose PostgreSQL on anything other than `127.0.0.1`.
 - Does NOT provide any production reset or production credential handling.
 - Does NOT commit any real secret — `.env.example` is placeholders only and

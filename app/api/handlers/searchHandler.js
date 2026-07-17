@@ -1,6 +1,6 @@
-// Site search handler (Task 17: MongoDB -> PostgreSQL/Prisma migration).
+// Site search handler (Task 17: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET /search?q=... -> 200 `{ results, total }`
 //   - q missing or length < 2 -> `{ results: [] }` (no total key — legacy shape)
 //   - Five parallel domain queries with `contains` + `mode: 'insensitive'`:

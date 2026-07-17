@@ -1,6 +1,6 @@
-// Stats / dashboard aggregates handler (Task 12: full Mongo -> Prisma).
+// Stats / dashboard aggregates handler (Task 12: full PostgreSQL -> Prisma).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET /stats (auth required)
 //   - Parallel entity counts (news, announcements, services, cases, users,
 //     agenda, putusan/Decision, pages)
@@ -28,7 +28,7 @@ export async function handleStats(request, _segments, method) {
   const todayEnd = new Date(todayStart.getTime() + 86400000);
 
   // Date-only bound for Agenda.tanggalSidang (@db.Date). Uses the same
-  // toISOString().split('T')[0] derivation as the legacy Mongo handler so the
+  // toISOString().split('T')[0] derivation as the established API contract so the
   // day window matches under any host TZ. Equality (not lte:tomorrow) so we
   // count TODAY only — `lte: tomorrow` would incorrectly include tomorrow.
   const todayDate = parseDateOnly(todayStart.toISOString().split('T')[0], 'tanggalSidang');

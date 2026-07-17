@@ -1,6 +1,6 @@
-// Services handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// Services handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /services       -> 200 `{ items }` (NOT paginated; sorted by order asc)
 //   - POST   /services       -> 201 created row (auth)
 //   - GET    /services/:id   -> 200 row | 404

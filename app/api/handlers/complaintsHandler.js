@@ -1,6 +1,6 @@
-// Complaints handler (Task 9: MongoDB -> PostgreSQL/Prisma migration).
+// Complaints handler (Task 9: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /complaints?page&limit&status  -> 200 `{ items, total, totalPages }`
 //     (auth required; envelope omits `page`)
 //     optional status equality; sort createdAt desc

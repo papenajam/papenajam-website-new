@@ -1,7 +1,7 @@
-// Authentication handler (Task 7: MongoDB -> PostgreSQL/Prisma migration).
+// Authentication handler (Task 7: PostgreSQL/Prisma implementation).
 //
 // This is the FIRST handler migrated to Prisma. Behaviour is byte-identical
-// to the legacy Mongo handler:
+// to the established API contract:
 //   - POST /auth/login  -> finds user by lowercased email, bcrypt-compares the
 //     password, issues a JWT (lib/auth.js is DB-independent and is reused
 //     unchanged). 401 `{ error: 'Email atau password salah' }` on miss/bad pw.

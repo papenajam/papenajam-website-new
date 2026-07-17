@@ -1,12 +1,12 @@
-// Surveys handler (Task 12: MongoDB -> PostgreSQL/Prisma migration).
+// Surveys handler (Task 12: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET  /surveys/config          -> singleton config (id 'main') or defaults
 //   - PUT  /surveys/config          -> upsert id 'main' (auth)
 //   - POST /surveys/submit          -> insert SurveyResponse
 //   - GET  /surveys?page&limit      -> paginated responses + avg (auth)
 //       envelope: { items, total, totalPages, averageRating, totalResponses }
-//       (no `page` key — matches legacy Mongo shape)
+//       (no `page` key — matches established API shape)
 //
 // Prisma models: SurveyConfig (@@map("survey_config")),
 //                SurveyResponse (@@map("survey_responses")).

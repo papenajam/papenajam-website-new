@@ -153,7 +153,7 @@ describe('POST /auth/login', () => {
 
   test('missing role on the row defaults to "admin" (legacy fallback)', async () => {
     // Some legacy rows may have no role field; the handler falls back to
-    // 'admin' in BOTH the JWT payload and the response, matching the Mongo
+    // 'admin' in BOTH the JWT payload and the response, matching the previous datastore
     // handler's `user.role || 'admin'`.
     mockPrisma.user.findUnique.mockResolvedValue({ ...DB_USER, role: null });
     mockAuth.comparePassword.mockResolvedValue(true);

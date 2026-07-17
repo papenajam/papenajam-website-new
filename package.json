@@ -1,5 +1,5 @@
 {
-    "name": "nextjs-mongo-template",
+    "name": "pa-penajam-platform",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -19,11 +19,7 @@
         "db:migrate:dev": "prisma migrate dev",
         "db:migrate:deploy": "prisma migrate deploy",
         "db:migrate:status": "prisma migrate status",
-        "db:seed": "prisma db seed",
-        "db:profile:mongo": "node scripts/migration/profile-mongodb.mjs",
-        "db:export:mongo": "tsx scripts/migration/export-mongodb.mjs",
-        "db:import:postgres": "tsx scripts/migration/import-postgres.mjs",
-        "db:verify:migration": "tsx scripts/migration/verify-migration.mjs"
+        "db:seed": "prisma db seed"
     },
     "engines": {
         "node": ">=20.19.0"
@@ -74,7 +70,6 @@
         "input-otp": "^1.4.2",
         "jsonwebtoken": "^9.0.3",
         "lucide-react": "^1.24.0",
-        "mongodb": "^7.5.0",
         "multer": "^2.2.0",
         "next": "^16.2.10",
         "next-themes": "^0.4.6",

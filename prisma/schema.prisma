@@ -1,32 +1,8 @@
-// PostgreSQL Prisma schema for the MongoDB -> PostgreSQL migration.
+// PostgreSQL Prisma schema for the application.
 //
-// Authoritative source: plan section 5 (.omo/plans/mongodb-to-postgresql-prisma-migration.md),
-// model-by-model. Field names, types, nullability, indexes, and relations
-// below are bound to that matrix. Model and field names are kept camelCase
-// so the JavaScript handlers read naturally; tables and columns are mapped
-// to snake_case via @@map / @map so the underlying SQL is conventional.
-//
-// Schema conventions (plan section 5.1):
-//   - Public `id`: String @id @default(uuid()) @db.Uuid. PENDING the live
-//     profiler: if non-UUID legacy ids are found, this column is widened to
-//     String @id @db.Text WITHOUT changing external ids (plan line 158).
-//     See docs/database-migration.md for the open decision.
-//   - Timestamps: DateTime @db.Timestamptz(3). We do NOT use @updatedAt;
-//     handlers set `updatedAt` explicitly so legacy write semantics survive
-//     (plan line 159). `updatedAt` is therefore nullable on every model.
-//   - Calendar dates: DateTime? @db.Date. Parsed/serialized at the API
-//     boundary so the wire shape stays `YYYY-MM-DD`.
-//   - Long text / HTML: String @db.Text.
-//   - JSON blobs: Json @db.JsonB (pages.blocks, sidebar_widgets.settings).
-//   - No Prisma enums initially (legacy MongoDB values are unconstrained);
-//     CHECK constraints are deferred until after profiling/owner sign-off.
-//   - Uniqueness on email/slug/key is the TARGET state per plan section 5.
-//     The importer (Task 16) must resolve duplicates BEFORE applying this
-//     migration; the transform-rules PENDING registry from Task 3 already
-//     fails loud on those anomalies. See docs/database-migration.md.
-//   - Menu self-relation uses onDelete: Restrict so the current one-level
-//     deletion semantics are preserved (plan line 208-209): a parent with
-//     children must be explicitly cleared by the handler.
+// Models use camelCase in code and map to conventional table names. Public
+// identifiers are UUIDs, timestamps are timezone-aware, calendar values use
+// `DATE`, and rich page/widget configuration is stored as JSONB.
 
 generator client {
   provider               = "prisma-client"

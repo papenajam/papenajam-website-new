@@ -11,7 +11,7 @@
 //   - POST /users (unauth) -> 401.
 //   - PUT /users/:id (authed): 200 with the post-update row INCLUDING updatedAt;
 //     email lower-cased; optional password re-hash.
-//   - PUT /users/:id missing -> 200 `null` (legacy Mongo updateOne no-op +
+//   - PUT /users/:id missing -> 200 `null` (established API updateOne no-op +
 //     findOne null baseline; preserved via updateMany + findUnique).
 //   - PUT /users (unauth) -> 401.
 //   - DELETE /users/:id (authed): ALWAYS 200 `{ message: 'Berhasil dihapus' }`,

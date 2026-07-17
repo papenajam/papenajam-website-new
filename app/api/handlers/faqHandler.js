@@ -1,6 +1,6 @@
-// FAQ handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// FAQ handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /faq?category  -> 200 `{ items, categories }`
 //     public list always filters isActive=true; optional category equality;
 //     sort order asc; categories = distinct category for isActive=true

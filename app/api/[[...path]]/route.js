@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 
-// Import all domain handlers.
-// Prisma lazy-connects via the shared pool in lib/prisma.js — no per-request
-// Mongo bootstrap. Public POST /api/seed is intentionally NOT mapped (Task 15);
-// use `corepack yarn db:seed` / `prisma db seed` instead.
+// Import all PostgreSQL/Prisma domain handlers.
+// Prisma lazy-connects via the shared pool in lib/prisma.js. Public POST
+// /api/seed is intentionally disabled; use `yarn db:seed` operationally.
 import { handleAuth } from '../handlers/authHandler';
 import { handleStats } from '../handlers/statsHandler';
 import { handleUpload } from '../handlers/uploadHandler';

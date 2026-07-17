@@ -6,7 +6,7 @@
 //   - P2025 (record not found) -> baseline semantics PRESERVED per endpoint:
 //       GET single  -> 404 `{ error: 'Tidak ditemukan' }`
 //       GET page    -> 404 `{ error: 'Halaman tidak ditemukan' }`
-//       PUT         -> 200 `null` (legacy Mongo updateOne no-op + findOne null)
+//       PUT         -> 200 `null` (established API updateOne no-op + findOne null)
 //       DELETE      -> 200 `{ message: 'Berhasil dihapus' }`  (always 200)
 //       DELETE media-> 200 `{ message: 'File berhasil dihapus' }`
 //     Crucially: P2025 does NOT auto-become 404 for PUT/DELETE. That would
@@ -68,7 +68,7 @@ describe('mapError: P2002 unique violation -> duplicate response', () => {
 });
 
 describe('mapError: P2025 not-found semantics PRESERVED per endpoint', () => {
-  // Plan line 302-306: many Mongo update/delete endpoints return 200 even
+  // Plan line 302-306: many previous datastore update/delete endpoints return 200 even
   // when the id is missing. Prisma `update`/`delete` throw P2025 instead, so
   // a naive migration would change those to 404 and break the contract. The
   // mapper MUST preserve the baseline behaviour.
@@ -86,7 +86,7 @@ describe('mapError: P2025 not-found semantics PRESERVED per endpoint', () => {
   });
 
   test('behavior="put" -> 200 with body null (legacy updateOne no-op shape)', () => {
-    // Mongo: `updateOne({id})` no-ops when id missing, then `findOne({id})`
+    // previous datastore: `updateOne({id})` no-ops when id missing, then `findOne({id})`
     // returns null, so the legacy response is literally `null` at status 200.
     const out = mapError(prismaErr('P2025'), { behavior: 'put' });
     expect(out.status).toBe(200);
@@ -95,7 +95,7 @@ describe('mapError: P2025 not-found semantics PRESERVED per endpoint', () => {
   });
 
   test('behavior="delete" -> 200 { message: "Berhasil dihapus" }', () => {
-    // Mongo: deleteOne({id}) no-ops when id missing, then handler returns
+    // previous datastore: deleteOne({id}) no-ops when id missing, then handler returns
     // 200 with the success message REGARDLESS. We must preserve that.
     const out = mapError(prismaErr('P2025'), { behavior: 'delete' });
     expect(out.status).toBe(200);

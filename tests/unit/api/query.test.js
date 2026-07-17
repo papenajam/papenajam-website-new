@@ -3,10 +3,10 @@
 // Covers the REQUIRED test cases from plan lines 540-548 + plan line 286:
 //   - parsePagination preserves current endpoint defaults per collection
 //     (news=10, agenda=20, media=30, gallery=50, complaints=20, etc.)
-//   - page/limit NaN falls back to defaults (matches legacy Mongo handlers'
+//   - page/limit NaN falls back to defaults (matches established API contracts'
 //     `parseInt(x || 'default')` behaviour for valid input)
 //   - page < 1 and limit < 1 clamp to >= 1 so Prisma `skip`/`take` never go
-//     negative (stabilises garbage input that previously crashed Mongo)
+//     negative (stabilises garbage input that previously crashed previous datastore)
 //   - skip = (page - 1) * limit and take = limit for Prisma findMany
 //   - media sort allowlist: arbitrary user input never reaches Prisma
 //     orderBy; unknown fields fall back to createdAt; sortDir 'asc' is the
@@ -28,7 +28,7 @@ function params(obj) {
   return new URLSearchParams(obj);
 }
 
-describe('parsePagination: per-collection defaults match legacy Mongo handlers', () => {
+describe('parsePagination: per-collection defaults match established API contracts', () => {
   // These are the EXACT defaults observed in app/api/handlers/*.js. If a
   // handler task changes a default, update DEFAULT_LIMITS + this table.
   test.each([
@@ -91,7 +91,7 @@ describe('parsePagination: NaN / missing fall back to defaults (legacy behaviour
     expect(out.limit).toBe(10);
   });
 
-  test('empty string falls back (mirrors `x || default` from Mongo handlers)', () => {
+  test('empty string falls back (mirrors `x || default` from API handlers)', () => {
     const out = parsePagination(params({ page: '', limit: '' }), 'agenda');
     expect(out.page).toBe(1);
     expect(out.limit).toBe(20);
@@ -101,7 +101,7 @@ describe('parsePagination: NaN / missing fall back to defaults (legacy behaviour
 describe('parsePagination: negative / zero clamp to >= 1', () => {
   // Prisma requires non-negative skip and take; we clamp to 1 so the handler
   // never hands Prisma a value that throws. This is the only behaviour
-  // CHANGE from the legacy Mongo handlers (which had undefined behaviour for
+  // CHANGE from the established API contracts (which had undefined behaviour for
   // negative skip/limit). It is safe because no legitimate client sends
   // page=0.
   test('page=0 -> page=1', () => {

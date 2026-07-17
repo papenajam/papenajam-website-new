@@ -1,6 +1,6 @@
-// Upload handler (Task 13: MongoDB -> PostgreSQL/Prisma migration).
+// Upload handler (Task 13: PostgreSQL/Prisma implementation).
 //
-// Behaviour matches the legacy Mongo handler wire contract:
+// Behaviour matches the established API contract wire contract:
 //   - POST /upload (auth) -> 200 `{ url, fileName, type, id }`
 //     1. Write file to public/uploads/{images|pdfs|videos}/
 //     2. Insert Media metadata via Prisma AFTER the file is on disk

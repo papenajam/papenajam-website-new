@@ -1,6 +1,6 @@
-// News handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// News handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /news?page&limit&search&public  -> 200 paginated envelope
 //     search  -> title contains + mode:'insensitive'
 //     public  -> isPublished=true
@@ -8,7 +8,7 @@
 //   - POST   /news       -> 201 created row (auth)
 //   - GET    /news/:id   -> 200 row | 404 `{ error: 'Tidak ditemukan' }`
 //   - PUT    /news/:id   -> 200 post-update row | 200 null when missing
-//     (updateMany + findUnique preserves the legacy Mongo no-op baseline)
+//     (updateMany + findUnique preserves the established API no-op baseline)
 //   - DELETE /news/:id   -> 200 `{ message: 'Berhasil dihapus' }` ALWAYS
 //     (deleteMany does not throw P2025)
 //
@@ -92,7 +92,7 @@ export async function handleNews(request, segments, method) {
         data: {
           ...rest,
           // Schema requires non-null booleans; default false when absent so a
-          // partial body still inserts (legacy Mongo was schema-less).
+          // partial body still inserts (established API was schema-less).
           isPublished: rest.isPublished === true || rest.isPublished === false
             ? rest.isPublished
             : false,

@@ -1,6 +1,6 @@
-// Cases handler (Task 9: MongoDB -> PostgreSQL/Prisma migration).
+// Cases handler (Task 9: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /cases?page&limit&search&tahun&jenis&namaPihak  -> 200 paginated
 //     search     -> nomorPerkara contains + mode:'insensitive'
 //     tahun      -> equality
@@ -10,7 +10,7 @@
 //   - POST   /cases       -> 201 created row (auth)
 //   - GET    /cases/:id   -> 200 row | 404 `{ error: 'Tidak ditemukan' }`
 //   - PUT    /cases/:id   -> 200 post-update row | 200 null when missing
-//     (updateMany + findUnique preserves the legacy Mongo no-op baseline)
+//     (updateMany + findUnique preserves the established API no-op baseline)
 //   - DELETE /cases/:id   -> 200 `{ message: 'Berhasil dihapus' }` ALWAYS
 //     (deleteMany does not throw P2025)
 //

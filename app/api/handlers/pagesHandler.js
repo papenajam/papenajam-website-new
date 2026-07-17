@@ -1,6 +1,6 @@
-// Pages handler (Task 10: MongoDB -> PostgreSQL/Prisma migration).
+// Pages handler (Task 10: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /pages              -> 200 `{ items }` sorted createdAt desc
 //   - POST   /pages              -> 201 created row (auth)
 //     defaults: blocks=[], status='draft'; validates root blocks is an array
@@ -10,7 +10,7 @@
 //     Special slug `_homepage` is supported (no special casing beyond uniqueness)
 //   - GET    /pages/:id          -> 200 row | 404 `{ error: 'Tidak ditemukan' }`
 //   - PUT    /pages/:id          -> 200 post-update row | 200 null when missing
-//     (updateMany + findUnique preserves the legacy Mongo no-op baseline)
+//     (updateMany + findUnique preserves the established API no-op baseline)
 //   - DELETE /pages/:id          -> 200 `{ message: 'Berhasil dihapus' }` ALWAYS
 //     (deleteMany does not throw P2025)
 //
@@ -153,7 +153,7 @@ export async function handlePages(request, segments, method) {
     try {
       // updateMany preserves the legacy "always 200" baseline: when the id is
       // missing the count is 0 (a no-op), then findUnique returns null and we
-      // emit 200 `null` — matching the Mongo contract exactly.
+      // emit 200 `null` — matching the previous datastore contract exactly.
       await prisma.page.updateMany({
         where: { id },
         data: {

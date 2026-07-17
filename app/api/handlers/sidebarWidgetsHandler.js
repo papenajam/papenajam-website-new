@@ -1,6 +1,6 @@
-// Sidebar widgets handler (Task 11: MongoDB -> PostgreSQL/Prisma migration).
+// Sidebar widgets handler (Task 11: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /sidebar-widgets       -> 200 `{ items }` public active list
 //     isActive=true, sort order asc
 //   - POST   /sidebar-widgets       -> 201 created row (auth)

@@ -1,6 +1,6 @@
-// Announcements handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// Announcements handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /announcements?page&limit&search&public  -> 200 paginated envelope
 //     search  -> title contains + mode:'insensitive'
 //     public  -> isActive=true

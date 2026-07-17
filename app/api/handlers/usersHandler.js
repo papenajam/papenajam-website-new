@@ -1,15 +1,15 @@
-// Users handler (Task 7: MongoDB -> PostgreSQL/Prisma migration).
+// Users handler (Task 7: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler. The contract test
+// Behaviour is byte-identical to the established API contract. The contract test
 // (tests/contract/api-contract.test.js) pins every response shape:
 //   - GET    /users       -> 200 `{ items: [{id,name,email,role,createdAt}] }`
 //     (NOT paginated; the legacy handler returned the full list and the
 //     contract asserts only the `items` key via expectExactItems).
 //   - POST   /users       -> 201 `{id,name,email,role,createdAt}` (no updatedAt;
-//     the Mongo insertOne did not set updatedAt). 401 unauth. Duplicate email
+//     the previous datastore insertOne did not set updatedAt). 401 unauth. Duplicate email
 //     -> 400 `{ error: 'Email sudah terdaftar' }`.
 //   - PUT    /users/:id   -> 200 with the post-update row (includes updatedAt).
-//     Missing id -> 200 `null` (legacy Mongo updateOne no-op + findOne null).
+//     Missing id -> 200 `null` (established API updateOne no-op + findOne null).
 //     The plan/Task 6 `mapError({ behavior: 'put' })` baseline encodes this.
 //   - DELETE /users/:id   -> 200 `{ message: 'Berhasil dihapus' }` ALWAYS
 //     (legacy deleteOne is a no-op when the id is absent; we use deleteMany so
@@ -32,7 +32,7 @@ import { requireAuth, hashPassword } from '@/lib/auth';
 import { serializeRecord } from '@/lib/api/serialize.js';
 import { mapError } from '@/lib/prisma-errors.js';
 
-// Prisma `select` that mirrors the legacy Mongo `{ projection: { password: 0 } }`.
+// Prisma `select` that mirrors the established API `{ projection: { password: 0 } }`.
 // We enumerate the columns explicitly so a future schema addition does not
 // silently leak into the API (defence-in-depth on top of the serializer).
 const USER_SELECT = {
@@ -44,7 +44,7 @@ const USER_SELECT = {
   updatedAt: true,
 };
 
-// Create response shape: the legacy Mongo `insertOne` did NOT set updatedAt, so
+// Create response shape: the established API `insertOne` did NOT set updatedAt, so
 // the POST response has exactly `{id,name,email,role,createdAt}`. The contract
 // test asserts this exact key set via `expectKeys`, so we must omit updatedAt
 // here (Prisma would otherwise return it as `null`).
@@ -65,7 +65,7 @@ export async function handleUsers(request, segments, method) {
       if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       // Legacy handler returned the full list (no pagination); the contract
       // test asserts only the `items` key, so we preserve that shape exactly.
-      // The list select omits updatedAt because the legacy Mongo `find` with
+      // The list select omits updatedAt because the established API `find` with
       // `{ projection: { password: 0 } }` returned whatever fields each doc
       // had, and the seeded admin has no updatedAt. The contract pins the list
       // item shape to exactly `{id,name,email,role,createdAt}`.
@@ -134,7 +134,7 @@ export async function handleUsers(request, segments, method) {
     if (body.password) update.password = await hashPassword(body.password);
     // updateMany preserves the legacy "always 200" baseline: when the id is
     // missing the count is 0 (a no-op), then findUnique returns null and we
-    // emit 200 `null` — matching the Mongo contract exactly.
+    // emit 200 `null` — matching the previous datastore contract exactly.
     await prisma.user.updateMany({ where: { id }, data: update });
     const row = await prisma.user.findUnique({ where: { id }, select: USER_SELECT });
     return NextResponse.json(serializeRecord('User', row));

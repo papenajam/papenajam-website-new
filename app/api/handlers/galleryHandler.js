@@ -1,6 +1,6 @@
-// Gallery handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// Gallery handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /gallery?category&limit  -> 200 `{ items, categories }`
 //     public list always filters isActive=true; optional category equality;
 //     sort order asc then createdAt desc; limit only (no page envelope)
@@ -20,7 +20,7 @@ import { serializeRecord, serializeList } from '@/lib/api/serialize.js';
 const PUBLIC_ORDER = [{ order: 'asc' }, { createdAt: 'desc' }];
 
 /**
- * Distinct non-null categories for active gallery items, mirroring Mongo
+ * Distinct non-null categories for active gallery items, mirroring previous datastore
  * `col.distinct('category', { isActive: true })`. Prisma returns objects; we
  * map to a scalar array and drop nulls so the wire shape stays `string[]`.
  */

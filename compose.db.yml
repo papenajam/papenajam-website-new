@@ -1,5 +1,4 @@
-# Local/test PostgreSQL 16 environment for the MongoDB -> PostgreSQL + Prisma
-# migration.
+# Local/test PostgreSQL 16 environment.
 #
 # Scope: LOCAL AND TEST ONLY. Do not use this file for production.
 #

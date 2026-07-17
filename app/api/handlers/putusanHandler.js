@@ -1,6 +1,6 @@
-// Putusan / Decision handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// Putusan / Decision handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /putusan?page&limit&search&public  -> 200 paginated envelope
 //     search  -> OR of nomorPerkara / jenisPerkara contains + mode:'insensitive'
 //     public  -> statusPublish=true

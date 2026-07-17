@@ -210,7 +210,7 @@ describe('prisma schema: binding conventions', () => {
     expect(swBlock).toMatch(/settings\s+Json\s+@db\.JsonB/);
   });
 
-  test('no Prisma enums (legacy MongoDB values unconstrained — plan line 164)', () => {
+  test('no Prisma enums (established APIDB values unconstrained — plan line 164)', () => {
     expect(schema).not.toMatch(/^enum\s+\w+\s*\{/m);
   });
 
@@ -521,8 +521,6 @@ describe('package.json + .gitignore: Task 5 wiring', () => {
     expect(pkg.dependencies.pg).toMatch(/^8\./);
     expect(pkg.dependencies.dotenv).toMatch(/^17\./);
     expect(pkg.devDependencies.prisma).toBe('7.8.0');
-    // mongodb retained for profiler/export (plan line 331).
-    expect(pkg.dependencies.mongodb).toBeTruthy();
   });
 
   test('.gitignore ignores the generated client directory', () => {

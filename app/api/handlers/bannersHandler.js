@@ -1,9 +1,9 @@
-// Banners handler (Task 8: MongoDB -> PostgreSQL/Prisma migration).
+// Banners handler (Task 8: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /banners       -> 200 `{ items }` of active banners whose endDate
 //     is null OR >= today (YYYY-MM-DD). Sort by order asc.
-//     Legacy Mongo also matched endDate:'' — empty string is normalised to null
+//     Established API also matched endDate:'' — empty string is normalised to null
 //     on write so the Prisma filter only needs `endDate: null | gte today`.
 //   - POST   /banners       -> 201 created row (auth); defaults isActive=true, order=0
 //   - GET    /banners/all   -> 200 `{ items }` (auth); all rows, sort order asc
@@ -50,7 +50,7 @@ export async function handleBanners(request, segments, method) {
   if (!sub) {
     if (method === 'GET') {
       // Active list: isActive=true AND (endDate IS NULL OR endDate >= today).
-      // Empty-string endDate was accepted by Mongo; we store it as NULL on write
+      // Empty-string endDate was accepted by previous datastore; we store it as NULL on write
       // so the Prisma OR only needs the null branch for "no end date".
       const today = new Date(`${todayYyyyMmDd()}T00:00:00.000Z`);
       const rows = await prisma.banner.findMany({

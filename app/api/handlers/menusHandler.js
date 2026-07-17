@@ -1,6 +1,6 @@
-// Menus handler (Task 11: MongoDB -> PostgreSQL/Prisma migration).
+// Menus handler (Task 11: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /menus           -> 200 `{ items }` public tree
 //     isActive=true, sort order asc; top-level rows (parentId null/absent) each
 //     carry a `children` array of their direct children (also order asc).

@@ -1,6 +1,6 @@
-// Media handler (Task 13: MongoDB -> PostgreSQL/Prisma migration).
+// Media handler (Task 13: PostgreSQL/Prisma implementation).
 //
-// Behaviour matches the legacy Mongo handler wire contract:
+// Behaviour matches the established API contract wire contract:
 //   - GET    /media?page&limit&search&type&sortField&sortDir
 //     -> 200 `{ items, total, page, totalPages }` (public, no auth)
 //     search -> title OR originalName contains + mode:'insensitive'
@@ -98,7 +98,7 @@ export async function handleMedia(request, segments, method) {
     for (const k of ['title', 'alt']) {
       if (body[k] !== undefined) data[k] = body[k];
     }
-    // updateMany + findUnique preserves the legacy Mongo "PUT missing id ->
+    // updateMany + findUnique preserves the established API "PUT missing id ->
     // 200 null" baseline (updateMany is a no-op; findUnique returns null;
     // serializeRecord(null) is null).
     await prisma.media.updateMany({ where: { id }, data });

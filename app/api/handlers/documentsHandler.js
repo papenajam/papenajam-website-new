@@ -1,6 +1,6 @@
-// Documents handler (Task 9: MongoDB -> PostgreSQL/Prisma migration).
+// Documents handler (Task 9: PostgreSQL/Prisma implementation).
 //
-// Behaviour is byte-identical to the legacy Mongo handler:
+// Behaviour is byte-identical to the established API contract:
 //   - GET    /documents?page&limit&category&search
 //     -> 200 `{ items, total, categories, totalPages }` (no `page` key)
 //     public list always filters isActive=true; optional category equality;
@@ -25,7 +25,7 @@ import { serializeRecord, serializeList } from '@/lib/api/serialize.js';
 import { parsePagination } from '@/lib/api/query.js';
 
 /**
- * Distinct non-null categories for active documents, mirroring Mongo
+ * Distinct non-null categories for active documents, mirroring previous datastore
  * `col.distinct('category', { isActive: true })`. Prisma returns objects; we
  * map to a scalar array and drop nulls so the wire shape stays `string[]`.
  */
@@ -99,7 +99,7 @@ export async function handleDocuments(request, segments, method) {
     // Atomic increment via updateMany so a missing id is a silent no-op
     // (does NOT throw P2025 the way prisma.document.update would). Then
     // re-read; missing row yields `{ fileUrl: undefined, title: undefined }`
-    // which JSON.stringify drops to `{}` — matching the Mongo optional-chain
+    // which JSON.stringify drops to `{}` — matching the previous datastore optional-chain
     // baseline `item?.fileUrl` / `item?.title`.
     await prisma.document.updateMany({
       where: { id: subId },
