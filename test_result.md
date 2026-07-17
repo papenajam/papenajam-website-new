@@ -418,7 +418,7 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://pengadilan-agama-cms.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
+    message: "Major upgrade v2.0 complete. New features: Page Builder (dnd-kit), Agenda Sidang (calendar+table), Putusan (PDF upload), Perkara search, Role permissions (admin/staff/editor), Enhanced dashboard with recharts charts, File upload, Public pages. Base URL: https://analisa-platform-1.preview.emergentagent.com. Admin: admin@pa-penajam.go.id/Admin@1234. Staff: staff@pa-penajam.go.id/Staff@1234. Editor: editor@pa-penajam.go.id/Editor@1234. Please test high priority new API endpoints."
   - agent: "testing"
     message: "BACKEND API v2.0 TESTING COMPLETE ✅ Tested all 15 specified endpoints with 100% success rate (20/20 tests passed). Key findings: 1) All authentication working (admin/staff/editor roles), 2) Enhanced stats API returns required chart data (monthlyData, caseTypes, todayAgenda), 3) Pages API with blocks array creation working, 4) Agenda CRUD with date filtering operational, 5) Putusan public/private filtering working, 6) Cases name/jenis filters functional, 7) Role-based permissions implemented but not strictly enforced (staff can access pages). All endpoints responding correctly with proper data structures."
   - agent: "testing"
@@ -752,7 +752,7 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://pengadilan-agama-cms.preview.emergentagent.com. Test high priority backend APIs."
+    message: "Built complete Pengadilan Agama Penajam website. Admin credentials: admin@pa-penajam.go.id / Admin@1234. Base URL: https://analisa-platform-1.preview.emergentagent.com. Test high priority backend APIs."
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE ✅ All 12 critical API endpoints tested successfully: Authentication (login/verify), Database seeding, News CRUD (with pagination/search), Announcements, Cases CRUD (with filtering), Services, Stats, Settings. Success rate: 100% (17/17 tests passed). All authentication flows, CRUD operations, pagination, search, and filtering working correctly."
   - agent: "main"
