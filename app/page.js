@@ -1,3 +1,6 @@
+'use client';
+
+
 import dynamic from 'next/dynamic';
 
 const DynamicHomepage = dynamic(() => import('@/components/DynamicHomepage'), {
