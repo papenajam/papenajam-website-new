@@ -233,25 +233,31 @@ frontend:
     implemented: true
     working: false
     file: "app/app/page.js, components/DynamicHomepage.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "CRITICAL ISSUE ❌ Homepage stuck in loading state indefinitely. Dynamic import in page.js shows 'Memuat...' spinner but DynamicHomepage component never renders. After 10+ seconds: no h1, no nav, no hero section, no content elements. HTML is served (22302 chars) with site name in content, but client-side hydration fails. Loading spinner still visible. Likely causes: 1) Dynamic import without ssr:false causing hydration mismatch, 2) Component too large for code-splitting, 3) Client-side JavaScript error preventing mount. All API endpoints working (200 status) but some slow (2-3s for news/documents/analytics). Needs immediate fix - homepage is completely unusable."
+      - working: false
+        agent: "testing"
+        comment: "RETEST AFTER SERVER RESTART ❌ Homepage STILL stuck in loading state after 20+ seconds wait. Spinner 'Memuat...' remains visible, 0 H1 elements, 0 Nav elements found. Server responds quickly (GET / 200 in 26-35ms), but client-side dynamic import never completes. NO API calls from DynamicHomepage component detected in server logs (no /api/pages/slug/_homepage, /api/news, /api/announcements calls during test), confirming DynamicHomepage component never mounts. Root cause: Dynamic import in page.js (line 3) is not completing - the loading fallback shows but the actual component never loads. This is NOT a cold-start latency issue - it's a persistent failure of the dynamic import mechanism. User's manual reproduction may have worked due to different browser/cache state. PERSISTENT BLOCKER."
 
   - task: "Admin Login Redirect"
     implemented: true
     working: false
     file: "app/admin/login/page.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "CRITICAL ISSUE ❌ Admin login form submits but doesn't redirect to dashboard. After entering credentials (admin@pa-penajam.go.id / Admin@1234) and clicking submit, page stays on /admin/login with '?' appended to URL. Expected: redirect to /admin/dashboard. Login form renders correctly, credentials are filled, submit button clicks, but router.push('/admin/dashboard') not executing. Possible causes: 1) Login API returning error (need to check response), 2) router.push() failing silently, 3) Token not being set in localStorage. Admin panel is inaccessible."
+      - working: false
+        agent: "testing"
+        comment: "RETEST AFTER SERVER RESTART ❌ Admin login STILL not redirecting after 20+ seconds wait. Form submits, URL changes to /admin/login? (with '?' appended), but stays there. NO token or user in localStorage after 26 seconds. Server logs show POST /api/auth/login 200 responses (668ms-2.4s), and dashboard compilation completed (○ Compiling /admin/dashboard ...), so backend is working. However, client-side redirect logic is not executing. Page shows H1 'Pengadilan Agama Penajam' (login page heading), confirming still on login page. This is NOT a cold-start latency issue - it's a persistent failure of the client-side login handler. User's manual reproduction may have worked due to different browser/cache state. PERSISTENT BLOCKER."
 
   - task: "Accessibility & Bilingual System"
     implemented: true
@@ -830,6 +836,12 @@ backend:
       - working: false
         agent: "testing"
         comment: "FRONTEND SMOKE TEST COMPLETED - CRITICAL ISSUES FOUND ❌ Tested public site and admin panel after PostgreSQL/Prisma cleanup. POSITIVE: ✅ All 9 major public routes load (200 status): /berita, /agenda-sidang, /putusan, /pencarian-perkara, /dokumen, /faq, /galeri, /pengaduan, /accessibility. ✅ All 8 admin panels load successfully: news, page-builder, homepage, agenda-sidang, putusan, media, settings, users. ✅ No console errors (only expected Next.js HMR WebSocket warnings). ✅ No network errors. ✅ No MongoDB references in errors. ✅ Backend APIs responding correctly (all 200 status). CRITICAL ISSUES: ❌ Homepage stuck in loading state - shows 'Memuat...' spinner indefinitely, DynamicHomepage component never renders (no h1, nav, hero, or content elements after 10+ seconds). ❌ Admin login doesn't redirect - after submitting credentials, stays on /admin/login with '?' appended to URL instead of redirecting to /admin/dashboard. ROOT CAUSE ANALYSIS: Homepage issue likely caused by dynamic import in /app/app/page.js not completing - component loads HTML (22302 chars) but client-side hydration fails. Login issue suggests router.push() not working properly. RECOMMENDATION: 1) Add ssr:false to dynamic import in page.js, 2) Debug admin login redirect logic, 3) Check for client-side JavaScript errors preventing hydration."
+      - working: "NA"
+        agent: "main"
+        comment: "Manual reproduction after server compilation completed found the homepage rendering normally and admin login redirecting to /admin/dashboard with token/user saved after a longer wait. No source change made; frontend retest requested with element/URL-based waits."
+  - agent: "testing"
+    message: "FRONTEND RETEST WITH ROBUST WAITS COMPLETED ❌ Both blockers PERSIST despite 20+ second waits and server restart. TEST 1 - Homepage: Spinner 'Memuat...' still visible after 20s, 0 H1/Nav elements after 40s. Server responds fast (GET / 200 in 26-35ms) but dynamic import never completes. NO API calls from DynamicHomepage detected in logs (no /api/pages/slug/_homepage, /api/news, /api/announcements), confirming component never mounts. TEST 2 - Admin Login: Form submits, URL becomes /admin/login? but stays there after 26s. NO token/user in localStorage. Server logs show POST /api/auth/login 200 (668ms-2.4s) and dashboard compilation complete, but client-side redirect fails. TEST 3 - Public Routes: ALL 4 routes working perfectly (/berita, /agenda-sidang, /putusan, /pencarian-perkara all 200 with content). CONCLUSION: These are NOT cold-start latency issues - they are PERSISTENT client-side JavaScript failures. The dynamic import mechanism in page.js and the login redirect logic in admin/login/page.js are fundamentally broken. User's manual reproduction likely succeeded due to different browser/cache state or testing method. Both issues require code fixes, not just longer waits."
+
 
   - agent: "testing"
     message: "FRONTEND SMOKE TEST COMPLETED - CRITICAL ISSUES FOUND ❌ Comprehensive testing of public site and admin panel after PostgreSQL/Prisma cleanup. TEST SCOPE: 1) Public homepage and 9 major routes, 2) Navigation/menu behavior, 3) Language/accessibility widgets, 4) Homepage resilience without _homepage API, 5) Admin login and dashboard, 6) 8 key admin panels, 7) Console/network error monitoring. POSITIVE RESULTS: ✅ All 9 public routes load successfully (200 status): /berita, /agenda-sidang, /putusan, /pencarian-perkara, /dokumen, /faq, /galeri, /pengaduan, /accessibility. ✅ All 8 admin panels accessible (200 status): news, page-builder, homepage, agenda-sidang, putusan, media, settings, users. ✅ No critical console errors (only expected Next.js HMR WebSocket 502 warnings). ✅ No network errors. ✅ No MongoDB references in errors or logs. ✅ Backend APIs responding correctly. CRITICAL ISSUES: ❌ HOMEPAGE STUCK IN LOADING STATE - Shows 'Memuat...' spinner indefinitely, DynamicHomepage component never renders. After 10+ seconds: no h1, no nav, no hero, no content elements. HTML served (22302 chars) includes site name but client-side hydration fails. ❌ ADMIN LOGIN DOESN'T REDIRECT - After submitting credentials (admin@pa-penajam.go.id/Admin@1234), page stays on /admin/login with '?' appended instead of redirecting to /admin/dashboard. ROOT CAUSE: Homepage likely caused by dynamic import in /app/app/page.js without ssr:false option causing hydration mismatch. Login issue suggests router.push() not executing. IMPACT: Homepage completely unusable, admin panel inaccessible. RECOMMENDATION: 1) Add ssr:false to dynamic import in page.js, 2) Debug admin login API response and router.push(), 3) Check for client-side JavaScript errors preventing hydration. NOTE: Some API calls slow (2-3s for /api/news, /api/documents, /api/analytics) but not blocking."
