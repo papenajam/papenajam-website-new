@@ -16,7 +16,9 @@ import {
   Plus, Trash2, GripVertical, Eye, Save, Settings2,
   X, Check, Layers, Globe, Upload, Home,
   Newspaper, Bell, Briefcase, Search, Phone, User,
-  BarChart2, Zap, Type, Image, LayoutGrid, ImageIcon
+  BarChart2, Zap, Type, Image, LayoutGrid, ImageIcon,
+  DollarSign, CalendarDays, Scale, ClipboardList,
+  FileText
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -64,19 +66,24 @@ function Toast({ msg, type }) {
 
 // ─── Block Types ─────────────────────────────────────────────────────────────
 const BLOCK_TYPES = [
-  // Dynamic (pull from DB)
+  // Dynamic (pull from DB) - PA priority order
   { type: 'hero_home',      label: 'Hero Beranda',         icon: Home,        desc: 'Banner hero + statistik live',            color: 'bg-blue-50 text-blue-700',       dynamic: true },
-  { type: 'news_ann',       label: 'Berita & Pengumuman',  icon: Newspaper,   desc: '2 kolom kartu dari database',             color: 'bg-emerald-50 text-emerald-700', dynamic: true },
+  { type: 'ecourt_links',   label: 'Layanan E-Court',      icon: Scale,       desc: 'Grid link layanan digital MA RI + panjar', color: 'bg-indigo-50 text-indigo-700',   dynamic: true },
+  { type: 'profile_cards',  label: 'Profil Pengadilan',    icon: User,        desc: 'Visi, Misi, Lokasi',                      color: 'bg-teal-50 text-teal-700',       dynamic: true },
   { type: 'services_grid',  label: 'Layanan',              icon: Briefcase,   desc: 'Grid layanan dari database',              color: 'bg-violet-50 text-violet-700',   dynamic: true },
+  { type: 'case_stepper',   label: 'Alur Berperkara',      icon: ClipboardList,desc: 'Stepper visual 5 langkah berperkara',     color: 'bg-amber-50 text-amber-700' },
+  { type: 'case_search',    label: 'Cari Perkara',         icon: Search,      desc: 'Widget pencarian perkara',                color: 'bg-sky-50 text-sky-700',         dynamic: true },
+  { type: 'today_agenda',   label: 'Agenda Hari Ini',      icon: CalendarDays,desc: 'Teaser jadwal sidang hari ini (live)',     color: 'bg-blue-50 text-blue-700',       dynamic: true },
+  { type: 'news_ann',       label: 'Berita & Pengumuman',  icon: Newspaper,   desc: '2 kolom kartu dari database',             color: 'bg-emerald-50 text-emerald-700', dynamic: true },
+  { type: 'recent_putusan', label: 'Putusan Terbaru',      icon: FileText,    desc: 'List putusan terbaru (live)',             color: 'bg-emerald-50 text-emerald-700', dynamic: true },
   { type: 'gallery_grid',   label: 'Galeri Foto',          icon: ImageIcon,   desc: 'Grid foto dari database galeri',          color: 'bg-pink-50 text-pink-700',       dynamic: true },
+  { type: 'document_list',  label: 'Daftar Dokumen',       icon: Type,        desc: 'Daftar dokumen publik terbaru',           color: 'bg-yellow-50 text-yellow-700',   dynamic: true },
   { type: 'faq_section',    label: 'FAQ',                  icon: LayoutGrid,  desc: 'Pertanyaan & jawaban dari database FAQ',  color: 'bg-cyan-50 text-cyan-700',       dynamic: true },
+  { type: 'panjar_cta',     label: 'Panjar Biaya CTA',     icon: DollarSign,  desc: 'CTA ke panjar.pa-penajam.go.id',          color: 'bg-orange-50 text-orange-700' },
   { type: 'complaint_cta',  label: 'CTA Pengaduan',        icon: Zap,         desc: 'Section ajakan ke form pengaduan',        color: 'bg-rose-50 text-rose-700',       dynamic: true },
+  { type: 'contact_info',   label: 'Kontak',               icon: Phone,       desc: 'Informasi kontak dari pengaturan',        color: 'bg-orange-50 text-orange-700',   dynamic: true },
   { type: 'visitor_stats',  label: 'Statistik Pengunjung', icon: BarChart2,   desc: 'Statistik kunjungan website live',        color: 'bg-lime-50 text-lime-700',       dynamic: true },
   { type: 'banner_slider',  label: 'Banner Slider',        icon: Globe,       desc: 'Slider banner dari manajemen banner',     color: 'bg-fuchsia-50 text-fuchsia-700', dynamic: true },
-  { type: 'document_list',  label: 'Daftar Dokumen',       icon: Type,        desc: 'Daftar dokumen publik terbaru',           color: 'bg-yellow-50 text-yellow-700',   dynamic: true },
-  { type: 'case_search',    label: 'Cari Perkara',         icon: Search,      desc: 'Widget pencarian perkara',                color: 'bg-sky-50 text-sky-700',         dynamic: true },
-  { type: 'contact_info',   label: 'Kontak',               icon: Phone,       desc: 'Informasi kontak dari pengaturan',        color: 'bg-orange-50 text-orange-700',   dynamic: true },
-  { type: 'profile_cards',  label: 'Profil Pengadilan',    icon: User,        desc: 'Visi, Misi, Lokasi',                      color: 'bg-teal-50 text-teal-700',       dynamic: true },
   // Static
   { type: 'hero',           label: 'Hero (Statis)',         icon: Layers,      desc: 'Banner dengan gambar & teks bebas',       color: 'bg-indigo-50 text-indigo-700' },
   { type: 'stats',          label: 'Statistik Manual',      icon: BarChart2,   desc: 'Angka statistik manual',                  color: 'bg-amber-50 text-amber-700' },
@@ -88,7 +95,25 @@ const BLOCK_TYPES = [
 ];
 
 const defaultSettings = {
-  hero_home:      { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan', backgroundImage: '', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true },
+  hero_home:      { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', backgroundImage: '', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true },
+  ecourt_links:   { title: 'Layanan Digital Mahkamah Agung', subtitle: 'Akses layanan peradilan secara online, cepat, dan transparan', layout: 3, items: [
+    { id: uuidv4(), icon: 'Monitor', label: 'E-Court', labelEn: 'E-Court', url: 'https://ecourt.mahkamahagung.go.id', description: 'Pendaftaran perkara online', descriptionEn: 'Online case registration', badge: '', external: true },
+    { id: uuidv4(), icon: 'Search', label: 'SIPP', labelEn: 'SIPP', url: 'https://sipp.pa-penajam.go.id', description: 'Sistem Informasi Penelusuran Perkara', descriptionEn: 'Case Tracking System', badge: '', external: true },
+    { id: uuidv4(), icon: 'FileText', label: 'Gugatan Mandiri', labelEn: 'Independent Lawsuit', url: 'https://gugatan.mahkamahagung.go.id', description: 'Buat gugatan mandiri online', descriptionEn: 'Create independent lawsuit online', badge: '', external: true },
+    { id: uuidv4(), icon: 'Scale', label: 'Direktori Putusan', labelEn: 'Decision Directory', url: 'https://putusan3.mahkamahagung.go.id', description: 'Kumpulan putusan MA RI', descriptionEn: 'Supreme Court decisions', badge: '', external: true },
+    { id: uuidv4(), icon: 'DollarSign', label: 'Panjar Biaya', labelEn: 'Fee Estimation', url: 'https://panjar.pa-penajam.go.id', description: 'Hitung estimasi panjar biaya', descriptionEn: 'Estimate case fee', badge: 'Baru', external: true },
+    { id: uuidv4(), icon: 'Building2', label: 'E-Keuangan', labelEn: 'E-Finance', url: 'https://pa-penajam.go.id', description: 'Informasi keuangan & transparansi', descriptionEn: 'Financial transparency', badge: '', external: true },
+  ] },
+  case_stepper:   { title: 'Alur Berperkara', subtitle: 'Langkah mudah mengajukan perkara di PA Penajam', showNumbers: true, steps: [
+    { id: uuidv4(), number: 1, icon: 'FileText', title: 'Pendaftaran', titleEn: 'Registration', desc: 'Daftar di PTSP atau via E-Court', descEn: 'Register at PTSP or via E-Court', link: '' },
+    { id: uuidv4(), number: 2, icon: 'DollarSign', title: 'Pembayaran Panjar', titleEn: 'Fee Payment', desc: 'Bayar panjar via bank / VA', descEn: 'Pay fee via bank', link: 'https://panjar.pa-penajam.go.id' },
+    { id: uuidv4(), number: 3, icon: 'Users', title: 'Mediasi', titleEn: 'Mediation', desc: 'Mediasi oleh mediator bersertifikat', descEn: 'Mediation by certified mediator', link: '' },
+    { id: uuidv4(), number: 4, icon: 'Scale', title: 'Persidangan', titleEn: 'Trial', desc: 'Hadir sidang sesuai jadwal', descEn: 'Attend trial as scheduled', link: '/agenda-sidang' },
+    { id: uuidv4(), number: 5, icon: 'Award', title: 'Putusan', titleEn: 'Verdict', desc: 'Putusan dibacakan & salinan diambil', descEn: 'Verdict read & copy collected', link: '/putusan' },
+  ] },
+  today_agenda:   { title: 'Agenda Sidang Hari Ini', subtitle: 'Jadwal persidangan hari ini', limit: 6, showViewAll: true, bgColor: '#f9fafb' },
+  recent_putusan: { title: 'Putusan Terbaru', subtitle: 'Putusan yang baru dipublikasikan', limit: 4, showViewAll: true },
+  panjar_cta:     { title: 'Estimasi Panjar Biaya Perkara', subtitle: 'Hitung estimasi biaya perkara secara transparan melalui aplikasi resmi Panjar PA Penajam', buttonText: 'Buka Aplikasi Panjar', buttonUrl: 'https://panjar.pa-penajam.go.id', bgColor: '#1b5e20', features: ['Transparan', 'Akurat', 'Online 24 Jam'] },
   news_ann:       { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 },
   services_grid:  { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' },
   gallery_grid:   { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan kami', category: '', limit: 8, columns: 4, showViewAll: true },
@@ -98,8 +123,8 @@ const defaultSettings = {
   banner_slider:  { autoPlay: true, showArrows: true, showDots: true },
   document_list:  { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi Pengadilan Agama Penajam', category: '', limit: 6, showViewAll: true },
   case_search:    { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' },
-  contact_info:   { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' },
-  profile_cards:  { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat' },
+  contact_info:   { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#ffffff' },
+  profile_cards:  { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat - Wilayah Yurisdiksi Kab. PPU' },
   hero:           { title: 'Judul Section', subtitle: 'Sub-judul atau deskripsi.', backgroundImage: '', buttonText: 'Selengkapnya', buttonLink: '#' },
   stats:          { items: [{ id: uuidv4(), number: '500+', label: 'Perkara' }, { id: uuidv4(), number: '20', label: 'Tahun' }, { id: uuidv4(), number: '100%', label: 'Komitmen' }] },
   text:           { content: '<p>Tulis konten Anda di sini.</p>' },
@@ -121,6 +146,8 @@ function BlockPreview({ block }) {
       contact_info: '📞', profile_cards: '🏛️', gallery_grid: '🖼️',
       faq_section: '❓', complaint_cta: '📩', visitor_stats: '📊',
       banner_slider: '🎨', document_list: '📋',
+      ecourt_links: '⚖️', case_stepper: '📋', today_agenda: '📅',
+      recent_putusan: '⚖️', panjar_cta: '💰',
     };
     const labels = {
       hero_home: 'Hero Beranda + Statistik Live', news_ann: 'Berita & Pengumuman (2 Kolom)',
@@ -129,7 +156,29 @@ function BlockPreview({ block }) {
       gallery_grid: 'Galeri Foto dari Database', faq_section: 'FAQ Accordion dari Database',
       complaint_cta: 'Section CTA Pengaduan', visitor_stats: 'Statistik Pengunjung Live',
       banner_slider: 'Slider Banner dari Manajemen Banner', document_list: 'Daftar Dokumen Publik',
+      ecourt_links: 'Layanan E-Court MA RI (Editable)', case_stepper: 'Alur Berperkara (Stepper)',
+      today_agenda: 'Agenda Sidang Hari Ini (Live)', recent_putusan: 'Putusan Terbaru (Live)',
+      panjar_cta: 'CTA Panjar → panjar.pa-penajam.go.id',
     };
+    // keep special preview for new blocks that have items
+    if (block.type === 'ecourt_links' || block.type === 'case_stepper' || block.type === 'panjar_cta') {
+      return (
+        <div className={`rounded-xl p-4 border-2 border-dashed ${bt.color.replace('text-', 'border-').replace('bg-', 'bg-')}`}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${bt.color}`}>{icons[block.type]}</div>
+            <div>
+              <p className={`font-bold text-sm ${bt.color.split(' ')[1]}`}>{labels[block.type]}</p>
+              {s.title && <p className="text-gray-500 text-xs mt-0.5">Judul: "{s.title}"</p>}
+            </div>
+          </div>
+          <div className="text-xs text-gray-500">
+            {block.type === 'ecourt_links' && `${(s.items||[]).length} link • layout ${s.layout||3} kolom`}
+            {block.type === 'case_stepper' && `${(s.steps||[]).length} langkah`}
+            {block.type === 'panjar_cta' && `${s.buttonUrl || ''}`}
+          </div>
+        </div>
+      );
+    }
     return (
       <div className={`rounded-xl p-6 border-2 border-dashed flex items-center gap-4 ${bt.color.replace('text-', 'border-').replace('bg-', 'bg-')}`}>
         <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl ${bt.color}`}>
@@ -387,6 +436,145 @@ function SettingsPanel({ block, onChange, token }) {
         <p className="text-xs text-yellow-600 bg-yellow-50 rounded-lg p-2">✅ Dokumen dari menu "Dokumen Publik" di admin.</p>
       </div>
     );
+
+    // ── NEW: E-Court Links ──
+    case 'ecourt_links': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Layout Kolom</Label>
+          <div className="flex gap-2">
+            {[2,3,4,6].map(n => (
+              <button key={n} onClick={() => upd('layout', n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.layout===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Daftar Link E-Court / Eksternal</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('items', { icon: 'FileText', label: 'Link Baru', labelEn: '', url: 'https://', description: '', descriptionEn: '', badge: '', external: true })}>
+              <Plus className="w-3 h-3 mr-1" /> Tambah
+            </Button>
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {(s.items || []).map((item, i) => (
+              <div key={item.id} className="bg-gray-50 p-2.5 rounded-xl space-y-2 border border-gray-100">
+                <div className="flex gap-2">
+                  <Input value={item.icon || ''} onChange={e => updItem('items', i, 'icon', e.target.value)} className="w-20 text-xs" placeholder="Icon" title="Lucide icon name: FileText, Search, Scale, DollarSign, etc atau emoji" />
+                  <Input value={item.label || ''} onChange={e => updItem('items', i, 'label', e.target.value)} className="flex-1 text-xs" placeholder="Label ID" />
+                  <button onClick={() => removeItem('items', i)} className="text-red-400 hover:text-red-600 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+                <div className="flex gap-2">
+                  <Input value={item.labelEn || ''} onChange={e => updItem('items', i, 'labelEn', e.target.value)} className="flex-1 text-xs" placeholder="Label EN (optional)" />
+                  <Input value={item.badge || ''} onChange={e => updItem('items', i, 'badge', e.target.value)} className="w-20 text-xs" placeholder="Badge" />
+                </div>
+                <Input value={item.url || ''} onChange={e => updItem('items', i, 'url', e.target.value)} className="text-xs" placeholder="https://..." />
+                <Input value={item.description || ''} onChange={e => updItem('items', i, 'description', e.target.value)} className="text-xs" placeholder="Deskripsi ID" />
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" checked={item.external !== false} onChange={e => updItem('items', i, 'external', e.target.checked)} className="w-3.5 h-3.5 accent-[#1b5e20]" />
+                    <span className="text-[11px]">Buka tab baru (eksternal)</span>
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs text-indigo-600 bg-indigo-50 rounded-lg p-2">💡 Tip: Icon pakai nama lucide (FileText, Search, Scale, DollarSign, Monitor, Building2) atau emoji. URL panjar: https://panjar.pa-penajam.go.id</p>
+      </div>
+    );
+
+    case 'case_stepper': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showNumbers !== false} onChange={e => upd('showNumbers', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
+          <span className="text-xs font-semibold">Tampilkan angka (bukan icon)</span>
+        </label>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Langkah-langkah ({(s.steps||[]).length})</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('steps', { number: (s.steps||[]).length+1, icon: 'FileText', title: 'Langkah Baru', desc: 'Deskripsi langkah', link: '' })}>
+              <Plus className="w-3 h-3 mr-1" /> Tambah
+            </Button>
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {(s.steps || []).map((step, i) => (
+              <div key={step.id} className="bg-gray-50 p-2.5 rounded-xl space-y-1.5 border border-gray-100">
+                <div className="flex gap-2 items-center">
+                  <span className="w-6 h-6 bg-[#1b5e20] text-white rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0">{step.number || i+1}</span>
+                  <Input value={step.title || ''} onChange={e => updItem('steps', i, 'title', e.target.value)} className="flex-1 text-xs" placeholder="Judul ID" />
+                  <button onClick={() => removeItem('steps', i)} className="text-red-400 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+                <Input value={step.desc || ''} onChange={e => updItem('steps', i, 'desc', e.target.value)} className="text-xs" placeholder="Deskripsi" />
+                <div className="grid grid-cols-3 gap-1.5">
+                  <Input value={String(step.number||'')} onChange={e => updItem('steps', i, 'number', parseInt(e.target.value)||i+1)} className="text-xs" type="number" min={1} placeholder="No" />
+                  <Input value={step.icon || ''} onChange={e => updItem('steps', i, 'icon', e.target.value)} className="text-xs" placeholder="Icon" />
+                  <Input value={step.link || ''} onChange={e => updItem('steps', i, 'link', e.target.value)} className="col-span-3 text-xs" placeholder="Link optional" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    case 'today_agenda': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={3} max={20} value={s.limit || 6} onChange={e => upd('limit', +e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#f9fafb'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
+          <span className="text-xs font-semibold">Tampilkan "Lihat Semua Agenda"</span>
+        </label>
+        <p className="text-xs text-blue-600 bg-blue-50 rounded-lg p-2">✅ Otomatis tampilkan agenda hari ini (timezone Asia/Makassar). Kosong jika tidak ada sidang.</p>
+      </div>
+    );
+
+    case 'recent_putusan': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={2} max={10} value={s.limit || 4} onChange={e => upd('limit', +e.target.value)} /></div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={s.showViewAll !== false} onChange={e => upd('showViewAll', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" />
+          <span className="text-xs font-semibold">Tampilkan "Lihat Semua Putusan"</span>
+        </label>
+        <p className="text-xs text-emerald-600 bg-emerald-50 rounded-lg p-2">✅ Data otomatis dari /api/putusan terbaru (published).</p>
+      </div>
+    );
+
+    case 'panjar_cta': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul / Deskripsi</Label><textarea className="w-full p-2 border rounded-lg text-sm h-20 resize-none" value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Teks Tombol</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Link Tombol</Label><Input value={s.buttonUrl || ''} onChange={e => upd('buttonUrl', e.target.value)} placeholder="https://panjar.pa-penajam.go.id" /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Fitur / Badge (pisah koma atau array)</Label>
+          <div className="space-y-1.5">
+            {(s.features || []).map((feat, i) => (
+              <div key={i} className="flex gap-2">
+                <Input value={feat} onChange={e => { const arr=[...(s.features||[])]; arr[i]=e.target.value; upd('features',arr); }} className="flex-1 text-xs" placeholder="Fitur..." />
+                <button onClick={() => { const arr=[...(s.features||[])]; arr.splice(i,1); upd('features',arr); }} className="text-red-400 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            ))}
+            <Button size="sm" variant="outline" className="h-7 text-xs w-full" onClick={() => upd('features', [...(s.features||[]), 'Fitur Baru'])}><Plus className="w-3 h-3 mr-1" /> Tambah Fitur</Button>
+          </div>
+        </div>
+        <p className="text-xs text-orange-600 bg-orange-50 rounded-lg p-2">💰 Link ke https://panjar.pa-penajam.go.id akan dibuka di tab baru.</p>
+      </div>
+    );
+
     // ── Static Blocks ──
     case 'hero':
       return (

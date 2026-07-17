@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
   Scale, Phone, Mail, MapPin, Search, ChevronRight,
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
@@ -11,27 +10,50 @@ import {
   Download, ChevronDown, Plus, X, MessageSquare
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import MegaMenuNavbar from '@/components/MegaMenu';
+import SiteFooter from '@/components/SiteFooter';
 import { sanitizeHTML } from '@/lib/sanitize';
 
 const ICON_MAP = {
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
-  Users, Stamp, Scale, Building2, BookOpen, Globe, Award
+  Users, Stamp, Scale, Building2, BookOpen, Globe, Award,
+  Search, Clock, ClipboardList, CheckCircle, Phone, Mail, MapPin
 };
 
-const HERO_FALLBACK = 'https://images.unsplash.com/photo-1667849921481-9e13c239ee3d?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=1400';
+const DEFAULT_ECOURT_ITEMS = [
+  { id: 'ecourt', icon: 'Monitor', label: 'E-Court', labelEn: 'E-Court', url: 'https://ecourt.mahkamahagung.go.id', description: 'Pendaftaran perkara online', descriptionEn: 'Online case registration', badge: '', external: true },
+  { id: 'sipp', icon: 'Search', label: 'SIPP', labelEn: 'SIPP', url: 'https://sipp.pa-penajam.go.id', description: 'Sistem Informasi Penelusuran Perkara', descriptionEn: 'Case Tracking System', badge: '', external: true },
+  { id: 'gugatan-mandiri', icon: 'FileText', label: 'Gugatan Mandiri', labelEn: 'Independent Lawsuit', url: 'https://gugatan.mahkamahagung.go.id', description: 'Buat gugatan mandiri secara online', descriptionEn: 'Create independent lawsuit online', badge: '', external: true },
+  { id: 'direktori-putusan', icon: 'Scale', label: 'Direktori Putusan', labelEn: 'Decision Directory', url: 'https://putusan3.mahkamahagung.go.id', description: 'Kumpulan putusan MA RI', descriptionEn: 'Supreme Court decision collection', badge: '', external: true },
+  { id: 'panjar', icon: 'DollarSign', label: 'Panjar Biaya', labelEn: 'Fee Estimation', url: 'https://panjar.pa-penajam.go.id', description: 'Hitung estimasi panjar biaya perkara', descriptionEn: 'Estimate case fee advance', badge: 'Baru', external: true },
+  { id: 'e-keuangan', icon: 'Building2', label: 'E-Keuangan', labelEn: 'E-Finance', url: 'https://pa-penajam.go.id', description: 'Informasi keuangan & transparansi', descriptionEn: 'Financial info & transparency', badge: '', external: true },
+];
 
-// Default blocks jika homepage belum dikonfigurasi admin
+const DEFAULT_STEPPER_STEPS = [
+  { id: 'step-1', number: 1, icon: 'FileText', title: 'Pendaftaran', titleEn: 'Registration', desc: 'Daftar di PTSP atau melalui E-Court online', descEn: 'Register at PTSP or via E-Court online', link: '' },
+  { id: 'step-2', number: 2, icon: 'DollarSign', title: 'Pembayaran Panjar', titleEn: 'Advance Fee Payment', desc: 'Bayar panjar biaya perkara via bank/BRI VA', descEn: 'Pay case advance fee via bank', link: 'https://panjar.pa-penajam.go.id' },
+  { id: 'step-3', number: 3, icon: 'Users', title: 'Mediasi', titleEn: 'Mediation', desc: 'Proses mediasi oleh mediator bersertifikat', descEn: 'Mediation by certified mediator', link: '' },
+  { id: 'step-4', number: 4, icon: 'Scale', title: 'Persidangan', titleEn: 'Trial', desc: 'Hadir sidang sesuai jadwal yang ditetapkan', descEn: 'Attend trial as scheduled', link: '/agenda-sidang' },
+  { id: 'step-5', number: 5, icon: 'Award', title: 'Putusan', titleEn: 'Verdict', desc: 'Putusan dibacakan & salinan dapat diambil', descEn: 'Verdict read & copy can be collected', link: '/putusan' },
+];
+
+// Default blocks 10/10 priority - informativeness first
 const DEFAULT_BLOCKS = [
-  { id: 'default-hero',      type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true } },
-  { id: 'default-banner',    type: 'banner_slider', settings: { autoPlay: true, showArrows: true, showDots: true } },
-  { id: 'default-services',  type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat' } },
+  { id: 'default-hero',      type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true, backgroundImage: '' } },
+  { id: 'default-ecourt',    type: 'ecourt_links',  settings: { title: 'Layanan Digital Mahkamah Agung', subtitle: 'Akses layanan peradilan secara online, cepat, dan transparan', layout: 3, items: DEFAULT_ECOURT_ITEMS } },
+  { id: 'default-profile',   type: 'profile_cards', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat - Wilayah Yurisdiksi Kab. Penajam Paser Utara' } },
+  { id: 'default-services',  type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat pencari keadilan' } },
+  { id: 'default-stepper',   type: 'case_stepper',  settings: { title: 'Alur Berperkara', subtitle: 'Langkah mudah mengajukan perkara di Pengadilan Agama Penajam', steps: DEFAULT_STEPPER_STEPS, showNumbers: true } },
+  { id: 'default-perkara',   type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah dan cepat' } },
+  { id: 'default-agenda',    type: 'today_agenda',  settings: { title: 'Agenda Sidang Hari Ini', subtitle: 'Jadwal persidangan hari ini di Pengadilan Agama Penajam', limit: 6, showViewAll: true, bgColor: '#f9fafb' } },
   { id: 'default-news',      type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
-  { id: 'default-gallery',   type: 'gallery_grid',  settings: { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan kami', limit: 8, columns: 4, showViewAll: true } },
-  { id: 'default-docs',      type: 'document_list', settings: { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi Pengadilan Agama Penajam', limit: 6, showViewAll: true } },
-  { id: 'default-perkara',   type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah' } },
-  { id: 'default-contact',   type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda', bgColor: '#f9fafb' } },
+  { id: 'default-putusan',   type: 'recent_putusan',settings: { title: 'Putusan Terbaru', subtitle: 'Putusan yang baru dipublikasikan dan dapat diunduh', limit: 4, showViewAll: true } },
+  { id: 'default-gallery',   type: 'gallery_grid',  settings: { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan dan gedung pengadilan', limit: 8, columns: 4, showViewAll: true } },
+  { id: 'default-docs',      type: 'document_list', settings: { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi, SOP, Maklumat, dan peraturan', limit: 6, showViewAll: true } },
+  { id: 'default-faq',       type: 'faq_section',   settings: { title: 'Tanya Jawab', subtitle: 'Pertanyaan yang sering diajukan masyarakat', limit: 6, bgColor: '#f9fafb' } },
+  { id: 'default-panjar',    type: 'panjar_cta',     settings: { title: 'Estimasi Panjar Biaya Perkara', subtitle: 'Hitung estimasi biaya perkara Anda secara transparan melalui aplikasi resmi Panjar PA Penajam', buttonText: 'Buka Aplikasi Panjar', buttonUrl: 'https://panjar.pa-penajam.go.id', bgColor: '#1b5e20', features: ['Transparan', 'Akurat', 'Online 24 Jam'] } },
+  { id: 'default-complaint', type: 'complaint_cta', settings: { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1b5e20', showPhone: true } },
+  { id: 'default-contact',   type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda dengan sepenuh hati', bgColor: '#ffffff' } },
 ];
 
 // ============================================================
@@ -44,12 +66,9 @@ function HeroHomeBlock({ settings, stats }) {
   return (
     <header id="beranda" role="banner" className="relative min-h-screen flex items-center" style={{ scrollMarginTop: '80px' }}>
       <div className="absolute inset-0 bg-gradient-to-br from-pa-green-dark via-pa-green to-pa-green-mid" aria-hidden="true" />
-      {s.backgroundImage && (
-        <div className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${s.backgroundImage}')` }} role="img" aria-label={lang === 'id' ? 'Gedung Pengadilan Agama Penajam' : 'Penajam Religious Court building'} />
-      )}
-      {!s.backgroundImage && (
-        <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{ backgroundImage: `url('${HERO_FALLBACK}')` }} aria-hidden="true" />
-      )}
+      {s.backgroundImage ? (
+        <div className="absolute inset-0 opacity-25 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${s.backgroundImage}')` }} role="img" aria-label={lang === 'id' ? 'Gedung Pengadilan Agama Penajam' : 'Penajam Religious Court building'} />
+      ) : null}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-pa-green-dark/60" aria-hidden="true" />
       <div className="container mx-auto px-4 relative z-10 pt-20">
         <div className="max-w-4xl mx-auto text-center">
@@ -84,7 +103,6 @@ function HeroHomeBlock({ settings, stats }) {
                 { label: t('hero.caseDone'), val: stats?.casesDone ?? 0 },
                 { label: t('hero.caseOngoing'), val: stats?.casesOngoing ?? 0 },
               ].map(({ label, val }) => (
-
                   <div key={label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
                     {isLoading ? (
                       <div className="animate-pulse">
@@ -105,6 +123,310 @@ function HeroHomeBlock({ settings, stats }) {
         </div>
       </div>
     </header>
+  );
+}
+
+// ── E-Court Ecosystem Links ─────────────────────────────────────────
+function ECourtLinksBlock({ settings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const items = s.items && s.items.length ? s.items : DEFAULT_ECOURT_ITEMS;
+  const layout = s.layout || 3;
+  const colClass = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-2 lg:grid-cols-4', 6: 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6' }[layout] || 'md:grid-cols-3';
+
+  function resolveIcon(name) {
+    const Icon = ICON_MAP[name];
+    return Icon ? <Icon className="w-6 h-6" aria-hidden="true" /> : <span className="text-xl" aria-hidden="true">{name || '🔗'}</span>;
+  }
+
+  return (
+    <section id="layanan-digital" className="py-16 lg:py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || (lang === 'id' ? 'Layanan Digital Mahkamah Agung' : 'Supreme Court Digital Services')}</h2>
+          {s.subtitle && <p className="text-gray-500 max-w-2xl mx-auto text-sm">{s.subtitle}</p>}
+        </div>
+        <div className={`grid grid-cols-1 ${colClass} gap-4 lg:gap-6 max-w-6xl mx-auto`}>
+          {items.map(item => {
+            const label = lang === 'en' && item.labelEn ? item.labelEn : item.label;
+            const desc = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
+            const isExt = item.external !== false && (item.url?.startsWith('http') || item.external);
+            return (
+              <a
+                key={item.id}
+                href={item.url || '#'}
+                target={isExt ? '_blank' : undefined}
+                rel={isExt ? 'noopener noreferrer' : undefined}
+                className="group bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-pa-green/20 transition-all flex flex-col h-full min-h-[44px]"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-12 h-12 bg-pa-green/10 rounded-xl flex items-center justify-center text-pa-green group-hover:bg-pa-green group-hover:text-pa-gold transition-colors">
+                    {resolveIcon(item.icon)}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {item.badge && <span className="px-2 py-0.5 bg-pa-orange/10 text-pa-orange-dark text-[10px] font-bold rounded-full uppercase">{item.badge}</span>}
+                    {isExt && <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-pa-green" aria-hidden="true" />}
+                  </div>
+                </div>
+                <h3 className="font-bold text-pa-green text-sm mb-1 group-hover:text-pa-green-dark transition-colors">{label}</h3>
+                {desc && <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">{desc}</p>}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Case Flow Stepper ───────────────────────────────────────────────
+function CaseFlowBlock({ settings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const steps = s.steps && s.steps.length ? s.steps : DEFAULT_STEPPER_STEPS;
+  const showNumbers = s.showNumbers !== false;
+
+  function resolveIcon(name) {
+    const Icon = ICON_MAP[name];
+    return Icon ? <Icon className="w-5 h-5" aria-hidden="true" /> : null;
+  }
+
+  return (
+    <section id="alur" className="py-16 lg:py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || (lang === 'id' ? 'Alur Berperkara' : 'Case Flow')}</h2>
+          {s.subtitle && <p className="text-gray-500 max-w-2xl mx-auto text-sm">{s.subtitle}</p>}
+        </div>
+
+        {/* Desktop horizontal */}
+        <div className="hidden lg:block max-w-6xl mx-auto">
+          <div className="relative flex justify-between">
+            {/* Connector line */}
+            <div className="absolute top-6 left-[8%] right-[8%] h-0.5 bg-pa-green/10" aria-hidden="true" />
+            <div className="absolute top-6 left-[8%] h-0.5 bg-pa-gold/30 transition-all" style={{ width: '84%' }} aria-hidden="true" />
+            {steps.map((step, idx) => {
+              const title = lang === 'en' && step.titleEn ? step.titleEn : step.title;
+              const desc = lang === 'en' && step.descEn ? step.descEn : step.desc;
+              const isLast = idx === steps.length - 1;
+              return (
+                <div key={step.id || idx} className="relative flex flex-col items-center text-center flex-1 px-2">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 border-white shadow-md z-10 mb-4 ${idx === 0 ? 'bg-pa-orange text-white' : isLast ? 'bg-pa-gold text-white' : 'bg-pa-green text-white'}`}>
+                    {showNumbers ? <span className="font-extrabold text-sm">{step.number || idx + 1}</span> : resolveIcon(step.icon) || <span className="font-bold">{step.number || idx + 1}</span>}
+                  </div>
+                  <h3 className="font-bold text-pa-green text-sm mb-1">{title}</h3>
+                  <p className="text-gray-500 text-xs max-w-[160px] leading-relaxed">{desc}</p>
+                  {step.link && (
+                    <a href={step.link} target={step.link.startsWith('http') ? '_blank' : undefined} rel={step.link.startsWith('http') ? 'noopener noreferrer' : undefined} className="mt-2 text-pa-gold-dark text-[11px] font-semibold hover:underline inline-flex items-center gap-1">
+                      {lang === 'id' ? 'Selengkapnya' : 'Details'} <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile vertical */}
+        <div className="lg:hidden max-w-xl mx-auto relative">
+          <div className="absolute left-6 top-2 bottom-2 w-0.5 bg-pa-green/10" aria-hidden="true" />
+          <div className="space-y-6">
+            {steps.map((step, idx) => {
+              const title = lang === 'en' && step.titleEn ? step.titleEn : step.title;
+              const desc = lang === 'en' && step.descEn ? step.descEn : step.desc;
+              const isLast = idx === steps.length - 1;
+              return (
+                <div key={step.id || idx} className="relative flex gap-4">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 border-white shadow-md flex-shrink-0 z-10 ${idx === 0 ? 'bg-pa-orange text-white' : isLast ? 'bg-pa-gold text-white' : 'bg-pa-green text-white'}`}>
+                    {showNumbers ? <span className="font-extrabold text-sm">{step.number || idx + 1}</span> : resolveIcon(step.icon) || <span className="font-bold">{step.number || idx + 1}</span>}
+                  </div>
+                  <div className="pt-1">
+                    <h3 className="font-bold text-pa-green text-sm">{title}</h3>
+                    <p className="text-gray-500 text-xs mt-1 leading-relaxed">{desc}</p>
+                    {step.link && (
+                      <a href={step.link} target={step.link.startsWith('http') ? '_blank' : undefined} rel={step.link.startsWith('http') ? 'noopener noreferrer' : undefined} className="mt-1 text-pa-gold-dark text-xs font-semibold hover:underline inline-flex items-center gap-1 min-h-[44px]">
+                        {lang === 'id' ? 'Selengkapnya' : 'Details'} <ArrowRight className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Today Agenda ────────────────────────────────────────────────────
+function TodayAgendaBlock({ settings, agendaToday }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const limit = s.limit || 6;
+  const items = (agendaToday || []).slice(0, limit);
+  const todayLabel = new Date().toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  const statusColor = (status) => ({ selesai: 'bg-green-100 text-green-700', dijadwalkan: 'bg-blue-100 text-blue-700', ditunda: 'bg-yellow-100 text-yellow-700', dibatalkan: 'bg-red-100 text-red-700' }[status] || 'bg-gray-100 text-gray-700');
+
+  return (
+    <section id="agenda-hari-ini" className="py-16 lg:py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 max-w-5xl mx-auto">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-pa-green mb-2">{s.title || (lang === 'id' ? 'Agenda Sidang Hari Ini' : "Today's Court Schedule")}</h2>
+            <p className="text-gray-500 text-sm">{s.subtitle || todayLabel}</p>
+          </div>
+          {s.showViewAll !== false && (
+            <a href="/agenda-sidang" className="inline-flex items-center gap-2 text-pa-green font-semibold text-sm hover:text-pa-gold-dark transition-colors min-h-[44px]">
+              {lang === 'id' ? 'Lihat Semua Agenda' : 'View All Schedule'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          {items.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+              <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" aria-hidden="true" />
+              <p className="font-semibold text-gray-600 text-sm">{lang === 'id' ? 'Tidak ada agenda sidang hari ini' : 'No court schedule today'}</p>
+              <p className="text-gray-400 text-xs mt-1">{lang === 'id' ? 'Silakan cek agenda minggu ini di halaman agenda sidang' : 'Check this week agenda on schedule page'}</p>
+              <a href="/agenda-sidang" className="inline-flex mt-4 border border-pa-green text-pa-green hover:bg-pa-green hover:text-white px-5 py-2 rounded-xl text-sm font-semibold transition-colors min-h-[44px] items-center">
+                {lang === 'id' ? 'Buka Agenda Sidang' : 'Open Schedule'}
+              </a>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="hidden md:grid grid-cols-[90px_1fr_140px_120px_100px] gap-4 px-6 py-3 bg-gray-50 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                <span>{lang === 'id' ? 'Waktu' : 'Time'}</span>
+                <span>{lang === 'id' ? 'Nomor Perkara' : 'Case Number'}</span>
+                <span>{lang === 'id' ? 'Ruang' : 'Room'}</span>
+                <span>Hakim</span>
+                <span>Status</span>
+              </div>
+              <ul className="divide-y divide-gray-50 list-none p-0 m-0">
+                {items.map(item => (
+                  <li key={item.id} className="px-5 md:px-6 py-4 hover:bg-gray-50/60 transition-colors">
+                    {/* Mobile */}
+                    <div className="md:hidden space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-sm font-bold text-pa-green">{item.waktuSidang || '-'}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColor(item.status)}`}>{item.status || '-'}</span>
+                      </div>
+                      <p className="font-bold text-pa-green text-sm">{item.nomorPerkara}</p>
+                      <p className="text-gray-500 text-xs">{item.jenisPerkara || ''} • {item.ruangSidang || '-'}</p>
+                      {item.hakim && <p className="text-gray-400 text-xs truncate">{item.hakim.split(',')[0]}</p>}
+                    </div>
+                    {/* Desktop */}
+                    <div className="hidden md:grid grid-cols-[90px_1fr_140px_120px_100px] gap-4 items-center">
+                      <span className="font-mono text-sm font-semibold text-pa-green">{item.waktuSidang || '-'}</span>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-pa-green text-sm truncate">{item.nomorPerkara}</p>
+                        <p className="text-gray-500 text-xs truncate">{item.jenisPerkara || ''}</p>
+                      </div>
+                      <span className="text-gray-600 text-xs">{item.ruangSidang || '-'}</span>
+                      <span className="text-gray-500 text-xs truncate" title={item.hakim}>{item.hakim ? item.hakim.split(' ')[0] + ' ' + (item.hakim.split(' ')[1] || '') : '-'}</span>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-semibold text-center ${statusColor(item.status)}`}>{item.status || '-'}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Recent Putusan ─────────────────────────────────────────────────
+function RecentPutusanBlock({ settings, putusanList, formatDate }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const limit = s.limit || 4;
+  const items = (putusanList || []).slice(0, limit);
+
+  return (
+    <section id="putusan-terbaru" className="py-16 lg:py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 max-w-5xl mx-auto">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-pa-green mb-2">{s.title || (lang === 'id' ? 'Putusan Terbaru' : 'Recent Decisions')}</h2>
+            {s.subtitle && <p className="text-gray-500 text-sm">{s.subtitle}</p>}
+          </div>
+          {s.showViewAll !== false && (
+            <a href="/putusan" className="inline-flex items-center gap-2 text-pa-green font-semibold text-sm hover:text-pa-gold-dark transition-colors min-h-[44px]">
+              {lang === 'id' ? 'Lihat Semua Putusan' : 'View All Decisions'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+
+        {items.length === 0 ? (
+          <div className="max-w-5xl mx-auto bg-gray-50 rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+            <Scale className="w-10 h-10 text-gray-300 mx-auto mb-3" aria-hidden="true" />
+            <p className="font-semibold text-gray-600 text-sm">{lang === 'id' ? 'Belum ada putusan terbaru' : 'No recent decisions'}</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4 max-w-5xl mx-auto">
+            {items.map(item => (
+              <article key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <h3 className="font-bold text-pa-green text-sm leading-snug">{item.nomorPerkara}</h3>
+                  {item.tanggalPutusan && (
+                    <time dateTime={item.tanggalPutusan} className="text-[11px] text-gray-500 whitespace-nowrap bg-gray-50 px-2 py-1 rounded-full">
+                      {formatDate(item.tanggalPutusan)}
+                    </time>
+                  )}
+                </div>
+                {item.jenisPerkara && <span className="inline-block px-2 py-0.5 bg-pa-green/10 text-pa-green text-[10px] font-semibold rounded-full mb-2">{item.jenisPerkara}</span>}
+                {item.ringkasanPutusan && <p className="text-gray-600 text-xs leading-relaxed line-clamp-3">{item.ringkasanPutusan}</p>}
+                {item.hakim && <p className="text-gray-400 text-xs mt-2 truncate">Hakim: {item.hakim}</p>}
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Panjar CTA ─────────────────────────────────────────────────────
+function PanjarCtaBlock({ settings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const features = s.features || ['Transparan', 'Akurat', 'Online 24 Jam'];
+
+  return (
+    <section id="panjar" className="py-16 lg:py-20" style={{ background: s.bgColor || '#1b5e20', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <DollarSign className="w-8 h-8 text-pa-gold" aria-hidden="true" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-white mb-4">{s.title || (lang === 'id' ? 'Estimasi Panjar Biaya Perkara' : 'Case Fee Estimation')}</h2>
+          <p className="text-white/80 text-base lg:text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
+            {s.subtitle || (lang === 'id' ? 'Hitung estimasi biaya perkara Anda secara transparan melalui aplikasi resmi Panjar PA Penajam' : 'Estimate your case fee transparently via official Panjar app')}
+          </p>
+          {features.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {features.map(f => (
+                <span key={f} className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 text-white/90 px-3 py-1 rounded-full text-xs font-semibold">
+                  <CheckCircle className="w-3.5 h-3.5 text-pa-gold" aria-hidden="true" /> {f}
+                </span>
+              ))}
+            </div>
+          )}
+          <a
+            href={s.buttonUrl || 'https://panjar.pa-penajam.go.id'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-pa-gold hover:bg-pa-gold-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-colors min-h-[52px] shadow-lg"
+          >
+            {s.buttonText || (lang === 'id' ? 'Buka Aplikasi Panjar' : 'Open Panjar App')} <ExternalLink className="w-4 h-4" aria-hidden="true" />
+          </a>
+          <p className="text-white/50 text-xs mt-4">{lang === 'id' ? 'Akan membuka di tab baru • Resmi PA Penajam' : 'Opens in new tab • Official PA Penajam'}</p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -219,7 +541,7 @@ function ServicesGridBlock({ settings, services }) {
           <h2 id="services-h" className="text-3xl font-extrabold text-pa-green mb-4">{s.title || t('services.title')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{s.subtitle || t('services.subtitle')}</p>
         </div>
-        <ul className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto list-none p-0">
+        <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto list-none p-0">
           {services.map(svc => {
             const Icon = ICON_MAP[svc.icon] || FileText;
             return (
@@ -275,19 +597,24 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
                 </div>
               ) : (
                 <ul className="space-y-3 list-none p-0">
-                  {searchResult.map(c => (
+                  {searchResult.map(c => {
+                    const parties = c.pemohon && c.termohon
+                      ? (c.termohon === '-' ? c.pemohon : `${c.pemohon} vs ${c.termohon}`)
+                      : c.pemohon || c.termohon || c.nomorPerkara;
+                    return (
                     <li key={c.id}>
                       <article className="bg-white rounded-xl p-4">
                         <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <h4 className="font-bold text-pa-green text-sm">{t('caseSearch.caseNumber')}: {c.nomorPerkara || c.caseNumber}</h4>
-                            <p className="text-gray-600 text-xs mt-1">{t('caseSearch.parties')}: {c.pihak || c.parties}</p>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-bold text-pa-green text-sm">{t('caseSearch.caseNumber')}: {c.nomorPerkara}</h4>
+                            <p className="text-gray-600 text-xs mt-1 truncate">{t('caseSearch.parties')}: {parties}</p>
+                            {c.jenisPerkara && <p className="text-gray-500 text-[11px] mt-1">{c.jenisPerkara} • {c.tahun}</p>}
                           </div>
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${statusColor(c.status)}`}>{statusLabel(c.status)}</span>
                         </div>
                       </article>
                     </li>
-                  ))}
+                  );})}
                 </ul>
               )}
             </div>
@@ -301,14 +628,19 @@ function CaseSearchBlock({ settings, onSearch, searchNomor, setSearchNomor, sear
 function ContactInfoBlock({ settings, siteSettings }) {
   const s = settings || {};
   const { t, lang } = useLanguage();
+  const hasPhone = !!siteSettings.phone;
+  const hasEmail = !!siteSettings.email;
+  const hasAddress = !!siteSettings.address;
+
   const items = [
-    { icon: MapPin, title: t('contact.address'), content: siteSettings.address || 'Jl. Propinsi No. 01, Penajam, Kab. Penajam Paser Utara, Kaltim 76141', href: 'https://maps.google.com/?q=Pengadilan+Agama+Penajam', linkLabel: t('contact.mapLink') },
-    { icon: Phone, title: t('contact.phone'), content: siteSettings.phone || '(0543) 337-1012', href: `tel:${(siteSettings.phone || '05433371012').replace(/[^0-9+]/g, '')}`, linkLabel: lang === 'id' ? 'Hubungi via telepon' : 'Call us' },
-    { icon: Mail, title: t('contact.email'), content: siteSettings.email || 'pa.penajam@gmail.com', href: `mailto:${siteSettings.email || 'pa.penajam@gmail.com'}`, linkLabel: lang === 'id' ? 'Kirim email' : 'Send email' },
-    { icon: Clock, title: t('contact.operationalHours'), content: t('contact.hours'), href: null },
-  ];
+    { icon: MapPin, title: t('contact.address'), content: siteSettings.address || (lang === 'id' ? 'Jl. Propinsi Kab. Penajam Paser Utara, Kaltim' : 'Penajam Paser Utara, East Kalimantan'), href: hasAddress ? `https://maps.google.com/?q=${encodeURIComponent(siteSettings.address)}` : 'https://maps.google.com/?q=Pengadilan+Agama+Penajam', linkLabel: t('contact.mapLink'), show: true },
+    { icon: Phone, title: t('contact.phone'), content: siteSettings.phone || '-', href: hasPhone ? `tel:${siteSettings.phone.replace(/[^0-9+]/g, '')}` : null, linkLabel: lang === 'id' ? 'Hubungi via telepon' : 'Call us', show: hasPhone },
+    { icon: Mail, title: t('contact.email'), content: siteSettings.email || '-', href: hasEmail ? `mailto:${siteSettings.email}` : null, linkLabel: lang === 'id' ? 'Kirim email' : 'Send email', show: hasEmail },
+    { icon: Clock, title: t('contact.operationalHours'), content: t('contact.hours'), href: null, show: true },
+  ].filter(i => i.show);
+
   return (
-    <section id="kontak" aria-labelledby="contact-h" className="py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+    <section id="kontak" aria-labelledby="contact-h" className="py-20" style={{ background: s.bgColor || '#ffffff', scrollMarginTop: '80px' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 id="contact-h" className="text-3xl font-extrabold text-pa-green mb-4">{s.title || t('contact.title')}</h2>
@@ -333,13 +665,17 @@ function ContactInfoBlock({ settings, siteSettings }) {
   );
 }
 
-function ProfileCardsBlock({ settings }) {
+function ProfileCardsBlock({ settings, siteSettings }) {
   const s = settings || {};
   const { t, lang } = useLanguage();
+  const vision = siteSettings.vision || (lang === 'id' ? '"Terwujudnya Pengadilan Agama Penajam yang Agung"' : '"A Dignified Penajam Religious Court"');
+  const mission = siteSettings.mission || (lang === 'id' ? 'Menjaga kemandirian, memberikan pelayanan hukum yang berkeadilan, berkualitas, dan terpercaya.' : 'Maintaining independence, providing just, quality, and trustworthy legal services.');
+  const address = siteSettings.address || (lang === 'id' ? 'Jl. Propinsi No. 01, Penajam, Kab. Penajam Paser Utara, Kalimantan Timur' : 'Jl. Propinsi No. 01, Penajam, East Kalimantan');
+
   const cards = [
-    { icon: Award, title: t('profile.vision'), content: lang === 'id' ? '"Terwujudnya Pengadilan Agama Penajam yang Agung"' : '"A Dignified Penajam Religious Court"' },
-    { icon: CheckCircle, title: t('profile.mission'), content: lang === 'id' ? 'Menjaga kemandirian, memberikan pelayanan hukum yang berkeadilan, berkualitas, dan terpercaya.' : 'Maintaining independence, providing just, quality, and trustworthy legal services.' },
-    { icon: Building2, title: t('profile.location'), content: lang === 'id' ? 'Jl. Propinsi No. 01, Penajam, Kab. Penajam Paser Utara, Kalimantan Timur 76141' : 'Jl. Propinsi No. 01, Penajam, Penajam Paser Utara, East Kalimantan 76141' },
+    { icon: Award, title: t('profile.vision'), content: vision },
+    { icon: CheckCircle, title: t('profile.mission'), content: mission },
+    { icon: Building2, title: t('profile.location'), content: address },
   ];
   return (
     <section id="profil" aria-labelledby="profile-h" className="py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
@@ -353,7 +689,7 @@ function ProfileCardsBlock({ settings }) {
             <article key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-pa-green/10 rounded-xl flex items-center justify-center mb-4"><Icon className="w-6 h-6 text-pa-green" aria-hidden="true" /></div>
               <h3 className="font-bold text-pa-green text-lg mb-2">{title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{content}</p>
+              <p className="text-gray-600 text-sm leading-relaxed line-clamp-4">{content}</p>
             </article>
           ))}
         </div>
@@ -362,7 +698,7 @@ function ProfileCardsBlock({ settings }) {
   );
 }
 
-// Static blocks
+// Static blocks (unchanged structure)
 function HeroStaticBlock({ settings }) {
   const s = settings || {};
   return (
@@ -458,10 +794,7 @@ function GalleryBlock({ settings }) {
   );
 }
 
-// ============================================================
-// NEW BLOCK RENDERERS (Gallery, FAQ, Complaint CTA, Visitor Stats, Banner, Documents)
-// ============================================================
-
+// New existing dynamic blocks from old file (gallery, faq, etc)
 function GalleryGridBlock({ settings, galleryItems }) {
   const s = settings || {};
   const { lang } = useLanguage();
@@ -734,39 +1067,45 @@ function DocumentListBlock({ settings, documentItems }) {
 
 function renderBlock(block, ctx) {
   const { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems,
+    agendaToday, putusanList,
     onSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun,
     searchLoading, searchResult, statusColor, statusLabel, formatDate } = ctx;
   const s = block.settings || {};
   switch (block.type) {
-    case 'hero_home':     return <HeroHomeBlock key={block.id} settings={s} stats={stats} />;
-    case 'news_ann':      return <NewsAnnBlock key={block.id} settings={s} news={news} announcements={announcements} formatDate={formatDate} />;
-    case 'services_grid': return <ServicesGridBlock key={block.id} settings={s} services={services} />;
-    case 'case_search':   return <CaseSearchBlock key={block.id} settings={s} onSearch={onSearch} searchNomor={searchNomor} setSearchNomor={setSearchNomor} searchTahun={searchTahun} setSearchTahun={setSearchTahun} searchLoading={searchLoading} searchResult={searchResult} statusColor={statusColor} statusLabel={statusLabel} />;
-    case 'contact_info':  return <ContactInfoBlock key={block.id} settings={s} siteSettings={siteSettings} />;
-    case 'profile_cards': return <ProfileCardsBlock key={block.id} settings={s} />;
-    case 'gallery_grid':  return <GalleryGridBlock key={block.id} settings={s} galleryItems={galleryItems} />;
-    case 'faq_section':   return <FAQSectionBlock key={block.id} settings={s} faqItems={faqItems} />;
-    case 'complaint_cta': return <ComplaintCTABlock key={block.id} settings={s} siteSettings={siteSettings} />;
-    case 'visitor_stats': return <VisitorStatsBlock key={block.id} settings={s} visitorStats={visitorStats} />;
-    case 'banner_slider': return <BannerSliderBlock key={block.id} settings={s} bannerItems={bannerItems} />;
-    case 'document_list': return <DocumentListBlock key={block.id} settings={s} documentItems={documentItems} />;
-    case 'hero':          return <HeroStaticBlock key={block.id} settings={s} />;
-    case 'stats':         return <StatsBlock key={block.id} settings={s} />;
-    case 'text':          return <TextBlock key={block.id} settings={s} />;
-    case 'image':         return <ImageBlock key={block.id} settings={s} />;
-    case 'cardgrid':      return <CardGridBlock key={block.id} settings={s} />;
-    case 'cta':           return <CtaBlock key={block.id} settings={s} />;
-    case 'gallery':       return <GalleryBlock key={block.id} settings={s} />;
-    case 'accordion':     return <AccordionPublicBlock key={block.id} settings={s} />;
-    case 'tabs':          return <TabsPublicBlock key={block.id} settings={s} />;
-    case 'map':           return <MapPublicBlock key={block.id} settings={s} />;
-    case 'countdown':     return <CountdownPublicBlock key={block.id} settings={s} />;
-    default:              return null;
+    case 'hero_home':      return <HeroHomeBlock key={block.id} settings={s} stats={stats} />;
+    case 'ecourt_links':   return <ECourtLinksBlock key={block.id} settings={s} />;
+    case 'case_stepper':   return <CaseFlowBlock key={block.id} settings={s} />;
+    case 'today_agenda':   return <TodayAgendaBlock key={block.id} settings={s} agendaToday={agendaToday} />;
+    case 'recent_putusan': return <RecentPutusanBlock key={block.id} settings={s} putusanList={putusanList} formatDate={formatDate} />;
+    case 'panjar_cta':     return <PanjarCtaBlock key={block.id} settings={s} />;
+    case 'news_ann':       return <NewsAnnBlock key={block.id} settings={s} news={news} announcements={announcements} formatDate={formatDate} />;
+    case 'services_grid':  return <ServicesGridBlock key={block.id} settings={s} services={services} />;
+    case 'case_search':    return <CaseSearchBlock key={block.id} settings={s} onSearch={onSearch} searchNomor={searchNomor} setSearchNomor={setSearchNomor} searchTahun={searchTahun} setSearchTahun={setSearchTahun} searchLoading={searchLoading} searchResult={searchResult} statusColor={statusColor} statusLabel={statusLabel} />;
+    case 'contact_info':   return <ContactInfoBlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'profile_cards':  return <ProfileCardsBlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'gallery_grid':   return <GalleryGridBlock key={block.id} settings={s} galleryItems={galleryItems} />;
+    case 'faq_section':    return <FAQSectionBlock key={block.id} settings={s} faqItems={faqItems} />;
+    case 'complaint_cta':  return <ComplaintCTABlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'visitor_stats':  return <VisitorStatsBlock key={block.id} settings={s} visitorStats={visitorStats} />;
+    case 'banner_slider':  return <BannerSliderBlock key={block.id} settings={s} bannerItems={bannerItems} />;
+    case 'document_list':  return <DocumentListBlock key={block.id} settings={s} documentItems={documentItems} />;
+    case 'hero':           return <HeroStaticBlock key={block.id} settings={s} />;
+    case 'stats':          return <StatsBlock key={block.id} settings={s} />;
+    case 'text':           return <TextBlock key={block.id} settings={s} />;
+    case 'image':          return <ImageBlock key={block.id} settings={s} />;
+    case 'cardgrid':       return <CardGridBlock key={block.id} settings={s} />;
+    case 'cta':            return <CtaBlock key={block.id} settings={s} />;
+    case 'gallery':        return <GalleryBlock key={block.id} settings={s} />;
+    case 'accordion':      return <AccordionPublicBlock key={block.id} settings={s} />;
+    case 'tabs':           return <TabsPublicBlock key={block.id} settings={s} />;
+    case 'map':            return <MapPublicBlock key={block.id} settings={s} />;
+    case 'countdown':      return <CountdownPublicBlock key={block.id} settings={s} />;
+    default:               return null;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NEW BLOCK RENDERERS (Accordion, Tabs, Map, Countdown)
+// EXISTING STATIC BLOCKS (Accordion, Tabs, Map, Countdown) kept from legacy
 // ─────────────────────────────────────────────────────────────────────────────
 
 function AccordionPublicBlock({ settings: s }) {
@@ -820,7 +1159,6 @@ function TabsPublicBlock({ settings: s }) {
   return (
     <section className="py-14 bg-white">
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* Tab headers */}
         {tabs.length > 0 && (
           <div className="flex gap-1 border-b-2 border-gray-200 mb-0 overflow-x-auto">
             {tabs.map((tab, i) => (
@@ -838,7 +1176,6 @@ function TabsPublicBlock({ settings: s }) {
             ))}
           </div>
         )}
-        {/* Tab content */}
         {tabs[activeTab] && (
           <div className="bg-white border border-t-0 border-gray-200 rounded-b-2xl p-6 min-h-[120px]">
             {tabs[activeTab].content?.includes('<') ? (
@@ -967,6 +1304,8 @@ export default function DynamicHomepage() {
   const [visitorStats, setVisitorStats] = useState({ total: 0, dailyData: [], topPages: [] });
   const [bannerItems, setBannerItems] = useState([]);
   const [documentItems, setDocumentItems] = useState([]);
+  const [agendaToday, setAgendaToday] = useState([]);
+  const [putusanList, setPutusanList] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [searchNomor, setSearchNomor] = useState('');
   const [searchTahun, setSearchTahun] = useState('');
@@ -986,7 +1325,7 @@ export default function DynamicHomepage() {
   // IntersectionObserver for automatic nav sync on scroll
   useEffect(() => {
     if (blocks === null || dataLoading) return;
-    const sectionIds = ['beranda', 'layanan', 'berita', 'pengumuman', 'perkara', 'galeri', 'dokumen', 'faq', 'pengaduan', 'kontak'];
+    const sectionIds = ['beranda', 'layanan-digital', 'profil', 'layanan', 'alur', 'perkara', 'agenda-hari-ini', 'berita', 'pengumuman', 'putusan-terbaru', 'galeri', 'dokumen', 'faq', 'panjar', 'pengaduan', 'kontak'];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -997,7 +1336,6 @@ export default function DynamicHomepage() {
       },
       { rootMargin: '-80px 0px -50% 0px', threshold: 0.1 }
     );
-    // Observe after a short delay to ensure DOM is painted
     const timer = setTimeout(() => {
       sectionIds.forEach((id) => {
         const el = document.getElementById(id);
@@ -1007,10 +1345,18 @@ export default function DynamicHomepage() {
     return () => { clearTimeout(timer); observer.disconnect(); };
   }, [blocks, dataLoading]);
 
+  function getTodayWITA() {
+    try {
+      return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Makassar' });
+    } catch {
+      return new Date().toISOString().split('T')[0];
+    }
+  }
+
   async function loadAll() {
     try {
-      // Seed removed — POST /api/seed no longer fires on page load
-      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes] = await Promise.all([
+      const today = getTodayWITA();
+      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes, agendaTodayRes, putusanRes] = await Promise.all([
         fetch('/api/pages/slug/_homepage'),
         fetch('/api/news?public=true&limit=8'),
         fetch('/api/announcements?public=true&limit=8'),
@@ -1022,6 +1368,8 @@ export default function DynamicHomepage() {
         fetch('/api/analytics?days=30').catch(() => ({ ok: false })),
         fetch('/api/banners'),
         fetch('/api/documents?limit=12'),
+        fetch(`/api/agenda?public=true&dateFrom=${today}&dateTo=${today}&limit=10`).catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
+        fetch('/api/putusan?public=true&limit=5').catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
       ]);
       if (hpRes.ok) {
         const hp = await hpRes.json();
@@ -1048,10 +1396,17 @@ export default function DynamicHomepage() {
         casesDone: allCases.filter(c => c.status === 'selesai').length,
         casesOngoing: allCases.filter(c => c.status === 'berjalan').length,
       });
-      // Analytics (non-critical — no auth needed for public)
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setVisitorStats(statsData);
+      }
+      if (agendaTodayRes && agendaTodayRes.ok) {
+        const agendaData = await agendaTodayRes.json();
+        setAgendaToday(agendaData.items || []);
+      }
+      if (putusanRes && putusanRes.ok) {
+        const putusanData = await putusanRes.json();
+        setPutusanList(putusanData.items || []);
       }
     } catch (e) { console.error(e); setBlocks([]); }
     finally { setDataLoading(false); }
@@ -1073,10 +1428,10 @@ export default function DynamicHomepage() {
   }
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-  const statusColor = (s) => ({ selesai: 'bg-green-100 text-green-700', berjalan: 'bg-blue-100 text-blue-700', terdaftar: 'bg-yellow-100 text-yellow-700' }[s] || 'bg-gray-100 text-gray-700');
+  const statusColor = (s) => ({ selesai: 'bg-green-100 text-green-700', berjalan: 'bg-blue-100 text-blue-700', terdaftar: 'bg-yellow-100 text-yellow-700', dijadwalkan: 'bg-blue-100 text-blue-700', ditunda: 'bg-yellow-100 text-yellow-700', dibatalkan: 'bg-red-100 text-red-700' }[s] || 'bg-gray-100 text-gray-700');
   const statusLabel = (s) => ({ selesai: t('status.done'), berjalan: t('status.ongoing'), terdaftar: t('status.registered') }[s] || s);
 
-  const ctx = { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
+  const ctx = { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems, agendaToday, putusanList, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
 
   const scrollTo = (id) => {
     setActiveNav(id);
@@ -1084,7 +1439,6 @@ export default function DynamicHomepage() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Loading
   if (blocks === null || dataLoading) {
     return (
       <div className="min-h-screen bg-pa-green flex items-center justify-center">
@@ -1096,8 +1450,6 @@ export default function DynamicHomepage() {
     );
   }
 
-  // Tidak perlu tampilan kosong - DEFAULT_BLOCKS sudah menjadi fallback
-
   return (
     <div className="min-h-screen font-sans bg-white">
       {/* NAVBAR */}
@@ -1108,7 +1460,6 @@ export default function DynamicHomepage() {
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 lg:h-20 relative">
-            {/* Logo */}
             <a href="/" aria-label={t('siteName')} className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-pa-gold focus:ring-offset-2 rounded-lg flex-shrink-0">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-pa-green to-pa-green-mid flex items-center justify-center shadow-md">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-pa-gold" aria-hidden="true" />
@@ -1120,7 +1471,6 @@ export default function DynamicHomepage() {
                 <p className="font-extrabold text-base lg:text-lg leading-tight text-pa-gold-dark">Penajam</p>
               </div>
             </a>
-            {/* Dynamic Mega Menu */}
             <MegaMenuNavbar
               scrolled={scrolled}
               activeNav={activeNav}
@@ -1137,61 +1487,8 @@ export default function DynamicHomepage() {
         {blocks.map(block => renderBlock(block, ctx))}
       </main>
 
-      {/* FOOTER */}
-      <footer role="contentinfo" className="bg-pa-green text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Scale className="w-5 h-5 text-pa-gold" aria-hidden="true" /></div>
-                <div>
-                  <p className="font-bold text-sm">{lang === 'id' ? 'Pengadilan Agama' : 'Religious Court'}</p>
-                  <p className="font-extrabold text-pa-gold">Penajam</p>
-                </div>
-              </div>
-              <p className="text-white/70 text-sm leading-relaxed">{t('footer.description')}</p>
-            </div>
-            <nav aria-label={lang === 'id' ? 'Tautan cepat' : 'Quick links'}>
-              <h3 className="font-bold text-pa-gold mb-4 text-sm uppercase tracking-wide">{t('footer.quickLinks')}</h3>
-              <ul className="space-y-2 list-none p-0">
-                {[
-                  { id: 'beranda', label: t('nav.home') },
-                  { id: 'layanan', label: t('nav.services') },
-                  { id: 'perkara', label: t('nav.caseInfo') },
-                  { id: 'berita', label: t('nav.news') },
-                  { id: 'kontak', label: t('nav.contact') },
-                ].map(link => (
-                  <li key={link.id}>
-                    <button
-                      onClick={() => scrollTo(link.id)}
-                      className="text-white/70 hover:text-white text-sm transition-colors text-left min-h-[44px]"
-                    >{link.label}</button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <nav aria-label={lang === 'id' ? 'Informasi' : 'Information'}>
-              <h3 className="font-bold text-pa-gold mb-4 text-sm uppercase tracking-wide">{t('footer.information')}</h3>
-              <ul className="space-y-2 list-none p-0">
-                {[
-                  { href: '/agenda-sidang', label: t('nav.courtSchedule') },
-                  { href: '/putusan', label: t('nav.decisions') },
-                  { href: '/pencarian-perkara', label: t('nav.caseSearch') },
-                  { href: '/accessibility', label: '♿ ' + t('footer.accessibility') },
-                ].map(l => (
-                  <li key={l.href}>
-                    <a href={l.href} className="text-white/70 hover:text-white text-sm transition-colors min-h-[44px] flex items-center">{l.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-white/80 text-sm">&copy; {new Date().getFullYear()} {t('siteName')}. {t('footer.allRights')}</p>
-            <LanguageSwitcher variant="dark" scrolled={false} />
-          </div>
-        </div>
-      </footer>
+      {/* UNIFIED FOOTER */}
+      <SiteFooter siteSettings={siteSettings} />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import SiteFooter from '@/components/SiteFooter';
 
 function BlockRenderer({ block }) {
   const s = block.settings || {};
@@ -241,6 +242,7 @@ export default function HalamanContent() {
   const [pageData, setPageData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [siteSettings, setSiteSettings] = useState({});
 
   useEffect(() => {
     if (!slug) return;
@@ -251,6 +253,8 @@ export default function HalamanContent() {
       })
       .then(data => { if (data) setPageData(data); setLoading(false); })
       .catch(() => { setNotFound(true); setLoading(false); });
+
+    fetch('/api/settings').then(r => r.json()).then(d => setSiteSettings(d || {})).catch(() => {});
   }, [slug]);
 
   if (loading) return (
@@ -293,9 +297,7 @@ export default function HalamanContent() {
         </div>
       )}
 
-      <footer className="bg-[#1b5e20] text-white/50 text-center py-6 text-sm">
-        © {new Date().getFullYear()} Pengadilan Agama Penajam — Mahkamah Agung RI
-      </footer>
+      <SiteFooter siteSettings={siteSettings} />
     </div>
   );
 }

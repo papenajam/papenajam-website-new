@@ -438,9 +438,14 @@ const CORE_SETTINGS = [
     value:
       'Jl. Propinsi Km. 9 Kel. Nipah-Nipah, Kec. Penajam, Kab. Penajam Paser Utara, Kalimantan Timur 76141',
   },
-  { key: 'phone', value: '(0542) 7211234' },
-  { key: 'email', value: 'pa.penajam@gmail.com' },
+  { key: 'phone', value: '(0543) 7211234' },
+  { key: 'email', value: 'info@pa-penajam.go.id' },
   { key: 'website', value: 'pa-penajam.go.id' },
+  { key: 'panjar_app_url', value: 'https://panjar.pa-penajam.go.id' },
+  { key: 'ecourt_url', value: 'https://ecourt.mahkamahagung.go.id' },
+  { key: 'sipp_url', value: 'https://sipp.pa-penajam.go.id' },
+  { key: 'gugatan_mandiri_url', value: 'https://gugatan.mahkamahagung.go.id' },
+  { key: 'direktori_putusan_url', value: 'https://putusan3.mahkamahagung.go.id' },
   { key: 'vision', value: 'Terwujudnya Pengadilan Agama Penajam yang Agung' },
   {
     key: 'mission',
@@ -531,6 +536,21 @@ async function seedSettings(prisma) {
     console.log(`[seed] settings: inserted ${CORE_SETTINGS.length} core keys`);
   } else {
     console.log(`[seed] settings: ${count} row(s) exist (core skip)`);
+    // Patch legacy bad email & phone if present (credibility fix)
+    const emailRow = await prisma.setting.findUnique({ where: { key: 'email' } });
+    if (emailRow && emailRow.value.includes('gmail.com')) {
+      await prisma.setting.update({ where: { key: 'email' }, data: { value: 'info@pa-penajam.go.id' } });
+      console.log('[seed] settings: patched legacy gmail email to official');
+    }
+    // Ensure new PA 10/10 keys exist even when core exists
+    const newKeys = CORE_SETTINGS.filter(k => ['panjar_app_url','ecourt_url','sipp_url','gugatan_mandiri_url','direktori_putusan_url'].includes(k.key));
+    for (const nk of newKeys) {
+      const exists = await prisma.setting.findUnique({ where: { key: nk.key } });
+      if (!exists) {
+        await prisma.setting.create({ data: { key: nk.key, value: nk.value } });
+        console.log(`[seed] settings: inserted missing key ${nk.key}`);
+      }
+    }
   }
 
   // Extended settings: upsert only keys that are missing (legacy socialExists gate).
