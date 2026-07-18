@@ -4,7 +4,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   Scale, LayoutDashboard, Newspaper, Bell, Briefcase, FileSearch,
   Users, Settings, LogOut, Menu, X, ChevronRight, ChevronDown,
-  CalendarDays, FileText, Layers, Search, Home, Globe, Image as ImageIcon
+  CalendarDays, FileText, Layers, Search, Home, Globe, Image as ImageIcon,
+  Award, Trophy
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LANGUAGES } from '@/lib/i18n';
@@ -29,6 +30,8 @@ const sidebarGroups = [
       { id: 'media', label: 'Media Library', path: '/admin/media', icon: ImageIcon, roles: ['superadmin','admin','editor'] },
       { id: 'faq', label: 'FAQ', path: '/admin/faq', icon: CalendarDays, roles: ['superadmin','admin','editor'] },
       { id: 'services', label: 'Layanan', path: '/admin/services', icon: Briefcase, roles: ['superadmin','admin','editor'] },
+      { id: 'leaders', label: 'Pimpinan & Hakim', path: '/admin/leaders', icon: Users, roles: ['superadmin','admin'] },
+      { id: 'achievements', label: 'Penghargaan & Prestasi', path: '/admin/achievements', icon: Award, roles: ['superadmin','admin','editor'] },
       { id: 'page-builder', label: 'Page Builder', path: '/admin/page-builder', icon: Layers, roles: ['superadmin','admin','editor'] },
     ]
   },

@@ -18,7 +18,7 @@ import {
   Newspaper, Bell, Briefcase, Search, Phone, User,
   BarChart2, Zap, Type, Image, LayoutGrid, ImageIcon,
   DollarSign, CalendarDays, Scale, ClipboardList,
-  FileText
+  FileText, Shield, MapPin, Monitor, ExternalLink, Video, Trophy, Award
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -92,6 +92,17 @@ const BLOCK_TYPES = [
   { type: 'cardgrid',       label: 'Card Grid',             icon: LayoutGrid,  desc: 'Grid kartu manual',                       color: 'bg-purple-50 text-purple-700' },
   { type: 'cta',            label: 'CTA (Statis)',          icon: Zap,         desc: 'Call-to-action button statis',            color: 'bg-red-50 text-red-700' },
   { type: 'gallery',        label: 'Galeri Manual',         icon: Image,       desc: 'Grid foto dari URL manual',               color: 'bg-pink-50 text-pink-700' },
+  // ── 10 new blocks - 100% admin editable, no hardcode ──
+  { type: 'leadership_greeting', label: 'Sambutan Ketua',   icon: User,       desc: 'Foto ketua + sambutan + quote',              color: 'bg-amber-50 text-amber-700' },
+  { type: 'leaders_grid',        label: 'Pimpinan & Hakim',  icon: User,       desc: 'Grid pimpinan dari database leaders (live)', color: 'bg-teal-50 text-teal-700',       dynamic: true },
+  { type: 'priority_services',   label: 'Layanan Prioritas', icon: Shield,     desc: 'Prodeo, Posbakum, Sidang Keliling, Disabilitas', color: 'bg-green-50 text-green-700' },
+  { type: 'maklumat_ptsp',       label: 'Maklumat & Jam PTSP', icon: CalendarDays, desc: 'Maklumat layanan + tabel jam + alur PTSP', color: 'bg-blue-50 text-blue-700' },
+  { type: 'integrity_strip',     label: 'Zona Integritas',   icon: Award,      desc: 'Badge WBK/WBBM, anti korupsi, BerAKHLAK',   color: 'bg-yellow-50 text-yellow-700' },
+  { type: 'transparency',        label: 'Transparansi Anggaran', icon: DollarSign, desc: 'Ringkasan DIPA, anggaran, LHKPN, LKjIP',  color: 'bg-emerald-50 text-emerald-700', dynamic: true },
+  { type: 'external_links',      label: 'Tautan Pengawasan', icon: ExternalLink, desc: 'SIWAS, SP4N Lapor, Saber Pungli, Gratif', color: 'bg-slate-50 text-slate-700' },
+  { type: 'jurisdiction_map',    label: 'Peta Yurisdiksi',   icon: MapPin,     desc: 'Peta wilayah + Google Maps embed',          color: 'bg-cyan-50 text-cyan-700' },
+  { type: 'video_profile',       label: 'Video Profil',      icon: Monitor,    desc: 'Embed YouTube profil + video kegiatan',    color: 'bg-red-50 text-red-700' },
+  { type: 'achievement_section', label: 'Pencapaian & SKM',  icon: Trophy,     desc: 'Penghargaan + nilai SKM/SPAK live',         color: 'bg-amber-50 text-amber-700',     dynamic: true },
 ];
 
 const defaultSettings = {
@@ -132,6 +143,16 @@ const defaultSettings = {
   cardgrid:       { title: 'Layanan Kami', items: [{ id: uuidv4(), icon: '⚖️', title: 'Kartu 1', description: 'Deskripsi.' }, { id: uuidv4(), icon: '📋', title: 'Kartu 2', description: 'Deskripsi.' }, { id: uuidv4(), icon: '🏛️', title: 'Kartu 3', description: 'Deskripsi.' }] },
   cta:            { title: 'Hubungi Kami', subtitle: 'Kami siap membantu.', buttonText: 'Hubungi', buttonLink: '#kontak', bgColor: '#1b5e20' },
   gallery:        { images: [], columns: 3 },
+  leadership_greeting: { title: 'Sambutan Ketua', subtitle: 'Pengadilan Agama Penajam', photoUrl: '', name: 'Ketua Pengadilan Agama Penajam', nameEn: '', nip: '', position: 'Ketua', positionEn: 'Chief Judge', greeting: 'Assalamualaikum Wr. Wb. Pengadilan Agama Penajam berkomitmen memberikan pelayanan peradilan yang cepat, sederhana, dan berbiaya ringan serta berintegritas untuk masyarakat Kabupaten Penajam Paser Utara sebagai bagian dari Serambi Nusantara.', greetingEn: '', quote: 'Melayani dengan Integritas, Memutus dengan Keadilan', quoteEn: '', showNip: true, buttonText: 'Profil Lengkap', buttonLink: '/profil/pimpinan', bgColor: '#ffffff' },
+  leaders_grid: { title: 'Pimpinan & Hakim', subtitle: 'Mengenal para hakim dan pejabat PA Penajam', category: '', limit: 8, columns: 4, showSearch: false },
+  priority_services: { title: 'Akses Keadilan untuk Semua', subtitle: 'Layanan khusus bagi masyarakat tidak mampu, wilayah remote, dan kelompok rentan', layout: 4, items: [] },
+  maklumat_ptsp: { title: 'Maklumat Pelayanan & Jam PTSP', subtitle: 'Komitmen kami memberikan pelayanan terbaik', maklumatTitle: 'Maklumat Pelayanan', maklumatText: 'Dengan ini kami menyatakan sanggup menyelenggarakan pelayanan sesuai standar yang ditetapkan dan apabila tidak menepati janji ini, kami siap menerima sanksi sesuai peraturan perundang-undangan yang berlaku.', bgColor: '#f9fafb', showMaklumat: true, showHours: true, hours: [], ptspServices: [] },
+  integrity_strip: { title: 'Zona Integritas & Anti Korupsi', subtitle: 'Berkomitmen membangun WBK/WBBM dan menolak gratifikasi', showBadgeStrip: true, bgColor: '#ffffff', badges: [], values: ['Berorientasi Pelayanan','Akuntabel','Kompeten','Harmonis','Loyal','Adaptif','Kolaboratif'], antiCorruptionText: 'Tolak Gratifikasi - Laporkan Pungli' },
+  transparency: { title: 'Transparansi Anggaran & Kinerja', subtitle: 'Keterbukaan informasi anggaran dan capaian kinerja', showBudget: true, showReports: true, items: [], bgColor: '#f9fafb' },
+  external_links: { title: 'Pusat Pelaporan & Pengawasan', subtitle: 'Saluran resmi pengaduan dan pengawasan eksternal MA RI', layout: 4, items: [], bgColor: '#1b5e20' },
+  jurisdiction_map: { title: 'Wilayah Yurisdiksi & Lokasi Kantor', subtitle: 'Kabupaten Penajam Paser Utara - Serambi Nusantara (IKN)', embedUrl: '', height: 400, showRegionList: true, mapImage: '', regions: [], address: '' },
+  video_profile: { title: 'Profil Pengadilan', subtitle: 'Mengenal lebih dekat Pengadilan Agama Penajam', mainVideoUrl: '', mainTitle: 'Video Profil PA Penajam', showChannelLink: true, channelUrl: '', videos: [] },
+  achievement_section: { title: 'Pencapaian & Kepercayaan Publik', subtitle: 'Prestasi dan hasil survei kepuasan masyarakat', showAchievements: true, achievementsLimit: 6, showSKM: true, skmScore: '98.2', skmYear: '2024', skmCategory: 'Sangat Baik', skmLabel: 'Indeks Kepuasan Masyarakat', showSPAK: true, spakScore: '98.5', bgColor: '#ffffff' },
 };
 
 // ─── Block Preview (builder canvas) ──────────────────────────────────────────
@@ -148,6 +169,7 @@ function BlockPreview({ block }) {
       banner_slider: '🎨', document_list: '📋',
       ecourt_links: '⚖️', case_stepper: '📋', today_agenda: '📅',
       recent_putusan: '⚖️', panjar_cta: '💰',
+      leaders_grid: '👥', transparency: '💰', achievement_section: '🏆',
     };
     const labels = {
       hero_home: 'Hero Beranda + Statistik Live', news_ann: 'Berita & Pengumuman (2 Kolom)',
@@ -159,9 +181,10 @@ function BlockPreview({ block }) {
       ecourt_links: 'Layanan E-Court MA RI (Editable)', case_stepper: 'Alur Berperkara (Stepper)',
       today_agenda: 'Agenda Sidang Hari Ini (Live)', recent_putusan: 'Putusan Terbaru (Live)',
       panjar_cta: 'CTA Panjar → panjar.pa-penajam.go.id',
+      leaders_grid: 'Grid Pimpinan/Hakim (Live DB)', transparency: 'Transparansi Anggaran', achievement_section: 'Pencapaian & SKM (Live DB)',
     };
     // keep special preview for new blocks that have items
-    if (block.type === 'ecourt_links' || block.type === 'case_stepper' || block.type === 'panjar_cta') {
+    if (['ecourt_links','case_stepper','panjar_cta','leadership_greeting','priority_services','maklumat_ptsp','integrity_strip','transparency','external_links','jurisdiction_map','video_profile','achievement_section','leaders_grid'].includes(block.type)) {
       return (
         <div className={`rounded-xl p-4 border-2 border-dashed ${bt.color.replace('text-', 'border-').replace('bg-', 'bg-')}`}>
           <div className="flex items-center gap-3 mb-3">
@@ -175,6 +198,16 @@ function BlockPreview({ block }) {
             {block.type === 'ecourt_links' && `${(s.items||[]).length} link • layout ${s.layout||3} kolom`}
             {block.type === 'case_stepper' && `${(s.steps||[]).length} langkah`}
             {block.type === 'panjar_cta' && `${s.buttonUrl || ''}`}
+            {block.type === 'leadership_greeting' && `${s.name||''} - ${s.position||''}`}
+            {block.type === 'leaders_grid' && `Kat: ${s.category||'semua'} • ${s.limit||8} org`}
+            {block.type === 'priority_services' && `${(s.items||[]).length} layanan`}
+            {block.type === 'maklumat_ptsp' && `${(s.hours||[]).length} jam + ${(s.ptspServices||[]).length} PTSP`}
+            {block.type === 'integrity_strip' && `${(s.badges||[]).length} badge`}
+            {block.type === 'transparency' && `${(s.items||[]).length} item`}
+            {block.type === 'external_links' && `${(s.items||[]).length} tautan`}
+            {block.type === 'jurisdiction_map' && `${(s.regions||[]).length} wilayah`}
+            {block.type === 'video_profile' && `${(s.videos||[]).length} video`}
+            {block.type === 'achievement_section' && `SKM ${s.skmScore||''} • ${s.achievementsLimit||6} penghargaan`}
           </div>
         </div>
       );
@@ -705,7 +738,303 @@ function SettingsPanel({ block, onChange, token }) {
           </div>
         </div>
       );
+    // ── 10 NEW BLOCKS - 100% admin editable ──
+    case 'leadership_greeting': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Foto Ketua/Pimpinan</Label>
+          <ImageUploadSmall value={s.photoUrl || ''} onChange={v => upd('photoUrl', v)} token={token} placeholder="URL foto atau upload" />
+          {s.photoUrl && <img src={s.photoUrl} alt="" className="mt-1.5 w-20 h-20 object-cover rounded-full border" onError={e=>e.target.style.display='none'} />}
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Nama Lengkap</Label><Input value={s.name || ''} onChange={e => upd('name', e.target.value)} placeholder="Dr. H. Nama, S.H., M.H." /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Jabatan</Label><Input value={s.position || ''} onChange={e => upd('position', e.target.value)} placeholder="Ketua" /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">NIP (opsional)</Label><Input value={s.nip || ''} onChange={e => upd('nip', e.target.value)} placeholder="19XXXXXXXX" /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sambutan ID</Label><textarea className="w-full p-2 border rounded-lg text-sm h-24 resize-none" value={s.greeting || ''} onChange={e => upd('greeting', e.target.value)} placeholder="Assalamualaikum..." /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Quote / Motto ID</Label><Input value={s.quote || ''} onChange={e => upd('quote', e.target.value)} placeholder="Melayani dengan Integritas..." /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Greeting EN</Label><Input value={s.greetingEn || ''} onChange={e => upd('greetingEn', e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Quote EN</Label><Input value={s.quoteEn || ''} onChange={e => upd('quoteEn', e.target.value)} /></div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Teks Tombol</Label><Input value={s.buttonText || ''} onChange={e => upd('buttonText', e.target.value)} placeholder="Profil Lengkap" /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Link Tombol</Label><Input value={s.buttonLink || ''} onChange={e => upd('buttonLink', e.target.value)} placeholder="/profil/pimpinan" /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#ffffff'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={s.showNip !== false} onChange={e => upd('showNip', e.target.checked)} className="w-4 h-4 accent-[#1b5e20]" /><span className="text-xs font-semibold">Tampilkan NIP</span></label>
+      </div>
+    );
+    case 'leaders_grid': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Filter Kategori</Label><Input value={s.category || ''} onChange={e => upd('category', e.target.value)} placeholder="ketua, hakim, panitera..." /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Jumlah Tampil</Label><Input type="number" min={2} max={20} value={s.limit || 8} onChange={e => upd('limit', +e.target.value)} /></div>
+        </div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Layout Kolom</Label>
+          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('columns',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.columns===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
+        </div>
+        <p className="text-xs text-teal-600 bg-teal-50 rounded-lg p-2">✅ Data pimpinan diambil dari menu Pimpinan & Hakim di admin.</p>
+      </div>
+    );
+    case 'priority_services': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Layout Kolom</Label>
+          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('layout',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.layout===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Layanan Prioritas ({(s.items||[]).length})</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('items', { icon: 'Scale', title: 'Layanan Baru', desc: 'Deskripsi', link: '', badge: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {(s.items || []).map((item, i) => (
+              <div key={item.id} className="bg-green-50 p-2.5 rounded-xl space-y-1.5 border border-green-100">
+                <div className="flex gap-2">
+                  <Input value={item.icon || ''} onChange={e => updItem('items', i, 'icon', e.target.value)} className="w-20 text-xs" placeholder="Icon" />
+                  <Input value={item.title || ''} onChange={e => updItem('items', i, 'title', e.target.value)} className="flex-1 text-xs font-semibold" placeholder="Judul" />
+                  <button onClick={() => removeItem('items', i)} className="text-red-400 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+                <Input value={item.desc || ''} onChange={e => updItem('items', i, 'desc', e.target.value)} className="text-xs" placeholder="Deskripsi" />
+                <div className="grid grid-cols-2 gap-2">
+                  <Input value={item.link || ''} onChange={e => updItem('items', i, 'link', e.target.value)} className="text-xs" placeholder="Link" />
+                  <Input value={item.badge || ''} onChange={e => updItem('items', i, 'badge', e.target.value)} className="text-xs" placeholder="Badge" />
+                </div>
+              </div>
+            ))}
+            {!(s.items||[]).length && <p className="text-xs text-gray-400 text-center py-4 border-2 border-dashed rounded-xl">Belum ada layanan. Contoh: Posbakum, Prodeo, Sidang Keliling</p>}
+          </div>
+        </div>
+      </div>
+    );
+    case 'maklumat_ptsp': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Maklumat</Label><Input value={s.maklumatTitle || ''} onChange={e => upd('maklumatTitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Isi Maklumat</Label><textarea className="w-full p-2 border rounded-lg text-sm h-24 resize-none" value={s.maklumatText || ''} onChange={e => upd('maklumatText', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#f9fafb'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={s.showMaklumat !== false} onChange={e => upd('showMaklumat', e.target.checked)} className="w-4 h-4" /><span className="text-xs font-semibold">Maklumat</span></label>
+          <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={s.showHours !== false} onChange={e => upd('showHours', e.target.checked)} className="w-4 h-4" /><span className="text-xs font-semibold">Jam</span></label>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Jam Layanan</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('hours', { day: 'Senin - Kamis', time: '08.00 - 16.30 WITA', desc: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2">
+            {(s.hours || []).map((h, i) => (
+              <div key={h.id} className="bg-blue-50 p-2 rounded-lg flex gap-2 items-start">
+                <div className="flex-1 space-y-1">
+                  <div className="grid grid-cols-2 gap-1">
+                    <Input value={h.day || ''} onChange={e => updItem('hours', i, 'day', e.target.value)} className="text-xs" placeholder="Hari" />
+                    <Input value={h.time || ''} onChange={e => updItem('hours', i, 'time', e.target.value)} className="text-xs" placeholder="Jam" />
+                  </div>
+                  <Input value={h.desc || ''} onChange={e => updItem('hours', i, 'desc', e.target.value)} className="text-xs" placeholder="Keterangan" />
+                </div>
+                <button onClick={() => removeItem('hours', i)} className="text-red-400 p-1"><Trash2 className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">PTSP Services</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('ptspServices', { icon: 'FileText', title: 'Layanan Baru' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-1.5">
+            {(s.ptspServices || []).map((it, i) => (
+              <div key={it.id} className="flex gap-2 bg-white p-1.5 rounded-lg border">
+                <Input value={it.icon || ''} onChange={e => updItem('ptspServices', i, 'icon', e.target.value)} className="w-16 text-xs" placeholder="Icon" />
+                <Input value={it.title || ''} onChange={e => updItem('ptspServices', i, 'title', e.target.value)} className="flex-1 text-xs" placeholder="Nama layanan" />
+                <button onClick={() => removeItem('ptspServices', i)} className="text-red-400"><Trash2 className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+    case 'integrity_strip': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#ffffff'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Badge ZI ({(s.badges||[]).length})</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('badges', { label: 'WBK', labelFull: 'Wilayah Bebas Korupsi', icon: '🛡️', year: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2">
+            {(s.badges || []).map((b, i) => (
+              <div key={b.id} className="bg-yellow-50 p-2 rounded-lg space-y-1">
+                <div className="flex gap-2">
+                  <Input value={b.icon || ''} onChange={e => updItem('badges', i, 'icon', e.target.value)} className="w-14 text-xs text-center" placeholder="🛡️" />
+                  <Input value={b.label || ''} onChange={e => updItem('badges', i, 'label', e.target.value)} className="flex-1 text-xs font-bold" placeholder="WBK" />
+                  <Input value={b.year || ''} onChange={e => updItem('badges', i, 'year', e.target.value)} className="w-16 text-xs" placeholder="2023" />
+                  <button onClick={() => removeItem('badges', i)} className="text-red-400"><Trash2 className="w-3 h-3" /></button>
+                </div>
+                <Input value={b.labelFull || ''} onChange={e => updItem('badges', i, 'labelFull', e.target.value)} className="text-xs" placeholder="Label lengkap" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">BerAKHLAK (pisah koma)</Label><textarea className="w-full p-2 border rounded-lg text-sm h-16 resize-none" value={(s.values||[]).join(', ')} onChange={e => upd('values', e.target.value.split(',').map(v=>v.trim()).filter(Boolean))} placeholder="Berorientasi Pelayanan, Akuntabel, ..." /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Teks Anti Korupsi</Label><Input value={s.antiCorruptionText || ''} onChange={e => upd('antiCorruptionText', e.target.value)} /></div>
+      </div>
+    );
+    case 'transparency': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#f9fafb'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Item Transparansi ({(s.items||[]).length})</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('items', { icon: 'DollarSign', label: 'DIPA', value: '', link: '/dokumen', desc: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {(s.items || []).map((item, i) => (
+              <div key={item.id} className="bg-emerald-50 p-2.5 rounded-xl space-y-1.5 border border-emerald-100">
+                <div className="flex gap-2">
+                  <Input value={item.icon || ''} onChange={e => updItem('items', i, 'icon', e.target.value)} className="w-20 text-xs" placeholder="Icon" />
+                  <Input value={item.label || ''} onChange={e => updItem('items', i, 'label', e.target.value)} className="flex-1 text-xs font-semibold" placeholder="Label" />
+                  <button onClick={() => removeItem('items', i)} className="text-red-400 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <Input value={item.value || ''} onChange={e => updItem('items', i, 'value', e.target.value)} className="text-xs" placeholder="Nilai" />
+                  <Input value={item.link || ''} onChange={e => updItem('items', i, 'link', e.target.value)} className="text-xs" placeholder="Link" />
+                </div>
+                <Input value={item.desc || ''} onChange={e => updItem('items', i, 'desc', e.target.value)} className="text-xs" placeholder="Deskripsi" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+    case 'external_links': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#1b5e20'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Layout Kolom</Label>
+          <div className="flex gap-2">{[2,3,4].map(n=><button key={n} onClick={()=>upd('layout',n)} className={`flex-1 py-1.5 rounded text-xs font-medium border ${s.layout===n?'bg-[#1b5e20] text-white border-[#1b5e20]':'border-gray-200 text-gray-600'}`}>{n} Kolom</button>)}</div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Tautan Pengawasan</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('items', { icon: '🔍', label: 'Tautan Baru', labelEn: '', url: 'https://', description: '', external: true, color: '#1b5e20' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {(s.items || []).map((item, i) => (
+              <div key={item.id} className="bg-slate-50 p-2.5 rounded-xl space-y-1.5 border border-slate-100">
+                <div className="flex gap-2">
+                  <Input value={item.icon || ''} onChange={e => updItem('items', i, 'icon', e.target.value)} className="w-14 text-xs text-center" placeholder="🔍" />
+                  <Input value={item.label || ''} onChange={e => updItem('items', i, 'label', e.target.value)} className="flex-1 text-xs font-semibold" placeholder="Label" />
+                  <button onClick={() => removeItem('items', i)} className="text-red-400 p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+                <Input value={item.url || ''} onChange={e => updItem('items', i, 'url', e.target.value)} className="text-xs" placeholder="https://..." />
+                <Input value={item.description || ''} onChange={e => updItem('items', i, 'description', e.target.value)} className="text-xs" placeholder="Deskripsi" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+    case 'jurisdiction_map': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Google Maps Embed URL</Label><Input value={s.embedUrl || ''} onChange={e => upd('embedUrl', e.target.value)} placeholder="https://www.google.com/maps/embed?pb=..." /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Tinggi Map (px)</Label><Input type="number" min={200} max={800} value={s.height || 400} onChange={e => upd('height', +e.target.value)} /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#ffffff'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        </div>
+        <div>
+          <Label className="text-xs font-semibold mb-1 block">Gambar Peta</Label>
+          <ImageUploadSmall value={s.mapImage || ''} onChange={v => upd('mapImage', v)} token={token} />
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Alamat Lengkap</Label><textarea className="w-full p-2 border rounded-lg text-sm h-16 resize-none" value={s.address || ''} onChange={e => upd('address', e.target.value)} /></div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Wilayah Kecamatan</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('regions', { name: 'Kec. Baru', desc: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-1.5">
+            {(s.regions || []).map((r, i) => (
+              <div key={r.id} className="flex gap-2 bg-cyan-50 p-2 rounded-lg">
+                <Input value={r.name || ''} onChange={e => updItem('regions', i, 'name', e.target.value)} className="flex-1 text-xs" placeholder="Nama kecamatan" />
+                <Input value={r.desc || ''} onChange={e => updItem('regions', i, 'desc', e.target.value)} className="flex-1 text-xs" placeholder="Keterangan" />
+                <button onClick={() => removeItem('regions', i)} className="text-red-400"><Trash2 className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+    case 'video_profile': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Video Utama (YouTube Embed URL)</Label><Input value={s.mainVideoUrl || ''} onChange={e => upd('mainVideoUrl', e.target.value)} placeholder="https://www.youtube.com/embed/..." /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Video Utama</Label><Input value={s.mainTitle || ''} onChange={e => upd('mainTitle', e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Channel URL</Label><Input value={s.channelUrl || ''} onChange={e => upd('channelUrl', e.target.value)} placeholder="https://youtube.com/..." /></div>
+          <label className="flex items-center gap-2 cursor-pointer mt-6"><input type="checkbox" checked={s.showChannelLink !== false} onChange={e => upd('showChannelLink', e.target.checked)} className="w-4 h-4" /><span className="text-xs font-semibold">Link channel</span></label>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-xs font-semibold">Video Lainnya ({(s.videos||[]).length})</Label>
+            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => addItem('videos', { title: 'Video Baru', url: 'https://www.youtube.com/embed/', thumbnail: '' })}><Plus className="w-3 h-3 mr-1" /> Tambah</Button>
+          </div>
+          <div className="space-y-2 max-h-[300px] overflow-y-auto">
+            {(s.videos || []).map((v, i) => (
+              <div key={v.id} className="bg-red-50 p-2 rounded-lg space-y-1">
+                <div className="flex gap-2">
+                  <Input value={v.title || ''} onChange={e => updItem('videos', i, 'title', e.target.value)} className="flex-1 text-xs" placeholder="Judul video" />
+                  <button onClick={() => removeItem('videos', i)} className="text-red-400"><Trash2 className="w-3 h-3" /></button>
+                </div>
+                <Input value={v.url || ''} onChange={e => updItem('videos', i, 'url', e.target.value)} className="text-xs" placeholder="Embed URL" />
+                <ImageUploadSmall value={v.thumbnail || ''} onChange={val => updItem('videos', i, 'thumbnail', val)} token={token} placeholder="Thumbnail" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+    case 'achievement_section': return (
+      <div className="space-y-3">
+        <div><Label className="text-xs font-semibold mb-1 block">Judul Section</Label><Input value={s.title || ''} onChange={e => upd('title', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Sub-judul</Label><Input value={s.subtitle || ''} onChange={e => upd('subtitle', e.target.value)} /></div>
+        <div><Label className="text-xs font-semibold mb-1 block">Warna Latar</Label><Input type="color" value={s.bgColor || '#ffffff'} onChange={e => upd('bgColor', e.target.value)} className="h-10 px-2" /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Skor SKM</Label><Input value={s.skmScore || ''} onChange={e => upd('skmScore', e.target.value)} placeholder="98.2" /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Tahun SKM</Label><Input value={s.skmYear || ''} onChange={e => upd('skmYear', e.target.value)} placeholder="2024" /></div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><Label className="text-xs font-semibold mb-1 block">Kategori SKM</Label><Input value={s.skmCategory || ''} onChange={e => upd('skmCategory', e.target.value)} placeholder="Sangat Baik" /></div>
+          <div><Label className="text-xs font-semibold mb-1 block">Label SKM</Label><Input value={s.skmLabel || ''} onChange={e => upd('skmLabel', e.target.value)} placeholder="IKM" /></div>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Skor SPAK</Label><Input value={s.spakScore || ''} onChange={e => upd('spakScore', e.target.value)} placeholder="98.5" /></div>
+        <div className="grid grid-cols-3 gap-2">
+          <label className="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked={s.showAchievements !== false} onChange={e => upd('showAchievements', e.target.checked)} className="w-3.5 h-3.5" /><span className="text-xs">Penghargaan</span></label>
+          <label className="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked={s.showSKM !== false} onChange={e => upd('showSKM', e.target.checked)} className="w-3.5 h-3.5" /><span className="text-xs">SKM</span></label>
+          <label className="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked={s.showSPAK !== false} onChange={e => upd('showSPAK', e.target.checked)} className="w-3.5 h-3.5" /><span className="text-xs">SPAK</span></label>
+        </div>
+        <div><Label className="text-xs font-semibold mb-1 block">Jumlah Penghargaan Tampil</Label><Input type="number" min={2} max={12} value={s.achievementsLimit || 6} onChange={e => upd('achievementsLimit', +e.target.value)} /></div>
+      </div>
+    );
     default: return null;
+
   }
 }
 

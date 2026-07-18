@@ -26,6 +26,8 @@ import { handleAnalytics } from '../handlers/analyticsHandler';
 import { handleSurveys } from '../handlers/surveysHandler';
 import { handleSearch } from '../handlers/searchHandler';
 import { handleMenus } from '../handlers/menusHandler';
+import { handleLeaders } from '../handlers/leadersHandler';
+import { handleAchievements } from '../handlers/achievementsHandler';
 import { mapError } from '@/lib/prisma-errors.js';
 
 function corsHeaders() {
@@ -64,6 +66,8 @@ const ROUTE_MAP = {
   surveys: handleSurveys,
   search: handleSearch,
   menus: handleMenus,
+  leaders: handleLeaders,
+  achievements: handleAchievements,
   // seed: intentionally omitted — public POST /api/seed is disabled (Task 15).
 };
 

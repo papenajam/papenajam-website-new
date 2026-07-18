@@ -7,7 +7,8 @@ import {
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
   Users, Stamp, Building2, BookOpen, Award, CheckCircle,
   Clock, ClipboardList, ArrowRight, ExternalLink, Globe, Newspaper,
-  Download, ChevronDown, Plus, X, MessageSquare
+  Download, ChevronDown, Plus, X, MessageSquare, Trophy, Video,
+  ShieldCheck, Link2, Eye, Play
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import MegaMenuNavbar from '@/components/MegaMenu';
@@ -17,7 +18,8 @@ import { sanitizeHTML } from '@/lib/sanitize';
 const ICON_MAP = {
   FileText, Calendar, DollarSign, Package, Shield, Monitor,
   Users, Stamp, Scale, Building2, BookOpen, Globe, Award,
-  Search, Clock, ClipboardList, CheckCircle, Phone, Mail, MapPin
+  Search, Clock, ClipboardList, CheckCircle, Phone, Mail, MapPin,
+  ShieldCheck, Trophy, Video, Link2, ExternalLink, Eye,
 };
 
 const DEFAULT_ECOURT_ITEMS = [
@@ -37,23 +39,33 @@ const DEFAULT_STEPPER_STEPS = [
   { id: 'step-5', number: 5, icon: 'Award', title: 'Putusan', titleEn: 'Verdict', desc: 'Putusan dibacakan & salinan dapat diambil', descEn: 'Verdict read & copy can be collected', link: '/putusan' },
 ];
 
-// Default blocks 10/10 priority - informativeness first
+// Default blocks - 10 informativeness priority, all admin-editable via _homepage slug, no hardcode production - generic fallbacks only
 const DEFAULT_BLOCKS = [
-  { id: 'default-hero',      type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true, backgroundImage: '' } },
-  { id: 'default-ecourt',    type: 'ecourt_links',  settings: { title: 'Layanan Digital Mahkamah Agung', subtitle: 'Akses layanan peradilan secara online, cepat, dan transparan', layout: 3, items: DEFAULT_ECOURT_ITEMS } },
-  { id: 'default-profile',   type: 'profile_cards', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat - Wilayah Yurisdiksi Kab. Penajam Paser Utara' } },
-  { id: 'default-services',  type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat pencari keadilan' } },
-  { id: 'default-stepper',   type: 'case_stepper',  settings: { title: 'Alur Berperkara', subtitle: 'Langkah mudah mengajukan perkara di Pengadilan Agama Penajam', steps: DEFAULT_STEPPER_STEPS, showNumbers: true } },
-  { id: 'default-perkara',   type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah dan cepat' } },
-  { id: 'default-agenda',    type: 'today_agenda',  settings: { title: 'Agenda Sidang Hari Ini', subtitle: 'Jadwal persidangan hari ini di Pengadilan Agama Penajam', limit: 6, showViewAll: true, bgColor: '#f9fafb' } },
-  { id: 'default-news',      type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
-  { id: 'default-putusan',   type: 'recent_putusan',settings: { title: 'Putusan Terbaru', subtitle: 'Putusan yang baru dipublikasikan dan dapat diunduh', limit: 4, showViewAll: true } },
-  { id: 'default-gallery',   type: 'gallery_grid',  settings: { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan dan gedung pengadilan', limit: 8, columns: 4, showViewAll: true } },
-  { id: 'default-docs',      type: 'document_list', settings: { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi, SOP, Maklumat, dan peraturan', limit: 6, showViewAll: true } },
-  { id: 'default-faq',       type: 'faq_section',   settings: { title: 'Tanya Jawab', subtitle: 'Pertanyaan yang sering diajukan masyarakat', limit: 6, bgColor: '#f9fafb' } },
-  { id: 'default-panjar',    type: 'panjar_cta',     settings: { title: 'Estimasi Panjar Biaya Perkara', subtitle: 'Hitung estimasi biaya perkara Anda secara transparan melalui aplikasi resmi Panjar PA Penajam', buttonText: 'Buka Aplikasi Panjar', buttonUrl: 'https://panjar.pa-penajam.go.id', bgColor: '#1b5e20', features: ['Transparan', 'Akurat', 'Online 24 Jam'] } },
-  { id: 'default-complaint', type: 'complaint_cta', settings: { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1b5e20', showPhone: true } },
-  { id: 'default-contact',   type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda dengan sepenuh hati', bgColor: '#ffffff' } },
+  { id: 'default-hero',       type: 'hero_home',     settings: { title: 'Pengadilan Agama Penajam', subtitle: 'Memberikan Keadilan yang Cepat, Sederhana, dan Berbiaya Ringan untuk Masyarakat Kabupaten Penajam Paser Utara', buttonText: 'Lihat Layanan', buttonLink: '#layanan', button2Text: 'Hubungi Kami', button2Link: '#kontak', showStats: true, backgroundImage: '' } },
+  { id: 'default-integrity',  type: 'integrity_strip', settings: { title: 'Zona Integritas & Anti Korupsi', subtitle: 'Berkomitmen membangun WBK/WBBM dan menolak gratifikasi', showBadgeStrip: true, bgColor: '#ffffff', badges: [{ id: 'b1', label: 'WBK', labelFull: 'Wilayah Bebas Korupsi', icon: '🛡️', year: '' }, { id: 'b2', label: 'BerAKHLAK', labelFull: 'Berorientasi Pelayanan Akuntabel Kompeten', icon: '⭐', year: '' }, { id: 'b3', label: 'APM', labelFull: 'Akreditasi Penjaminan Mutu', icon: '🏅', year: 'A' }], values: ['Berorientasi Pelayanan','Akuntabel','Kompeten','Harmonis','Loyal','Adaptif','Kolaboratif'], antiCorruptionText: 'Tolak Gratifikasi - Laporkan Pungli' } },
+  { id: 'default-greeting',   type: 'leadership_greeting', settings: { title: 'Sambutan Ketua', subtitle: 'Pengadilan Agama Penajam', photoUrl: '', name: 'Ketua Pengadilan Agama Penajam', position: 'Ketua', nip: '', greeting: 'Assalamualaikum Wr. Wb. Pengadilan Agama Penajam berkomitmen memberikan pelayanan peradilan yang prima, transparan, dan berintegritas untuk masyarakat Kabupaten Penajam Paser Utara sebagai bagian dari Serambi Nusantara.', quote: 'Melayani dengan Integritas, Memutus dengan Keadilan', showNip: true, buttonText: 'Profil Lengkap', buttonLink: '/profil/pimpinan', bgColor: '#ffffff' } },
+  { id: 'default-priority',   type: 'priority_services', settings: { title: 'Akses Keadilan untuk Semua', subtitle: 'Layanan khusus bagi masyarakat tidak mampu, wilayah remote, dan kelompok rentan', layout: 4, items: [{ id: 'ps1', icon: 'Scale', title: 'Posbakum Gratis', desc: 'Bantuan hukum gratis di PTSP', link: '/layanan/posbakum', badge: 'Gratis' }, { id: 'ps2', icon: 'DollarSign', title: 'Prodeo', desc: 'Bebas biaya untuk tidak mampu', link: '/layanan/prodeo', badge: '' }, { id: 'ps3', icon: 'MapPin', title: 'Sidang Keliling', desc: 'Sidang di kecamatan terdekat', link: '/layanan/sidang-keliling', badge: '' }, { id: 'ps4', icon: 'Users', title: 'Ramah Disabilitas', desc: 'Fasilitas untuk disabilitas & lansia', link: '/layanan/disabilitas', badge: 'Baru' }] } },
+  { id: 'default-ecourt',     type: 'ecourt_links',  settings: { title: 'Layanan Digital Mahkamah Agung', subtitle: 'Akses layanan peradilan secara online, cepat, dan transparan', layout: 3, items: DEFAULT_ECOURT_ITEMS } },
+  { id: 'default-maklumat',   type: 'maklumat_ptsp', settings: { title: 'Maklumat Pelayanan & Jam PTSP', subtitle: 'Komitmen kami memberikan pelayanan terbaik', maklumatTitle: 'Maklumat Pelayanan', maklumatText: 'Dengan ini kami menyatakan sanggup menyelenggarakan pelayanan sesuai standar pelayanan yang telah ditetapkan dan apabila tidak menepati janji ini, kami siap menerima sanksi sesuai peraturan perundang-undangan yang berlaku.', bgColor: '#f9fafb', showMaklumat: true, showHours: true, hours: [{ id: 'h1', day: 'Senin - Kamis', time: '08.00 - 16.30 WITA', desc: 'Istirahat 12.00-13.00' }, { id: 'h2', day: 'Jumat', time: '08.00 - 16.00 WITA', desc: 'Istirahat 11.30-13.00' }], ptspServices: [{ id: 'pt1', icon: 'FileText', title: 'Pendaftaran Perkara' }, { id: 'pt2', icon: 'DollarSign', title: 'Pembayaran Panjar' }, { id: 'pt3', icon: 'ClipboardList', title: 'Informasi Perkara' }, { id: 'pt4', icon: 'Award', title: 'Pengambilan Produk' }] } },
+  { id: 'default-profile',    type: 'profile_cards', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal Pengadilan Agama Penajam lebih dekat - Wilayah Yurisdiksi Kab. Penajam Paser Utara' } },
+  { id: 'default-stepper',    type: 'case_stepper',  settings: { title: 'Alur Berperkara', subtitle: 'Langkah mudah mengajukan perkara di Pengadilan Agama Penajam', steps: DEFAULT_STEPPER_STEPS, showNumbers: true } },
+  { id: 'default-leaders',    type: 'leaders_grid', settings: { title: 'Pimpinan & Hakim', subtitle: 'Mengenal para hakim dan pejabat PA Penajam', category: '', limit: 8, columns: 4, showSearch: false } },
+  { id: 'default-services',   type: 'services_grid', settings: { title: 'Layanan Kami', subtitle: 'Berbagai layanan tersedia untuk masyarakat pencari keadilan' } },
+  { id: 'default-perkara',    type: 'case_search',   settings: { title: 'Informasi Perkara', subtitle: 'Cari informasi perkara Anda dengan mudah dan cepat' } },
+  { id: 'default-agenda',     type: 'today_agenda',  settings: { title: 'Agenda Sidang Hari Ini', subtitle: 'Jadwal persidangan hari ini di Pengadilan Agama Penajam', limit: 6, showViewAll: true, bgColor: '#f9fafb' } },
+  { id: 'default-transparency', type: 'transparency', settings: { title: 'Transparansi Anggaran & Kinerja', subtitle: 'Keterbukaan informasi anggaran dan capaian kinerja', showBudget: true, showReports: true, bgColor: '#f9fafb', items: [{ id: 'tr1', icon: 'DollarSign', label: 'DIPA Tahun Berjalan', value: '', link: '/dokumen?category=DIPA', desc: 'Daftar Isian Pelaksanaan Anggaran' }, { id: 'tr2', icon: 'BarChart2', label: 'Realisasi Anggaran', value: 'Realisasi triwulan', link: '/dokumen?category=Anggaran', desc: 'Laporan realisasi anggaran' }, { id: 'tr3', icon: 'FileText', label: 'LHKPN', value: '', link: '/dokumen?category=LHKPN', desc: 'Laporan Harta Kekayaan' }, { id: 'tr4', icon: 'ClipboardList', label: 'LKjIP / Laporan Tahunan', value: '', link: '/dokumen?category=Laporan', desc: 'Laporan Kinerja' }] } },
+  { id: 'default-news',       type: 'news_ann',      settings: { title: 'Berita & Pengumuman', newsCount: 4, annCount: 5 } },
+  { id: 'default-putusan',    type: 'recent_putusan',settings: { title: 'Putusan Terbaru', subtitle: 'Putusan yang baru dipublikasikan dan dapat diunduh', limit: 4, showViewAll: true } },
+  { id: 'default-external',   type: 'external_links', settings: { title: 'Pusat Pelaporan & Pengawasan', subtitle: 'Saluran resmi pengaduan dan pengawasan eksternal MA RI', layout: 4, bgColor: '#1b5e20', items: [{ id: 'ex1', icon: '🔍', label: 'SIWAS MA RI', labelEn: 'SIWAS Supreme Court', url: 'https://siwas.mahkamahagung.go.id', description: 'Sistem Informasi Pengawasan', external: true, color: '#1b5e20' }, { id: 'ex2', icon: '📢', label: 'SP4N Lapor!', labelEn: 'SP4N Report', url: 'https://lapor.go.id', description: 'Layanan Aspirasi & Pengaduan Rakyat', external: true, color: '#d32f2f' }, { id: 'ex3', icon: '🚫', label: 'Saber Pungli', labelEn: 'Anti Extortion', url: 'https://saberpungli.id', description: 'Sapu Bersih Pungutan Liar', external: true, color: '#f57c00' }, { id: 'ex4', icon: '🎁', label: 'Gratifikasi', labelEn: 'Gratification', url: 'https://www.kpk.go.id', description: 'Lapor gratifikasi KPK', external: true, color: '#6a1b9a' }] } },
+  { id: 'default-achievement', type: 'achievement_section', settings: { title: 'Pencapaian & Kepercayaan Publik', subtitle: 'Prestasi dan hasil survei kepuasan masyarakat', showAchievements: true, achievementsLimit: 6, showSKM: true, skmScore: '98.2', skmYear: '2024', skmCategory: 'Sangat Baik', skmLabel: 'Indeks Kepuasan Masyarakat', showSPAK: true, spakScore: '98.5', bgColor: '#ffffff' } },
+  { id: 'default-gallery',    type: 'gallery_grid',  settings: { title: 'Galeri Foto', subtitle: 'Dokumentasi kegiatan dan gedung pengadilan', limit: 8, columns: 4, showViewAll: true } },
+  { id: 'default-video',      type: 'video_profile', settings: { title: 'Profil Pengadilan', subtitle: 'Mengenal lebih dekat Pengadilan Agama Penajam', mainVideoUrl: '', mainTitle: 'Video Profil PA Penajam', showChannelLink: true, channelUrl: '', videos: [] } },
+  { id: 'default-docs',       type: 'document_list', settings: { title: 'Dokumen & Peraturan', subtitle: 'Unduh dokumen resmi, SOP, Maklumat, dan peraturan', limit: 6, showViewAll: true } },
+  { id: 'default-jurisdiction', type: 'jurisdiction_map', settings: { title: 'Wilayah Yurisdiksi & Lokasi Kantor', subtitle: 'Kabupaten Penajam Paser Utara - Serambi Nusantara (IKN)', embedUrl: '', height: 400, showRegionList: true, mapImage: '', regions: [{ id: 'r1', name: 'Kec. Penajam', desc: 'Ibu kota kabupaten' }, { id: 'r2', name: 'Kec. Waru', desc: '' }, { id: 'r3', name: 'Kec. Babulu', desc: '' }, { id: 'r4', name: 'Kec. Sepaku', desc: 'Kawasan IKN' }], address: 'Jl. Propinsi KM. 09, Penajam, Kab. PPU, Kaltim' } },
+  { id: 'default-faq',        type: 'faq_section',   settings: { title: 'Tanya Jawab', subtitle: 'Pertanyaan yang sering diajukan masyarakat', limit: 6, bgColor: '#f9fafb' } },
+  { id: 'default-panjar',     type: 'panjar_cta',     settings: { title: 'Estimasi Panjar Biaya Perkara', subtitle: 'Hitung estimasi biaya perkara Anda secara transparan melalui aplikasi resmi Panjar PA Penajam', buttonText: 'Buka Aplikasi Panjar', buttonUrl: 'https://panjar.pa-penajam.go.id', bgColor: '#1b5e20', features: ['Transparan', 'Akurat', 'Online 24 Jam'] } },
+  { id: 'default-complaint',  type: 'complaint_cta', settings: { title: 'Sampaikan Pengaduan Anda', subtitle: 'Kami berkomitmen untuk meningkatkan pelayanan. Sampaikan masukan atau pengaduan Anda kepada kami.', buttonText: 'Kirim Pengaduan', buttonLink: '/pengaduan', bgColor: '#1b5e20', showPhone: true } },
+  { id: 'default-contact',    type: 'contact_info',  settings: { title: 'Hubungi Kami', subtitle: 'Kami siap melayani Anda dengan sepenuh hati', bgColor: '#ffffff' } },
 ];
 
 // ============================================================
@@ -1065,9 +1077,567 @@ function DocumentListBlock({ settings, documentItems }) {
   );
 }
 
+
+// ============================================================
+// 10 NEW BLOCKS - 100% ADMIN EDITABLE, NO HARDCODE
+// ============================================================
+
+// Helper to resolve icon name string to component or fallback
+function resolveIconNode(name, className = "w-6 h-6") {
+  if (!name) return null;
+  const Icon = ICON_MAP[name];
+  if (Icon) return <Icon className={className} aria-hidden="true" />;
+  // emoji or single char fallback
+  if (name.length <= 3) return <span className={className} aria-hidden="true">{name}</span>;
+  return <span className={className + " text-xs"} aria-hidden="true">{name.slice(0,2)}</span>;
+}
+
+function LeadershipGreetingBlock({ settings, siteSettings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const greeting = lang === 'en' && s.greetingEn ? s.greetingEn : s.greeting;
+  const quote = lang === 'en' && s.quoteEn ? s.quoteEn : s.quote;
+  const name = lang === 'en' && s.nameEn ? s.nameEn : s.name;
+  const position = lang === 'en' && s.positionEn ? s.positionEn : s.position;
+  return (
+    <section id="sambutan-ketua" className="py-16 lg:py-20" style={{ background: s.bgColor || '#ffffff', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Sambutan Ketua'}</h2>
+            {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+          </div>
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="grid md:grid-cols-[280px_1fr] gap-0">
+              <div className="bg-gradient-to-br from-pa-green to-pa-green-mid p-8 flex flex-col items-center text-center">
+                <div className="w-32 h-32 rounded-full overflow-hidden bg-white/10 border-4 border-white/20 mb-4 flex items-center justify-center">
+                  {s.photoUrl ? <img src={s.photoUrl} alt={name || 'Ketua'} className="w-full h-full object-cover" loading="lazy" /> : <Users className="w-12 h-12 text-white/60" aria-hidden="true" />}
+                </div>
+                <h3 className="text-white font-bold text-base leading-tight">{name || 'Ketua Pengadilan'}</h3>
+                <p className="text-pa-gold text-sm font-semibold mt-1">{position || 'Ketua'}</p>
+                {s.showNip !== false && s.nip && <p className="text-white/60 text-xs mt-1 font-mono">{s.nip}</p>}
+                {quote && (
+                  <div className="mt-6 bg-white/10 rounded-xl p-3 border border-white/10">
+                    <p className="text-pa-gold text-xs italic leading-relaxed">“{quote}”</p>
+                  </div>
+                )}
+              </div>
+              <div className="p-8">
+                {quote && (
+                  <div className="mb-6">
+                    <div className="text-pa-gold text-5xl leading-none font-serif">“</div>
+                    <p className="text-pa-green font-semibold text-lg -mt-4 ml-4 leading-relaxed">{quote}</p>
+                  </div>
+                )}
+                {greeting && <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{greeting}</p>}
+                {s.buttonText && s.buttonLink && (
+                  <a href={s.buttonLink} className="inline-flex items-center gap-2 mt-6 bg-pa-green hover:bg-pa-green-mid text-white font-semibold px-6 py-3 rounded-xl text-sm transition-colors">
+                    {s.buttonText} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LeadersGridBlock({ settings, leadersList }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const cols = s.columns || 4;
+  const colClass = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-2 lg:grid-cols-4' }[cols] || 'md:grid-cols-4';
+  const category = (s.category || '').toLowerCase().trim();
+  let items = leadersList || [];
+  if (category) items = items.filter(l => (l.category || '').toLowerCase().includes(category));
+  const limit = s.limit || 8;
+  items = items.slice(0, limit);
+
+  return (
+    <section id="pimpinan" className="py-16 lg:py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Pimpinan & Hakim'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+            <Users className="w-10 h-10 text-gray-300 mx-auto mb-3" aria-hidden="true" />
+            <p className="font-semibold text-gray-600 text-sm">{lang === 'id' ? 'Belum ada data pimpinan' : 'No leaders yet'}</p>
+            <p className="text-gray-400 text-xs mt-1">{lang === 'id' ? 'Kelola di Admin > Pimpinan & Hakim' : 'Manage in Admin > Leaders'}</p>
+          </div>
+        ) : (
+          <div className={`grid grid-cols-1 ${colClass} gap-6 max-w-6xl mx-auto`}>
+            {items.map(item => {
+              const displayName = lang === 'en' && item.nameEn ? item.nameEn : item.name;
+              const displayTitle = lang === 'en' && item.titleEn ? item.titleEn : item.title;
+              const displayBio = lang === 'en' && item.bioEn ? item.bioEn : item.bio;
+              return (
+                <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow text-center">
+                  <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
+                    {item.photoUrl ? <img src={item.photoUrl} alt={displayName} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full flex items-center justify-center"><Users className="w-12 h-12 text-gray-300" /></div>}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                      <span className="inline-block px-2 py-0.5 bg-pa-gold text-white text-[10px] font-bold rounded-full uppercase">{displayTitle}</span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-pa-green text-sm leading-tight">{displayName}</h3>
+                    <p className="text-pa-gold-dark text-xs font-semibold mt-1">{displayTitle}</p>
+                    {item.nip && <p className="text-gray-400 text-[11px] font-mono mt-1">{item.nip}</p>}
+                    {displayBio && <p className="text-gray-500 text-xs mt-2 line-clamp-2 leading-relaxed">{displayBio}</p>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function PriorityServicesBlock({ settings }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const items = s.items || [];
+  const layout = s.layout || 4;
+  const colClass = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-2 lg:grid-cols-4' }[layout] || 'md:grid-cols-4';
+  return (
+    <section id="layanan-prioritas" className="py-16 lg:py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Akses Keadilan untuk Semua'}</h2>
+          {s.subtitle && <p className="text-gray-500 max-w-2xl mx-auto text-sm">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="max-w-5xl mx-auto bg-gray-50 rounded-2xl border border-dashed border-gray-200 p-8 text-center text-gray-500 text-sm">Belum ada layanan prioritas. Tambahkan di Admin → Pengaturan Beranda → Layanan Prioritas.</div>
+        ) : (
+          <div className={`grid grid-cols-1 ${colClass} gap-4 max-w-6xl mx-auto`}>
+            {items.map(item => {
+              const CardContent = (
+                <>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-12 h-12 bg-pa-green/10 rounded-xl flex items-center justify-center text-pa-green group-hover:bg-pa-green group-hover:text-pa-gold transition-colors">
+                      {resolveIconNode(item.icon, "w-6 h-6")}
+                    </div>
+                    {item.badge && <span className="px-2 py-0.5 bg-pa-orange/10 text-pa-orange-dark text-[10px] font-bold rounded-full uppercase">{item.badge}</span>}
+                  </div>
+                  <h3 className="font-bold text-pa-green text-sm mb-1 group-hover:text-pa-green-dark">{item.title}</h3>
+                  {item.desc && <p className="text-gray-500 text-xs leading-relaxed">{item.desc}</p>}
+                  {item.link && <span className="inline-flex items-center gap-1 mt-3 text-pa-gold-dark text-xs font-semibold">Selengkapnya <ArrowRight className="w-3 h-3" /></span>}
+                </>
+              );
+              if (item.link) {
+                return <a key={item.id} href={item.link} className="group bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-pa-green/20 transition-all flex flex-col h-full">{CardContent}</a>;
+              }
+              return <div key={item.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex flex-col h-full">{CardContent}</div>;
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function MaklumatPTSPBlock({ settings }) {
+  const s = settings || {};
+  const hours = s.hours || [];
+  const ptsp = s.ptspServices || [];
+  return (
+    <section id="maklumat-ptsp" className="py-16 lg:py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Maklumat Pelayanan & Jam PTSP'}</h2>
+          {s.subtitle && <p className="text-gray-500 max-w-2xl mx-auto text-sm">{s.subtitle}</p>}
+        </div>
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6">
+          {s.showMaklumat !== false && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-pa-green rounded-xl flex items-center justify-center"><Scale className="w-5 h-5 text-pa-gold" aria-hidden="true" /></div>
+                <h3 className="font-bold text-pa-green">{s.maklumatTitle || 'Maklumat Pelayanan'}</h3>
+              </div>
+              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line bg-pa-green/5 rounded-xl p-4 border border-pa-green/10">{s.maklumatText || 'Kami berkomitmen memberikan pelayanan terbaik sesuai standar.'}</p>
+            </div>
+          )}
+          {s.showHours !== false && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-pa-gold rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-white" aria-hidden="true" /></div>
+                <h3 className="font-bold text-pa-green">Jam Pelayanan PTSP</h3>
+              </div>
+              <div className="space-y-3">
+                {hours.map(h => (
+                  <div key={h.id} className="flex justify-between items-start gap-4 bg-gray-50 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="font-semibold text-pa-green text-sm">{h.day}</p>
+                      {h.desc && <p className="text-gray-400 text-xs">{h.desc}</p>}
+                    </div>
+                    <span className="font-bold text-pa-green-mid text-sm whitespace-nowrap bg-white px-2 py-1 rounded-lg border">{h.time}</span>
+                  </div>
+                ))}
+                {hours.length === 0 && <p className="text-gray-400 text-xs text-center py-4">Jam layanan belum diatur di admin.</p>}
+              </div>
+              {ptsp.length > 0 && (
+                <>
+                  <h4 className="font-bold text-pa-green text-sm mt-6 mb-3">Layanan PTSP</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ptsp.map(it => (
+                      <div key={it.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                        <div className="text-pa-green">{resolveIconNode(it.icon, "w-4 h-4")}</div>
+                        <span className="text-xs font-medium text-gray-700 truncate">{it.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function IntegrityStripBlock({ settings }) {
+  const s = settings || {};
+  const badges = s.badges || [];
+  const values = s.values || [];
+  return (
+    <section id="zona-integritas" className="py-12 lg:py-16" style={{ background: s.bgColor || '#ffffff', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Zona Integritas & Anti Korupsi'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        {s.showBadgeStrip !== false && badges.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-4 mb-8 max-w-4xl mx-auto">
+            {badges.map(b => (
+              <div key={b.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-3 min-w-[180px]">
+                <div className="w-10 h-10 rounded-xl bg-pa-green/10 flex items-center justify-center text-xl flex-shrink-0">{b.icon || '🏅'}</div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-extrabold text-pa-green text-sm">{b.label}</p>
+                    {b.year && <span className="px-1.5 py-0.5 bg-pa-gold/10 text-pa-gold-dark text-[10px] font-bold rounded-full">{b.year}</span>}
+                  </div>
+                  {b.labelFull && <p className="text-gray-500 text-xs leading-tight">{b.labelFull}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {values.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 mb-6 max-w-4xl mx-auto">
+            {values.map(v => (
+              <span key={v} className="px-3 py-1.5 bg-pa-green/5 border border-pa-green/10 text-pa-green text-xs font-semibold rounded-full">{v}</span>
+            ))}
+          </div>
+        )}
+        {s.antiCorruptionText && (
+          <div className="max-w-3xl mx-auto bg-gradient-to-r from-pa-green to-pa-green-mid rounded-2xl p-4 flex items-center justify-center gap-3 text-center">
+            <ShieldCheck className="w-5 h-5 text-pa-gold flex-shrink-0" aria-hidden="true" />
+            <p className="text-white font-bold text-sm">{s.antiCorruptionText}</p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function TransparencyBlock({ settings, documentItems }) {
+  const s = settings || {};
+  const items = s.items || [];
+  const { lang } = useLanguage();
+  return (
+    <section id="transparansi" className="py-16 lg:py-20" style={{ background: s.bgColor || '#f9fafb', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Transparansi Anggaran & Kinerja'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-dashed border-gray-200 p-8 text-center text-gray-500 text-sm">Belum ada item transparansi. Tambahkan di Admin Homepage Builder.</div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {items.map(item => (
+              <a key={item.id} href={item.link || '#'} className="group bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-pa-green/20 transition-all">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-10 h-10 bg-pa-green/10 rounded-xl flex items-center justify-center text-pa-green group-hover:bg-pa-green group-hover:text-pa-gold transition-colors">
+                    {resolveIconNode(item.icon, "w-5 h-5")}
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-gray-300 group-hover:text-pa-green" aria-hidden="true" />
+                </div>
+                <h3 className="font-bold text-pa-green text-sm mb-1">{item.label}</h3>
+                {item.value && <p className="text-pa-gold-dark text-xs font-bold mb-1">{item.value}</p>}
+                {item.desc && <p className="text-gray-500 text-xs leading-relaxed">{item.desc}</p>}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ExternalLinksBlock({ settings }) {
+  const s = settings || {};
+  const items = s.items || [];
+  const layout = s.layout || 4;
+  const colClass = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-2 lg:grid-cols-4' }[layout] || 'md:grid-cols-4';
+  const { lang } = useLanguage();
+  return (
+    <section id="pelaporan" className="py-14 lg:py-16" style={{ background: s.bgColor || '#1b5e20', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">{s.title || 'Pusat Pelaporan & Pengawasan'}</h2>
+          {s.subtitle && <p className="text-white/70 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        {items.length === 0 ? (
+          <div className="max-w-5xl mx-auto bg-white/10 border border-white/10 rounded-2xl p-6 text-center text-white/60 text-sm">Belum ada tautan pengawasan.</div>
+        ) : (
+          <div className={`grid grid-cols-1 ${colClass} gap-4 max-w-6xl mx-auto`}>
+            {items.map(item => {
+              const label = lang === 'en' && item.labelEn ? item.labelEn : item.label;
+              return (
+                <a key={item.id} href={item.url || '#'} target={item.external !== false ? '_blank' : undefined} rel={item.external !== false ? 'noopener noreferrer' : undefined}
+                  className="group bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/15 rounded-2xl p-5 transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 text-white text-xl">{item.icon || '🔗'}</div>
+                    <ExternalLink className="w-4 h-4 text-white/40 group-hover:text-pa-gold" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-bold text-white text-sm mb-1 group-hover:text-pa-gold transition-colors">{label}</h3>
+                  {item.description && <p className="text-white/60 text-xs leading-relaxed line-clamp-2">{item.description}</p>}
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function JurisdictionMapBlock({ settings }) {
+  const s = settings || {};
+  const regions = s.regions || [];
+  const height = s.height || 400;
+  return (
+    <section id="yurisdiksi" className="py-16 lg:py-20 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Wilayah Yurisdiksi & Lokasi'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+          <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-gray-50" style={{ height: `${height}px` }}>
+            {s.embedUrl ? (
+              <iframe src={s.embedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={s.title || 'Peta'} />
+            ) : s.mapImage ? (
+              <img src={s.mapImage} alt="Peta Yurisdiksi" className="w-full h-full object-cover" loading="lazy" />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 p-6">
+                <MapPin className="w-12 h-12 mb-3 text-gray-300" aria-hidden="true" />
+                <p className="text-sm font-medium">Peta belum diatur</p>
+                <p className="text-xs mt-1 text-center">Masukkan Google Maps Embed URL di Admin Homepage Builder &gt; Peta Yurisdiksi</p>
+              </div>
+            )}
+          </div>
+          <div className="space-y-4">
+            {s.address && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-pa-green rounded-xl flex items-center justify-center flex-shrink-0"><MapPin className="w-5 h-5 text-pa-gold" aria-hidden="true" /></div>
+                  <div>
+                    <h4 className="font-bold text-pa-green text-sm">Alamat Kantor</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed mt-1 whitespace-pre-line">{s.address}</p>
+                    <a href={`https://maps.google.com/?q=${encodeURIComponent(s.address)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-3 text-pa-gold-dark text-xs font-semibold hover:underline">Buka di Google Maps <ExternalLink className="w-3 h-3" /></a>
+                  </div>
+                </div>
+              </div>
+            )}
+            {s.showRegionList !== false && regions.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <h4 className="font-bold text-pa-green text-sm mb-3">Wilayah Yurisdiksi</h4>
+                <p className="text-gray-500 text-xs mb-3">Kabupaten Penajam Paser Utara - 4 Kecamatan</p>
+                <div className="space-y-2">
+                  {regions.map(r => (
+                    <div key={r.id} className="flex items-center gap-3 bg-gray-50 rounded-xl px-3 py-2.5">
+                      <div className="w-8 h-8 bg-pa-green/10 rounded-lg flex items-center justify-center flex-shrink-0"><MapPin className="w-4 h-4 text-pa-green" /></div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-pa-green text-sm leading-tight">{r.name}</p>
+                        {r.desc && <p className="text-gray-500 text-xs truncate">{r.desc}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VideoProfileBlock({ settings }) {
+  const s = settings || {};
+  const videos = s.videos || [];
+  const { lang } = useLanguage();
+  function normalizeEmbed(url) {
+    if (!url) return '';
+    // Convert youtube watch to embed if needed
+    if (url.includes('youtube.com/watch')) {
+      const m = url.match(/[?&]v=([^&]+)/);
+      if (m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    if (url.includes('youtu.be/')) {
+      const id = url.split('youtu.be/')[1]?.split('?')[0];
+      if (id) return `https://www.youtube.com/embed/${id}`;
+    }
+    return url;
+  }
+  const mainEmbed = normalizeEmbed(s.mainVideoUrl);
+  return (
+    <section id="video-profil" className="py-16 lg:py-20 bg-gray-50" style={{ scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Profil Pengadilan'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+        <div className="max-w-5xl mx-auto">
+          {mainEmbed ? (
+            <div className="rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-black aspect-video relative">
+              <iframe src={mainEmbed} title={s.mainTitle || 'Video Profil'} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy" />
+            </div>
+          ) : (
+            <div className="rounded-3xl bg-white border-2 border-dashed border-gray-200 aspect-video flex flex-col items-center justify-center p-8 text-center">
+              <Video className="w-12 h-12 text-gray-300 mb-3" aria-hidden="true" />
+              <p className="font-semibold text-gray-600 text-sm">Video profil belum diatur</p>
+              <p className="text-gray-400 text-xs mt-1 max-w-md">Masukkan YouTube Embed URL di Admin → Pengaturan Beranda → Video Profil. Gunakan URL embed: https://www.youtube.com/embed/VIDEO_ID</p>
+            </div>
+          )}
+          {videos.length > 0 && (
+            <div className="grid md:grid-cols-3 gap-4 mt-6">
+              {videos.map(v => {
+                const emb = normalizeEmbed(v.url);
+                return (
+                  <div key={v.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="aspect-video bg-black relative overflow-hidden">
+                      {v.thumbnail ? <img src={v.thumbnail} alt={v.title} className="w-full h-full object-cover" loading="lazy" /> : emb ? <iframe src={emb} title={v.title} className="w-full h-full" allowFullScreen loading="lazy" /> : <div className="w-full h-full flex items-center justify-center bg-gray-900"><Play className="w-8 h-8 text-white/60" /></div>}
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-pa-green text-sm line-clamp-2">{v.title}</h4>
+                      {v.url && <a href={v.url.includes('/embed/') ? v.url.replace('/embed/', '/watch?v=') : v.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-2 text-pa-gold-dark text-xs font-semibold hover:underline">Tonton <ExternalLink className="w-3 h-3" /></a>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {s.showChannelLink !== false && s.channelUrl && (
+            <div className="text-center mt-8">
+              <a href={s.channelUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border-2 border-pa-green text-pa-green hover:bg-pa-green hover:text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm">
+                <Video className="w-4 h-4" aria-hidden="true" /> {lang==='id' ? 'Kunjungi Kanal YouTube' : 'Visit YouTube Channel'} <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AchievementSectionBlock({ settings, achievementsList }) {
+  const s = settings || {};
+  const { lang } = useLanguage();
+  const limit = s.achievementsLimit || 6;
+  const achievements = (achievementsList || []).slice(0, limit);
+  const showSKM = s.showSKM !== false;
+  const showSPAK = s.showSPAK !== false;
+  const showAchievements = s.showAchievements !== false;
+
+  return (
+    <section id="pencapaian" className="py-16 lg:py-20" style={{ background: s.bgColor || '#ffffff', scrollMarginTop: '80px' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold text-pa-green mb-3">{s.title || 'Pencapaian & Kepercayaan Publik'}</h2>
+          {s.subtitle && <p className="text-gray-500 text-sm max-w-2xl mx-auto">{s.subtitle}</p>}
+        </div>
+
+        <div className="max-w-6xl mx-auto">
+          {(showSKM || showSPAK) && (
+            <div className="grid md:grid-cols-2 gap-4 mb-10 max-w-3xl mx-auto">
+              {showSKM && (
+                <div className="bg-gradient-to-br from-pa-green to-pa-green-mid rounded-2xl p-6 text-center text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16" aria-hidden="true" />
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{s.skmLabel || 'Indeks Kepuasan Masyarakat'}</p>
+                  <p className="text-5xl font-extrabold text-pa-gold mt-2">{s.skmScore || '-'}</p>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    {s.skmCategory && <span className="px-2 py-0.5 bg-white/10 rounded-full text-xs font-semibold">{s.skmCategory}</span>}
+                    {s.skmYear && <span className="text-white/60 text-xs">{s.skmYear}</span>}
+                  </div>
+                </div>
+              )}
+              {showSPAK && (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-center">
+                  <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">SPAK / SPAK Mandiri</p>
+                  <p className="text-5xl font-extrabold text-pa-green mt-2">{s.spakScore || '-'}</p>
+                  <p className="text-gray-500 text-xs mt-2">Survei Persepsi Anti Korupsi</p>
+                  <div className="mt-3 flex justify-center gap-1">
+                    {[1,2,3,4,5].map(i => <span key={i} className="w-1.5 h-1.5 rounded-full bg-pa-gold" />)}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {showAchievements && (
+            achievements.length === 0 ? (
+              <div className="bg-gray-50 rounded-2xl border border-dashed border-gray-200 p-10 text-center">
+                <Trophy className="w-10 h-10 text-gray-300 mx-auto mb-3" aria-hidden="true" />
+                <p className="font-semibold text-gray-600 text-sm">{lang === 'id' ? 'Belum ada penghargaan' : 'No achievements yet'}</p>
+                <p className="text-gray-400 text-xs mt-1">{lang === 'id' ? 'Kelola di Admin > Penghargaan & Prestasi' : 'Manage in Admin > Achievements'}</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {achievements.map(item => {
+                  const title = lang === 'en' && item.titleEn ? item.titleEn : item.title;
+                  const desc = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
+                  const issuer = lang === 'en' && item.issuerEn ? item.issuerEn : item.issuer;
+                  return (
+                    <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-pa-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          {item.imageUrl ? <img src={item.imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" /> : <Trophy className="w-6 h-6 text-pa-gold-dark" aria-hidden="true" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-bold text-pa-green text-sm leading-snug">{title}</h3>
+                            {item.score && <span className="px-2 py-0.5 bg-pa-green/10 text-pa-green text-[10px] font-bold rounded-full">{item.score}</span>}
+                          </div>
+                          {issuer && <p className="text-gray-500 text-xs mt-1">{issuer} {item.year ? `• ${item.year}` : ''}</p>}
+                          {desc && <p className="text-gray-600 text-xs mt-2 line-clamp-2 leading-relaxed">{desc}</p>}
+                          {item.category && <span className="inline-block mt-2 px-2 py-0.5 bg-gray-50 border text-gray-500 text-[10px] rounded-full uppercase font-semibold">{item.category}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function renderBlock(block, ctx) {
+
   const { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems,
-    agendaToday, putusanList,
+    agendaToday, putusanList, leadersList, achievementsList,
     onSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun,
     searchLoading, searchResult, statusColor, statusLabel, formatDate } = ctx;
   const s = block.settings || {};
@@ -1089,6 +1659,16 @@ function renderBlock(block, ctx) {
     case 'visitor_stats':  return <VisitorStatsBlock key={block.id} settings={s} visitorStats={visitorStats} />;
     case 'banner_slider':  return <BannerSliderBlock key={block.id} settings={s} bannerItems={bannerItems} />;
     case 'document_list':  return <DocumentListBlock key={block.id} settings={s} documentItems={documentItems} />;
+    case 'leadership_greeting': return <LeadershipGreetingBlock key={block.id} settings={s} siteSettings={siteSettings} />;
+    case 'leaders_grid':   return <LeadersGridBlock key={block.id} settings={s} leadersList={leadersList} />;
+    case 'priority_services': return <PriorityServicesBlock key={block.id} settings={s} />;
+    case 'maklumat_ptsp':  return <MaklumatPTSPBlock key={block.id} settings={s} />;
+    case 'integrity_strip': return <IntegrityStripBlock key={block.id} settings={s} />;
+    case 'transparency':   return <TransparencyBlock key={block.id} settings={s} documentItems={documentItems} />;
+    case 'external_links': return <ExternalLinksBlock key={block.id} settings={s} />;
+    case 'jurisdiction_map': return <JurisdictionMapBlock key={block.id} settings={s} />;
+    case 'video_profile':  return <VideoProfileBlock key={block.id} settings={s} />;
+    case 'achievement_section': return <AchievementSectionBlock key={block.id} settings={s} achievementsList={achievementsList} />;
     case 'hero':           return <HeroStaticBlock key={block.id} settings={s} />;
     case 'stats':          return <StatsBlock key={block.id} settings={s} />;
     case 'text':           return <TextBlock key={block.id} settings={s} />;
@@ -1306,6 +1886,8 @@ export default function DynamicHomepage() {
   const [documentItems, setDocumentItems] = useState([]);
   const [agendaToday, setAgendaToday] = useState([]);
   const [putusanList, setPutusanList] = useState([]);
+  const [leadersList, setLeadersList] = useState([]);
+  const [achievementsList, setAchievementsList] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [searchNomor, setSearchNomor] = useState('');
   const [searchTahun, setSearchTahun] = useState('');
@@ -1325,7 +1907,7 @@ export default function DynamicHomepage() {
   // IntersectionObserver for automatic nav sync on scroll
   useEffect(() => {
     if (blocks === null || dataLoading) return;
-    const sectionIds = ['beranda', 'layanan-digital', 'profil', 'layanan', 'alur', 'perkara', 'agenda-hari-ini', 'berita', 'pengumuman', 'putusan-terbaru', 'galeri', 'dokumen', 'faq', 'panjar', 'pengaduan', 'kontak'];
+    const sectionIds = ['beranda', 'zona-integritas', 'sambutan-ketua', 'layanan-prioritas', 'layanan-digital', 'maklumat-ptsp', 'profil', 'pimpinan', 'layanan', 'alur', 'perkara', 'agenda-hari-ini', 'transparansi', 'berita', 'pengumuman', 'putusan-terbaru', 'pelaporan', 'pencapaian', 'galeri', 'video-profil', 'dokumen', 'yurisdiksi', 'faq', 'panjar', 'pengaduan', 'kontak'];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -1356,7 +1938,7 @@ export default function DynamicHomepage() {
   async function loadAll() {
     try {
       const today = getTodayWITA();
-      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes, agendaTodayRes, putusanRes] = await Promise.all([
+      const [hpRes, newsRes, annRes, svcRes, settingsRes, casesRes, galleryRes, faqRes, statsRes, bannersRes, docsRes, agendaTodayRes, putusanRes, leadersRes, achievementsRes] = await Promise.all([
         fetch('/api/pages/slug/_homepage'),
         fetch('/api/news?public=true&limit=8'),
         fetch('/api/announcements?public=true&limit=8'),
@@ -1370,6 +1952,8 @@ export default function DynamicHomepage() {
         fetch('/api/documents?limit=12'),
         fetch(`/api/agenda?public=true&dateFrom=${today}&dateTo=${today}&limit=10`).catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
         fetch('/api/putusan?public=true&limit=5').catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
+        fetch('/api/leaders?limit=20').catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
+        fetch('/api/achievements?limit=20').catch(() => ({ ok: false, json: async () => ({ items: [] }) })),
       ]);
       if (hpRes.ok) {
         const hp = await hpRes.json();
@@ -1408,6 +1992,14 @@ export default function DynamicHomepage() {
         const putusanData = await putusanRes.json();
         setPutusanList(putusanData.items || []);
       }
+      if (leadersRes && leadersRes.ok) {
+        const leadersData = await leadersRes.json();
+        setLeadersList(leadersData.items || []);
+      }
+      if (achievementsRes && achievementsRes.ok) {
+        const achievementsData = await achievementsRes.json();
+        setAchievementsList(achievementsData.items || []);
+      }
     } catch (e) { console.error(e); setBlocks([]); }
     finally { setDataLoading(false); }
   }
@@ -1431,7 +2023,7 @@ export default function DynamicHomepage() {
   const statusColor = (s) => ({ selesai: 'bg-green-100 text-green-700', berjalan: 'bg-blue-100 text-blue-700', terdaftar: 'bg-yellow-100 text-yellow-700', dijadwalkan: 'bg-blue-100 text-blue-700', ditunda: 'bg-yellow-100 text-yellow-700', dibatalkan: 'bg-red-100 text-red-700' }[s] || 'bg-gray-100 text-gray-700');
   const statusLabel = (s) => ({ selesai: t('status.done'), berjalan: t('status.ongoing'), terdaftar: t('status.registered') }[s] || s);
 
-  const ctx = { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems, agendaToday, putusanList, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
+  const ctx = { stats, news, announcements, siteSettings, services, galleryItems, faqItems, visitorStats, bannerItems, documentItems, agendaToday, putusanList, leadersList, achievementsList, onSearch: handleSearch, searchNomor, setSearchNomor, searchTahun, setSearchTahun, searchLoading, searchResult, statusColor, statusLabel, formatDate };
 
   const scrollTo = (id) => {
     setActiveNav(id);

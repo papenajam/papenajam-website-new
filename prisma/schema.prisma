@@ -424,3 +424,54 @@ model Media {
   @@index([type])
   @@map("media")
 }
+
+// ---------------------------------------------------------------------------
+// 21. Leader / Pimpinan
+// ---------------------------------------------------------------------------
+model Leader {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.Text
+  nameEn    String?   @db.Text
+  title     String    @db.Text
+  titleEn   String?   @db.Text
+  nip       String?   @db.Text
+  photoUrl  String?   @db.Text
+  bio       String?   @db.Text
+  bioEn     String?   @db.Text
+  category  String?   @db.Text
+  quote     String?   @db.Text
+  quoteEn   String?   @db.Text
+  order     Int
+  isActive  Boolean
+  createdAt DateTime  @db.Timestamptz(3)
+  updatedAt DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, category, order])
+  @@index([order, createdAt(sort: Desc)])
+  @@map("leaders")
+}
+
+// ---------------------------------------------------------------------------
+// 22. Achievement
+// ---------------------------------------------------------------------------
+model Achievement {
+  id            String    @id @default(uuid()) @db.Uuid
+  title         String    @db.Text
+  titleEn       String?   @db.Text
+  description   String?   @db.Text
+  descriptionEn String?   @db.Text
+  year          String?   @db.Text
+  issuer        String?   @db.Text
+  issuerEn      String?   @db.Text
+  imageUrl      String?   @db.Text
+  category      String?   @db.Text
+  score         String?   @db.Text
+  order         Int
+  isActive      Boolean
+  createdAt     DateTime  @db.Timestamptz(3)
+  updatedAt     DateTime? @db.Timestamptz(3)
+
+  @@index([isActive, category, order])
+  @@index([order, createdAt(sort: Desc)])
+  @@map("achievements")
+}
